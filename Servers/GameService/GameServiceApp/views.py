@@ -8,7 +8,7 @@ from rest_framework.response import Response
 # Create your views here.
 
 
-#/players/ [GET] (queryparam: token=token)
+#/players/token [GET] ()
 #code: 200 (OK)
 #{[userObject]}
 #code 400 (Bad Request)
@@ -16,9 +16,10 @@ from rest_framework.response import Response
 #”helper”:”“Correct way: /players”}
 #code 401 (Unauthorized)
 #{“reason: “Your token was invalid”}
+@api_view(['GET'])
+def get_players(request):
 
-
-#/players/token [GET] (queryparam: token=token)
+#/players/token/player_id [GET] ()
 #code: 200 (OK)
 #{[userObject]}
 #code 400 (Bad Request)
@@ -26,8 +27,19 @@ from rest_framework.response import Response
 #”helper”:”Correct way: /players/token”}
 #code 401 (Unauthorized)
 #{“reason: “Your token was invalid”}
+@api_view(['GET'])
+def get_player(request):
 
-#/players/token/invite/ [POST] (formparam: {“invite_player_id”:”invite_player_id”,”invitation_parameters”:”invitation_parameters”})
+
+# /invites/token/invites/[GET]
+# code: 200 (OK)
+# {[invite_objects]}
+# code 401 (Unauthorized)
+# {“reason: “Your token was invalid”}
+@api_view(['GET'])
+def get_invites(request):
+
+#/invites/token/ [POST] (formparam: {“invite_player_id”:”invite_player_id”,”invitation_parameters”:”invitation_parameters”})
 #code: 200 (OK)
 #{“”}
 #code 400 (Bad Request)
@@ -35,14 +47,11 @@ from rest_framework.response import Response
 #”helper”:”Correct way: /players/token/invite and then a JSON formatted {“invite_player_id”:”invite_player_id”}}”
 #code 401 (Unauthorized)
 #{“reason: “Your token was invalid”}
+@api_view(['POST'])
+def invite_player(request):
 
-#/players/token/invites/[GET]
-#code: 200 (OK)
-#{[invite_objects]}
-#code 401 (Unauthorized)
-#{“reason: “Your token was invalid”}
 
-#/players/token/invites/invite_id [POST]
+#/invites/token/invite_id [PUT]
 #code: 200 (OK)
 #{“game_id”:”game_id”}
 #code 400 (Bad Request)
@@ -50,6 +59,8 @@ from rest_framework.response import Response
 #”helper”:”Correct way: /players/token/invite_id
 #code 401 (Unauthorized)
 #{“reason: “Your token was invalid”}
+@api_view(['PUT'])
+def get_specific_invites(request):
 
 #/players/registeruser/ [POST] (formparam: {“service_key”:”service_key”,”user_token”:”user_token”, “user_object”:“user_object”})
 #code: 200 (OK)
@@ -59,9 +70,8 @@ from rest_framework.response import Response
 #”helper”:”Correct way: /registeruser and then a JSON formatted {“service_key”:”service_key”,”user_token”:”user_token”, “user_object”:“user_object”}”}
 #code 500 (Internal Server Error)
 #{“reason: “Something bad happened”}
-
 @api_view(['POST'])
-def registeruser(request):
+def register_user(request):
 
 
 
