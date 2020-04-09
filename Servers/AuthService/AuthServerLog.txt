@@ -1,0 +1,7 @@
+login post 2020-04-09 06:54:30.685500
+401 bad credentials 2020-04-09 06:54:30.685500
+login post 2020-04-09 06:54:52.030565
+login post 2020-04-09 06:57:46.356561
+user returned to client 2020-04-09 06:57:46.356561
+login post 2020-04-09 06:58:16.092454
+user returned to client with token, ip and port 2020-04-09 06:58:16.092454
