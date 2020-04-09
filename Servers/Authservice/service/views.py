@@ -36,8 +36,10 @@ def login(request):
         print("400 badrequest")
         return Response(data={"reason": "Your data is not formatted the proper way",
                               "helper": "[POST] at /login and then a JSON formatted like this, {'username':'yourUserName','password':'yourPassword'}"}, status=status.HTTP_400_BAD_REQUEST)
-        # Here can we have more if statements for further error handling.
-        # Because Python cant be bothered to implement switch statements
+    except RuntimeError:
+        print("500 interal server error when decoding json")
+        return Response (data={"reason": "There was an internal server error",
+                               "helper":"Contact blablablabla"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     #Create a soap client object
     url = 'http://javabog.dk:9901/brugeradmin?wsdl'
@@ -68,11 +70,15 @@ def login(request):
             print("401 bad credentials")
             print("detail: " + str(detail))
             return Response(data={"reason":"Your credentials were not correct"}, status=status.HTTP_401_UNAUTHORIZED)
+    except RuntimeError:
+        print("500 interal server error when fetching user")
+        return Response(data={"reason": "There was an internal server error",
+                              "helper": "Contact blablablabla"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def registerUserWithGameService(service_key, user_token):
 
-    URL = "http://127.0.0.1:8010/registeruser"
+    URL = "http://127.0.0.1:9700/registeruser"
     PARAMS = {"servicekey":service_key, "usertoken":user_token}
     try:
         #r = requests.post(url = URL, params = PARAMS)
@@ -80,7 +86,7 @@ def registerUserWithGameService(service_key, user_token):
         #gameservice_ip = data['gameservice_ip']
         #gameservice_port = data['gameservice_port']
         gameservice_ip = "192.168.1.1"
-        gameservice_port = "8100"
+        gameservice_port = "9700"
     except requests.ConnectionError as e:
         return None, None
     return gameservice_ip, gameservice_port
