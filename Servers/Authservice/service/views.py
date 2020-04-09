@@ -36,15 +36,15 @@ def login(request):
         username = response['username']
         password = response['password']
     except (KeyError, json.JSONDecodeError) as err:
-
         print("400 bad credentials " + str(err) + " " + str(time),file = logfile)
         return Response(data={"reason": "Your data is not formatted the proper way",
                               "helper": "[POST] at /login and then a JSON formatted like this, {'username':'yourUserName','password':'yourPassword'}"}, status=status.HTTP_400_BAD_REQUEST)
+        logfile.close()
     except RuntimeError:
         print("500 interal server error when decoding json"+ str(time),file = logfile)
         return Response (data={"reason": "There was an internal server error",
                                "helper":"Contact blablablabla"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    finally: logfile.close()
+        logfile.close()
 
     #Create a soap client object
     url = 'http://javabog.dk:9901/brugeradmin?wsdl'
@@ -59,6 +59,7 @@ def login(request):
         user_token = uuid.uuid1()
 
         #Register user at gameservice and get gameservice ip and port
+
         gameservice_ip, gameservice_port = registerUserWithGameService(AUTH_SERVICE_ACCESS_KEY, user_token)
 
         #If gameservice responds with proper data, return the userobject, usertoken and gameservice ip and port to client.
@@ -67,17 +68,22 @@ def login(request):
             user['gameservice_ip'] = gameservice_ip
             user['gameservice_port'] = gameservice_port
             print("user: " + str(user))
+            print("user returned to client with token, ip and port " + str(time), file=logfile)
             return Response(user, status=status.HTTP_200_OK)
+        else:
+            print("user not returned to client, could not register user with gameservice" + str(time), file=logfile)
+
     #if the communication with javabog.dk did not go through as expected
     except suds.WebFault as detail:
         if "Forkert brugernavn eller adgangskode" in str(detail):
             print("401 bad credentials "+ str(time),file = logfile)
             return Response(data={"reason":"Your credentials were not correct"}, status=status.HTTP_401_UNAUTHORIZED)
+        logfile.close()
     except RuntimeError:
         print("500 interal server error when fetching user "+ str(time),file = logfile)
         return Response(data={"reason": "There was an internal server error",
                               "helper": "Contact blablablabla"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    finally: logfile.close()
+        logfile.close()
 
 def registerUserWithGameService(service_key, user_token):
 
