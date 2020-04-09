@@ -3,7 +3,7 @@
     <VGrid variant="container">
       <VRow>
         <VCol variant="['md-12','sm-12','xs-12']">
-          <h1>Welcome admin</h1>
+          <h1>Welcome {{name}}</h1>
         </VCol>
       </VRow>
     </VGrid>
@@ -13,12 +13,9 @@
 <script>
 export default {
   name: 'HomePage',
-  props: {
-    name: String
+  data: function() {
+    return {name: this.$route.query.name}
   },
-  mounted() {
-    console.log(this.$route.query.name)
-  }
 }
 </script>
 
