@@ -1,5 +1,6 @@
-asgiref==3.2.3
-Django==3.0.3
+asgiref==3.2.7
+Django==3.0.5
 djangorestframework==3.11.0
 pytz==2019.3
-sqlparse==0.3.0
+suds-community==0.8.4
+requests==2.23.0
