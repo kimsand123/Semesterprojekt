@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import suds
 import requests
+from datetime import datetime
 
 AUTH_SERVICE_ACCESS_KEY = "HBdjm4VDLxn8mU2Eh7EzwNdhAEYp7bm9HvgwEJVGeM6NaBFvFFS48qbSHUYKLkuZPRWKxvGJsu4RewuuR6SVEEbH5aUqjD7H8wMeEPBd5d4G8UfB7QxhuTPPF8KKZg53zvUdv63ravcBAzdgPRbxcVu7pb6NPRfVLf3fFznvCX5ey2by6kGe3HrZX6kBTsJxTS6cL4KwkQDaN5YTq5jzQrQ4wLaXBYzx9y4w5sXdfkhLWuCL5wdFMtgbd8cNTemR"
 
@@ -23,23 +24,27 @@ def index(request):
 @api_view(['POST'])
 @csrf_exempt
 def login(request):
+    #try to do a log
+    logfile = open('AuthServerLog.txt', 'a')
 
-    print("login post")
+    time=datetime.now()
+    print("login post " + str(time),file = logfile )
     #get data from the json posted to the method
-    decoded = request.body.decode('utf-8')
-    response = json.loads(decoded)
-
     try:
+        decoded = request.body.decode('utf-8')
+        response = json.loads(decoded)
         username = response['username']
         password = response['password']
-    except KeyError:
-        print("400 badrequest")
+    except (KeyError, json.JSONDecodeError) as err:
+
+        print("400 bad credentials " + str(err) + " " + str(time),file = logfile)
         return Response(data={"reason": "Your data is not formatted the proper way",
                               "helper": "[POST] at /login and then a JSON formatted like this, {'username':'yourUserName','password':'yourPassword'}"}, status=status.HTTP_400_BAD_REQUEST)
     except RuntimeError:
-        print("500 interal server error when decoding json")
+        print("500 interal server error when decoding json"+ str(time),file = logfile)
         return Response (data={"reason": "There was an internal server error",
                                "helper":"Contact blablablabla"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally: logfile.close()
 
     #Create a soap client object
     url = 'http://javabog.dk:9901/brugeradmin?wsdl'
@@ -62,19 +67,17 @@ def login(request):
             user['gameservice_ip'] = gameservice_ip
             user['gameservice_port'] = gameservice_port
             print("user: " + str(user))
-
             return Response(user, status=status.HTTP_200_OK)
     #if the communication with javabog.dk did not go through as expected
     except suds.WebFault as detail:
         if "Forkert brugernavn eller adgangskode" in str(detail):
-            print("401 bad credentials")
-            print("detail: " + str(detail))
+            print("401 bad credentials "+ str(time),file = logfile)
             return Response(data={"reason":"Your credentials were not correct"}, status=status.HTTP_401_UNAUTHORIZED)
     except RuntimeError:
-        print("500 interal server error when fetching user")
+        print("500 interal server error when fetching user "+ str(time),file = logfile)
         return Response(data={"reason": "There was an internal server error",
                               "helper": "Contact blablablabla"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    finally: logfile.close()
 
 def registerUserWithGameService(service_key, user_token):
 
