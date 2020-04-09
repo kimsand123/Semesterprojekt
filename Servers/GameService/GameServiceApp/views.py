@@ -53,6 +53,7 @@ def get_invites(request):
 def invite_player(request):
     return None
 
+
 #/invites/token/invite_id [PUT]
 #code: 200 (OK)
 #{“game_id”:”game_id”}
@@ -75,7 +76,8 @@ def get_specific_invites(request):
 #{“reason: “Something bad happened”}
 @api_view(['POST'])
 def register_user(request):
-    return None
+    print("Yeps")
+    return Response(data="test", status=status.HTTP_200_OK)
 
 
 
