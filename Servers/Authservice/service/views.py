@@ -60,7 +60,7 @@ def login(request):
 
         #Register user at gameservice and get gameservice ip and port
 
-        gameservice_ip, gameservice_port = registerUserWithGameService(AUTH_SERVICE_ACCESS_KEY, user_token)
+        gameservice_ip, gameservice_port = registerUserWithGameService(AUTH_SERVICE_ACCESS_KEY, user_token, user)
 
         #If gameservice responds with proper data, return the userobject, usertoken and gameservice ip and port to client.
         if gameservice_ip != None:
@@ -85,11 +85,12 @@ def login(request):
                               "helper": "Contact blablablabla"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         logfile.close()
 
-def registerUserWithGameService(service_key, user_token):
+def registerUserWithGameService(service_key, user_token, user):
 
     URL = "http://127.0.0.1:9700/registeruser"
-    PARAMS = {"servicekey":service_key, "usertoken":user_token}
+    PARAMS = {"servicekey":service_key, "usertoken":user_token, "userobject":user}
     try:
+        #Connect to gameservice for registration of the user.
         #r = requests.post(url = URL, params = PARAMS)
         #data = r.json()
         #gameservice_ip = data['gameservice_ip']
