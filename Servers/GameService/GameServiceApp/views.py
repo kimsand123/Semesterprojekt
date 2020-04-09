@@ -18,6 +18,7 @@ from rest_framework.response import Response
 #{“reason: “Your token was invalid”}
 @api_view(['GET'])
 def get_players(request):
+    None
 
 #/players/token/player_id [GET] ()
 #code: 200 (OK)
@@ -29,7 +30,7 @@ def get_players(request):
 #{“reason: “Your token was invalid”}
 @api_view(['GET'])
 def get_player(request):
-
+    return None
 
 # /invites/token/invites/[GET]
 # code: 200 (OK)
@@ -38,6 +39,7 @@ def get_player(request):
 # {“reason: “Your token was invalid”}
 @api_view(['GET'])
 def get_invites(request):
+    return None
 
 #/invites/token/ [POST] (formparam: {“invite_player_id”:”invite_player_id”,”invitation_parameters”:”invitation_parameters”})
 #code: 200 (OK)
@@ -49,7 +51,7 @@ def get_invites(request):
 #{“reason: “Your token was invalid”}
 @api_view(['POST'])
 def invite_player(request):
-
+    return None
 
 #/invites/token/invite_id [PUT]
 #code: 200 (OK)
@@ -61,6 +63,7 @@ def invite_player(request):
 #{“reason: “Your token was invalid”}
 @api_view(['PUT'])
 def get_specific_invites(request):
+    return None
 
 #/players/registeruser/ [POST] (formparam: {“service_key”:”service_key”,”user_token”:”user_token”, “user_object”:“user_object”})
 #code: 200 (OK)
@@ -72,6 +75,7 @@ def get_specific_invites(request):
 #{“reason: “Something bad happened”}
 @api_view(['POST'])
 def register_user(request):
+    return None
 
 
 
