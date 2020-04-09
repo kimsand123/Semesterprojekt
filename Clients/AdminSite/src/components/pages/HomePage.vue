@@ -11,13 +11,14 @@
 </template>
 
 <script>
-import FormField from './../FormField'
-
 export default {
-  name: 'LandingPage',
-  components: {
-    'FormField': FormField
+  name: 'HomePage',
+  props: {
+    name: String
   },
+  mounted() {
+    console.log(this.$route.query.name)
+  }
 }
 </script>
 
@@ -30,8 +31,5 @@ export default {
   align-items: center;
   width: 100%;
   height: 100vh;
-}
-h1, h2 {
-  font-weight: lighter;
 }
 </style>
