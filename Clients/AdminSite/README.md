@@ -1,4 +1,4 @@
-# admin-service
+# AdminSite
 
 > Admin site for GolfQuiz
 
