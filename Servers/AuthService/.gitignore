@@ -126,6 +126,7 @@ modules.xml
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -285,3 +286,5 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/linux,macos,gradle,python,windows,pycharm+iml,visualstudiocode
 venv
+
+AuthServerLog.txt
