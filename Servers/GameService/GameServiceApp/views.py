@@ -7,6 +7,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+import requests
+
+from datetime import datetime
+
 AUTH_SERVICE_ACCESS_KEY = "HBdjm4VDLxn8mU2Eh7EzwNdhAEYp7bm9HvgwEJVGeM6NaBFvFFS48qbSHUYKLkuZPRWKxvGJsu4RewuuR6SVEEbH5aUqjD7H8wMeEPBd5d4G8UfB7QxhuTPPF8KKZg53zvUdv63ravcBAzdgPRbxcVu7pb6NPRfVLf3fFznvCX5ey2by6kGe3HrZX6kBTsJxTS6cL4KwkQDaN5YTq5jzQrQ4wLaXBYzx9y4w5sXdfkhLWuCL5wdFMtgbd8cNTemR"
 token_user_list = []
 
@@ -84,16 +88,35 @@ def get_specific_invites(request, token, invite_id):
 @api_view(['POST'])
 @csrf_exempt
 def register_user(request):
+    #Test for the AUTH_SERVICE_ACCESS_KEY
+    #If so
+    #   Add the user_token to the token list with a timestamp
+    #   Return own ip address and port number to AUTH
+    #   Decode the request for userdata
+    #   Test to see if a user is already in the database(use dtu username)
+    #       If !so add the user to the database
+
+
+
     print("Register User")
     logfile = open('GameServerLog.txt', 'a')
     try:
         decoded = request.body.decode('utf-8')
         response = json.loads(decoded)
         if response['AUTH_SERVICE_ACCESS_KEY'] == AUTH_SERVICE_ACCESS_KEY:
+            #adding token to token list
             token = response['user_token']
-            user = response['user']
-            #if user_id is found in db,
+            token_user_list.append({"user_token":token,"time_stamp":str(datetime.now())})
 
+            #getting ip and port and returning it to the caller
+            gameservice_ip = "127.0.0.1"
+            gameservice_port ="9700"
+            yield Response(gameservice_ip, gameservice_port)
+
+            #Check if user is in our database
+            user = response['user']
+            #Check database for user and add if not
+            check_and_add_user(user);
 
 
             list_object = {"token":token,}
@@ -108,6 +131,10 @@ def register_user(request):
 
 
 
+def check_and_add_user(user):
+    check_URL = "http://127.0.0.1:9600/check_usr"
 
-
+    dtu_usr = user.dtu
+    check_params = {"dtu_user":dtu_usr}
+    add_URL = "http://127.0.0.1:9600/add_usr"
 
