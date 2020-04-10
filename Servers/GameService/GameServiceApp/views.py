@@ -132,9 +132,26 @@ def register_user(request):
 
 
 def check_and_add_user(user):
-    check_URL = "http://127.0.0.1:9600/check_usr"
-
-    dtu_usr = user.dtu
-    check_params = {"dtu_user":dtu_usr}
+    dtu_usr_id = user.dtu
+    get_usr_URL = "http://127.0.0.1:9600/user/"+dtu_usr_id
     add_URL = "http://127.0.0.1:9600/add_usr"
+    check_params = {"dtu_user":user)
+    r = requests.post(url = get_usr_URL)
+    data = r.json()
+    game_service_user_object = data['game_service_user_object']
+    game_service_user_object.
 
+    
+    if r.status_code == status.HTTP_200_OK:
+        return data['game_service_user_object']
+    else:
+        #Add user to database
+        return False
+
+
+
+
+
+
+
+    return None
