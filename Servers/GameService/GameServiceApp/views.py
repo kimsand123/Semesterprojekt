@@ -27,8 +27,9 @@ def nothing(request):
 #code 401 (Unauthorized)
 #{“reason: “Your token was invalid”}
 @api_view(['GET'])
-def get_players(request, token):
-    None
+def get_players(request):
+    print("getplayers")
+    return Response("get_players")
 
 #/players/token/player_id [GET] ()
 #code: 200 (OK)
@@ -40,7 +41,8 @@ def get_players(request, token):
 #{“reason: “Your token was invalid”}
 @api_view(['GET'])
 def get_player(request, token, player_id):
-    return None
+    print("getplayer")
+    return Response("get_player")
 
 # /invites/token/invites/[GET]
 # code: 200 (OK)
@@ -49,19 +51,19 @@ def get_player(request, token, player_id):
 # {“reason: “Your token was invalid”}
 @api_view(['GET'])
 def get_invites(request, token):
-    return None
+    return Response("get_invites")
 
 #/invites/token/ [POST] (formparam: {“invite_player_id”:”invite_player_id”,”invitation_parameters”:”invitation_parameters”})
 #code: 200 (OK)
 #{“”}
-#code 400 (Bad Request)
+#code 400 (Bad Requestt
 #{“reason”:”Your data is not formatted the proper way”,
 #”helper”:”Correct way: /players/token/invite and then a JSON formatted {“invite_player_id”:”invite_player_id”}}”
 #code 401 (Unauthorized)
 #{“reason: “Your token was invalid”}
 @api_view(['POST'])
 def invite_player(request, token):
-    return None
+    return Response("invite_player")
 
 
 #/invites/token/invite_id [PUT]
@@ -86,7 +88,7 @@ def get_specific_invites(request, token, invite_id):
 #code 500 (Internal Server Error)
 #{“reason: “Something bad happened”}
 @api_view(['POST'])
-@csrf_exempt
+#@csrf_exempt
 def register_user(request):
     #Test for the AUTH_SERVICE_ACCESS_KEY
     #If so
@@ -97,41 +99,46 @@ def register_user(request):
     #       If !so add the user to the database
     print("Register User")
     logfile = open('GameServerLog.txt', 'a')
+
     try:
         decoded = request.body.decode('utf-8')
         response = json.loads(decoded)
-        if response['AUTH_SERVICE_ACCESS_KEY'] == AUTH_SERVICE_ACCESS_KEY:
+
+        if response['service_key'] == AUTH_SERVICE_ACCESS_KEY:
             #adding token to token list
             token = response['user_token']
-            token_user_list.append({"user_token":token,"time_stamp":str(datetime.now())})
+            list_object = {"user_token":token,"time_stamp":str(datetime.now())}
+            list_object_json = json.dumps(list_object)
+            print ("list object: " + list_object_json)
 
+            token_user_list.append(list_object_json)
+            #print("tokenlist: "+ token_user_list)
             #getting ip and port and returning it to the caller
             gameservice_ip = "127.0.0.1"
             gameservice_port ="9700"
-            yield Response(gameservice_ip, gameservice_port, status=status.HTTP_200_OK)
-
+            print("gameservcie IP: " + gameservice_ip)
             #Check if user is in our database
-            user = response['user']
+            user = response['user_object']
             #Check database for user and add if not
             check_and_add_user(user);
 
+            return Response(gameservice_ip, gameservice_port, status=status.HTTP_200_OK)
 
-            list_object = {"token":token,}
-            token_user_list.append()
     except:
         return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
 def check_and_add_user(user):
-    dtu_usr_id = user.dtu
+
+    dtu_usr_id = user.campusnet_id
     get_usr_URL = "http://127.0.0.1:9600/user/"+dtu_usr_id
     add_URL = "http://127.0.0.1:9600/add_usr"
     check_params = {"dtu_user":user}
     r = requests.post(url = get_usr_URL)
     data = r.json()
     game_service_user_object = data['game_service_user_object']
-    game_service_user_object.
+   # game_service_user_object.
 
     
     if r.status_code == status.HTTP_200_OK:
