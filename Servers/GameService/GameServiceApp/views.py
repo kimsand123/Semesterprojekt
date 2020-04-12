@@ -20,6 +20,7 @@ FREQUENCY_OF_TOKEN_LIST_CHECK_SEC = 60
 token_user_list = []
 
 def _init_(self):
+    print("start token thread")
     _thread.start_new_thread(check_token_list_for_old_tokens())
 
 # Create your views here.
@@ -176,10 +177,17 @@ def check_and_add_user(user):
     return True
 
 def check_token_list_for_old_tokens():
+
     while True:
+
+        print("token_user_list before check: " + token_user_list)
         for token in token_user_list:
                 now_time = datetime.now()
                 token_time = datetime(token['time_stamp'])
                 if now_time.minute < token_time.minute+ MAX_TOKEN_AGE_MIN:
                     token_user_list.remove({"user_token":token})
+        print("token_user_list after check and removal: " + token_user_list)
         time.sleep(FREQUENCY_OF_TOKEN_LIST_CHECK_SEC)
+
+##TIL SEBASTIAN. Husk at update timestamp til now i token_user_list for
+# den token der foretager et "gamemove"
