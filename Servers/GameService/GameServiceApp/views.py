@@ -101,12 +101,16 @@ def register_user(request):
     logfile = open('GameServerLog.txt', 'a')
 
     try:
+        print("before decode")
         decoded = request.body.decode('utf-8')
+        print("decoded: " + decoded)
+        print("before response")
         response = json.loads(decoded)
-
+        print("service_key: " + response['service_key'])
         if response['service_key'] == AUTH_SERVICE_ACCESS_KEY:
             #adding token to token list
             token = response['user_token']
+            print ("token: " + token)
             list_object = {"user_token":token,"time_stamp":str(datetime.now())}
             list_object_json = json.dumps(list_object)
             print ("list object: " + list_object_json)

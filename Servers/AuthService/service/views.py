@@ -11,6 +11,9 @@ import suds
 import requests
 from datetime import datetime
 
+#from .models import User
+#from .serializers import UserSerializer
+
 AUTH_SERVICE_ACCESS_KEY = "HBdjm4VDLxn8mU2Eh7EzwNdhAEYp7bm9HvgwEJVGeM6NaBFvFFS48qbSHUYKLkuZPRWKxvGJsu4RewuuR6SVEEbH5aUqjD7H8wMeEPBd5d4G8UfB7QxhuTPPF8KKZg53zvUdv63ravcBAzdgPRbxcVu7pb6NPRfVLf3fFznvCX5ey2by6kGe3HrZX6kBTsJxTS6cL4KwkQDaN5YTq5jzQrQ4wLaXBYzx9y4w5sXdfkhLWuCL5wdFMtgbd8cNTemR"
 
 def nothing(request):
@@ -56,7 +59,7 @@ def login(request):
         print("OK")
         #Get user and create token
         user = client.service.hentBruger(username, password)
-        user_token = uuid.uuid1()
+        user_token = str(uuid.uuid1())
 
         #Register user at gameservice and get gameservice ip and port
 
@@ -87,16 +90,25 @@ def login(request):
 
 def registerUserWithGameService(service_key, user_token, user):
 
-    URL = "http://127.0.0.1:9700/registeruser"
-    PARAMS = {"servicekey":service_key, "usertoken":user_token, "userobject":user}
+    URL = "http://127.0.0.1:9700/players/registeruser"
+    print("service_key: "+service_key)
+    print("user_token: "+ user_token)
+
+    print("userobject: "+ str(user))
+
+    #user_object = User.objects.all()
+    #serializer = UserSerializer(user)
+    #user_object = serializer.data
+    #print("user_object: " + str(user_object))
+    body_data = {"service_key":service_key, "user_token":user_token, "user_object":user}
     try:
         #Connect to gameservice for registration of the user.
-        #r = requests.post(url = URL, params = PARAMS)
-        #data = r.json()
-        #gameservice_ip = data['gameservice_ip']
-        #gameservice_port = data['gameservice_port']
-        gameservice_ip = "192.168.1.1"
-        gameservice_port = "9700"
+        r = requests.post(url = URL, json = body_data)
+        data = r.json()
+        gameservice_ip = data['gameservice_ip']
+        gameservice_port = data['gameservice_port']
+        #gameservice_ip = "192.168.1.1"
+        #gameservice_port = "9700"
     except requests.ConnectionError as e:
         return None, None
     return gameservice_ip, gameservice_port
