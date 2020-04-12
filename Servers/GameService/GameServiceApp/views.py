@@ -95,9 +95,6 @@ def register_user(request):
     #   Decode the request for userdata
     #   Test to see if a user is already in the database(use dtu username)
     #       If !so add the user to the database
-
-
-
     print("Register User")
     logfile = open('GameServerLog.txt', 'a')
     try:
@@ -111,7 +108,7 @@ def register_user(request):
             #getting ip and port and returning it to the caller
             gameservice_ip = "127.0.0.1"
             gameservice_port ="9700"
-            yield Response(gameservice_ip, gameservice_port)
+            yield Response(gameservice_ip, gameservice_port, status=status.HTTP_200_OK)
 
             #Check if user is in our database
             user = response['user']
@@ -121,13 +118,8 @@ def register_user(request):
 
             list_object = {"token":token,}
             token_user_list.append()
-
-
-
-
-
-
-        return Response(data="test", status=status.HTTP_200_OK)
+    except:
+        return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -135,7 +127,7 @@ def check_and_add_user(user):
     dtu_usr_id = user.dtu
     get_usr_URL = "http://127.0.0.1:9600/user/"+dtu_usr_id
     add_URL = "http://127.0.0.1:9600/add_usr"
-    check_params = {"dtu_user":user)
+    check_params = {"dtu_user":user}
     r = requests.post(url = get_usr_URL)
     data = r.json()
     game_service_user_object = data['game_service_user_object']
