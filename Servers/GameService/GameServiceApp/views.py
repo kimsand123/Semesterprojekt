@@ -101,27 +101,23 @@ def register_user(request):
     logfile = open('GameServerLog.txt', 'a')
 
     try:
-        print("before decode")
         decoded = request.body.decode('utf-8')
-        print("decoded: " + decoded)
-        print("before response")
+        #print("decoded: " + decoded)
         response = json.loads(decoded)
-        print("service_key: " + response['service_key'])
+        #print("service_key: " + response['service_key'])
         if response['service_key'] == AUTH_SERVICE_ACCESS_KEY:
             #adding token to token list
             token = response['user_token']
-            print ("token: " + token)
+            #print ("token: " + token)
             list_object = {"user_token":token,"time_stamp":str(datetime.now())}
             list_object_json = json.dumps(list_object)
-            print ("list object: " + list_object_json)
+            #print ("list object: " + list_object_json)
 
             token_user_list.append(list_object_json)
             #print("tokenlist: "+ token_user_list)
             #getting ip and port and returning it to the caller
             gameservice_ip = "127.0.0.1"
             gameservice_port ="9700"
-            print("gameservcie IP: " + gameservice_ip)
-            print("gameservice_port: " + gameservice_port)
             response={"gameservice_ip":gameservice_ip,"gameservice_port":gameservice_port}
 
             #Check if user is in our database
