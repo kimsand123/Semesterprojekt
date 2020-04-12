@@ -7,16 +7,24 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+import _thread
+import time
+
 import requests
 
 from datetime import datetime
 
 AUTH_SERVICE_ACCESS_KEY = "HBdjm4VDLxn8mU2Eh7EzwNdhAEYp7bm9HvgwEJVGeM6NaBFvFFS48qbSHUYKLkuZPRWKxvGJsu4RewuuR6SVEEbH5aUqjD7H8wMeEPBd5d4G8UfB7QxhuTPPF8KKZg53zvUdv63ravcBAzdgPRbxcVu7pb6NPRfVLf3fFznvCX5ey2by6kGe3HrZX6kBTsJxTS6cL4KwkQDaN5YTq5jzQrQ4wLaXBYzx9y4w5sXdfkhLWuCL5wdFMtgbd8cNTemR"
+MAX_TOKEN_AGE_MIN = 30
+FREQUENCY_OF_TOKEN_LIST_CHECK_SEC = 60
 token_user_list = []
+
+def _init_(self):
+    _thread.start_new_thread(check_token_list_for_old_tokens())
 
 # Create your views here.
 def nothing(request):
-    return HttpResponse("Hello, world. You're at the root index")
+    return HttpResponse("Hello, user. You're at the root index of the Gameserver Here we could have the entire REST tree printed")
 
 #/players/token [GET] ()
 #code: 200 (OK)
@@ -29,7 +37,9 @@ def nothing(request):
 @api_view(['GET'])
 def get_players(request):
     print("getplayers")
-    return Response("get_players")
+    if token_status(request['token']):
+        #get the players and return the list
+        return Response("get_players")
 
 #/players/token/player_id [GET] ()
 #code: 200 (OK)
@@ -41,8 +51,10 @@ def get_players(request):
 #{“reason: “Your token was invalid”}
 @api_view(['GET'])
 def get_player(request, token, player_id):
-    print("getplayer")
-    return Response("get_player")
+    if token_status(request['token']):
+        #get the player from the DB
+        print("getplayer")
+        return Response("get_player")
 
 # /invites/token/invites/[GET]
 # code: 200 (OK)
@@ -51,19 +63,24 @@ def get_player(request, token, player_id):
 # {“reason: “Your token was invalid”}
 @api_view(['GET'])
 def get_invites(request, token):
-    return Response("get_invites")
+    if token_status(request['token']):
+        #get users invites from DB and return list of invites
+        return Response("get_invites")
 
 #/invites/token/ [POST] (formparam: {“invite_player_id”:”invite_player_id”,”invitation_parameters”:”invitation_parameters”})
 #code: 200 (OK)
 #{“”}
 #code 400 (Bad Requestt
 #{“reason”:”Your data is not formatted the proper way”,
-#”helper”:”Correct way: /players/token/invite and then a JSON formatted {“invite_player_id”:”invite_player_id”}}”
+#”helper”:”Correct way: /players/token/invite and then a JSON formatted {“invite_player_id”:”invite_player_id”,"invitation":"invitation_parameters"}}”
 #code 401 (Unauthorized)
 #{“reason: “Your token was invalid”}
 @api_view(['POST'])
 def invite_player(request, token):
-    return Response("invite_player")
+    if token_status(request['token']):
+        #check if invited player exists
+        #create invitation with invite_player_id and invitation_parameters
+        return Response("invite_player")
 
 
 #/invites/token/invite_id [PUT]
@@ -76,8 +93,10 @@ def invite_player(request, token):
 #{“reason: “Your token was invalid”}
 @api_view(['PUT'])
 def get_specific_invites(request, token, invite_id):
-    print("Accept invitation")
-    return Response(data="accept invitation", status=status.HTTP_200_OK)
+    if token_status(request['token']):
+        #get specific invite from db with invite_id
+        print("Accept invitation")
+        return Response("get_specific_invites")
 
 #/players/registeruser/ [POST] (formparam: {“service_key”:”service_key”,”user_token”:”user_token”, “user_object”:“user_object”})
 #code: 200 (OK)
@@ -130,7 +149,12 @@ def register_user(request):
     except:
         return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+def token_status(token):
+    for token in token_user_list:
+        if token["user_token"] == token:
+            return True
+        else:
+            return False
 
 def check_and_add_user(user):
 
@@ -150,3 +174,12 @@ def check_and_add_user(user):
     #    return False
 
     return True
+
+def check_token_list_for_old_tokens():
+    while True:
+        for token in token_user_list:
+                now_time = datetime.now()
+                token_time = datetime(token['time_stamp'])
+                if now_time.minute < token_time.minute+ MAX_TOKEN_AGE_MIN:
+                    token_user_list.remove({"user_token":token})
+        time.sleep(FREQUENCY_OF_TOKEN_LIST_CHECK_SEC)
