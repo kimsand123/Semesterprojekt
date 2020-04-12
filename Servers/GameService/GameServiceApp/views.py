@@ -121,13 +121,16 @@ def register_user(request):
             gameservice_ip = "127.0.0.1"
             gameservice_port ="9700"
             print("gameservcie IP: " + gameservice_ip)
+            print("gameservice_port: " + gameservice_port)
+            response={"gameservice_ip":gameservice_ip,"gameservice_port":gameservice_port}
+
             #Check if user is in our database
-            user = response['user_object']
+            #user = response['user_object']
             #Check database for user and add if not
-            check_and_add_user(user);
-
-            return Response(gameservice_ip, gameservice_port, status=status.HTTP_200_OK)
-
+            #check_and_add_user(user);
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            return Response(status.HTTP_401_UNAUTHORIZED)
     except:
         return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -135,26 +138,19 @@ def register_user(request):
 
 def check_and_add_user(user):
 
-    dtu_usr_id = user.campusnet_id
-    get_usr_URL = "http://127.0.0.1:9600/user/"+dtu_usr_id
-    add_URL = "http://127.0.0.1:9600/add_usr"
-    check_params = {"dtu_user":user}
-    r = requests.post(url = get_usr_URL)
-    data = r.json()
-    game_service_user_object = data['game_service_user_object']
+    dtu_usr_id = user['username']
+    #get_usr_URL = "http://127.0.0.1:9600/user/"+dtu_usr_id
+    #add_URL = "http://127.0.0.1:9600/add_usr"
+    #check_params = {"dtu_user":user}
+    #r = requests.post(url = get_usr_URL)
+    #data = r.json()
+    #game_service_user_object = data['game_service_user_object']
    # game_service_user_object.
 
-    
-    if r.status_code == status.HTTP_200_OK:
-        return data['game_service_user_object']
-    else:
+    #if r.status_code == status.HTTP_200_OK:
+    #    return data['game_service_user_object']
+    #else:
         #Add user to database
-        return False
+    #    return False
 
-
-
-
-
-
-
-    return None
+    return True
