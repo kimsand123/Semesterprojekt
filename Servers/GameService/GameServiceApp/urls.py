@@ -8,5 +8,5 @@ urlpatterns = [
         path('players/<str:token>/<str:player_id>/', views.get_players), #GET all players
         path('invites/<str:token>', views.get_invites), #GET all invites
         path('invites/<str:token>', views.invite_player), #POST invite a specific player
-        path('invites/<str:token>', views.get_specific_invites), #PUT accept an invite
+        path('invites/<str:token>', views.accept_invite), #PUT accept an invite
     ]
