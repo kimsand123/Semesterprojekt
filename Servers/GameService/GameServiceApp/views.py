@@ -209,7 +209,6 @@ def get_game(request, game_id):
     decoded = request.body.decode('utf-8')
     data = json.loads(decoded)
     if token_status(data['token']):
-        game_id = request['game_id']
         response = connection_service(f"/games/{game_id}", None, "GET")
         return Response(data=response, status=status.HTTP_200_OK)
     else:
@@ -221,8 +220,7 @@ def get_all_player_status(request, game_id):
     decoded = request.body.decode('utf-8')
     data = json.loads(decoded)
     if token_status(data['token']):
-        game_id = request['game_id']
-        response = connection_service(f"/games/{game_id}/player_status", None, "GET")
+        response = connection_service(f"/games/{game_id}/player_status/", None, "GET")
         return Response(data=response, status=status.HTTP_200_OK)
     else:
         response = generate_error_json(status.HTTP_401_UNAUTHORIZED, 'Your token was invalid', None)
@@ -234,12 +232,8 @@ def set_player_status(request, game_id, player_id):
     data = json.loads(decoded)
     if token_status(data['token']):
         if request['game_user_status'] != None:
-            game_id = request['game_id']
-            player_id = request['player_id']
             game_player_status = {'game_user_status': str(request['game_user_status']), 'token': str(request['token'])}
-
             response = connection_service(f"/games/{game_id}/player_status/{player_id}/status", game_player_status, "POST")
-
             return Response(data=response, status=status.HTTP_200_OK)
         else:
             response = generate_error_json(status.HTTP_400_BAD_REQUEST,
