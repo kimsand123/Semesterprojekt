@@ -1,75 +1,153 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
-from django.views import generic
-from django.utils import timezone
-
-from .models import Player
-
-"""
-class IndexView(generic.ListView):
-    template_name = 'DatabaseServiceApp/index.html'
-    context_object_name = 'latest_question_list'
-
-    def get_queryset(self):
-        """"""
-        Return the last five published questions (not including those set to be
-        published in the future).
-        """"""
-        return Question.objects.filter(
-            pub_date__lte=timezone.now()
-        ).order_by('-pub_date')[:5]
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'DatabaseServiceApp/detail.html'
-
-    def get_queryset(self):
-        """"""
-        Excludes any questions that aren't published yet.
-        """"""
-        return Question.objects.filter(pub_date__lte=timezone.now())
-
-
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'DatabaseServiceApp/results.html'
+# Welcome message for the path "/"
+@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+def welcome(request):
+    json_data = {
+        'status': status.HTTP_200_OK,
+        'message': 'Welcome to this DatabaseService',
+        'url': '\'http://' + request.get_host() + '/database/\''
+    }
+    return Response(data=json_data, status=status.HTTP_200_OK)
 
 
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'DatabaseServiceApp/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
+# Bad request message for the all other paths than defined
+@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+def bad_request(request):
+    print('** Bad request: ' + request.get_raw_uri())
+
+    json_data = {
+        'request-url': '[' + request.method + ']-' + request.get_raw_uri(),
+        'status': status.HTTP_400_BAD_REQUEST,
+        'error': 'You have requested a wrong path.',  # TODO mention all available paths
+        'url': '\'http://' + request.get_host() + '/database/\''
+    }
+    return Response(data=json_data, status=status.HTTP_400_BAD_REQUEST)
+
+
+# path: /users/
+@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+def users(request):
+    print('** user list request: [' + request.method + '] ' + request.path)
+
+    if request.method == 'GET':
+        json_data = {
+            'request-url': '[' + request.method + ']-' + request.path,
+            'status': status.HTTP_200_OK,
+            'message': 'This is a test',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        json_data = {
+            'request-url': '[' + request.method + ']-' + request.path,
+            'status': status.HTTP_200_OK,
+            'message': 'This is a test',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_200_OK)
+
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('database:results', args=(question.id,)))
-        """
-
-class IndexView(generic.ListView):
-    template_name = 'DatabaseServiceApp/index.html'
-    context_object_name = 'user_list'
-
-    def get_queryset(self):
-        return Player.objects.filter(campus_id='s160198').order_by('campus_id')[:5]
+        json_data = {
+            'request-url': request.get_raw_uri(),
+            'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+            'error': 'This method is not allowed here',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class DetailView(generic.DetailView):
-    model = Player
-    template_name = 'DatabaseServiceApp/detail.html'
+# path: /users/<int:user_id>/
+@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+def single_user(request, user_id):
+    print('** Single user request: [' + request.method + '] ' + request.path)
+    print('** with user: ' + user_id)
 
-    def get_queryset(self):
-        """
-        Excludes any questions that aren't published yet.
-        """
-        return Player.objects.filter()
+    if request.method == 'GET':
+        json_data = {
+            'request-url': '[' + request.method + ']-' + request.path,
+            'status': status.HTTP_200_OK,
+            'message': 'This is a test',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_200_OK)
+
+    else:
+        json_data = {
+            'request-url': request.get_raw_uri(),
+            'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+            'error': 'This method is not allowed here',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+# path: /invites/
+@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+def invites(request):
+    print('** invites request: [' + request.method + '] ' + request.path)
+
+    if request.method == 'GET':
+        json_data = {
+            'request-url': '[' + request.method + ']-' + request.path,
+            'status': status.HTTP_200_OK,
+            'message': 'This is a test',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        json_data = {
+            'request-url': '[' + request.method + ']-' + request.path,
+            'status': status.HTTP_200_OK,
+            'message': 'This is a test',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_200_OK)
+
+    else:
+        json_data = {
+            'request-url': request.get_raw_uri(),
+            'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+            'error': 'This method is not allowed here',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+# path: /invites/<str:invite_id>/
+@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+def single_invite(request, invite_id):
+    print('** Single invite request: [' + request.method + '] ' + request.path)
+    print('** with invite: ' + invite_id)
+
+    if request.method == 'GET':
+        json_data = {
+            'request-url': '[' + request.method + ']-' + request.path,
+            'status': status.HTTP_200_OK,
+            'message': 'This is a test',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PUT':
+        json_data = {
+            'request-url': '[' + request.method + ']-' + request.path,
+            'status': status.HTTP_200_OK,
+            'message': 'This is a test',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_200_OK)
+
+    else:
+        json_data = {
+            'request-url': request.get_raw_uri(),
+            'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+            'error': 'This method is not allowed here',
+            'url': '\'http://' + request.get_host() + '/database/\''
+        }
+        return Response(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
