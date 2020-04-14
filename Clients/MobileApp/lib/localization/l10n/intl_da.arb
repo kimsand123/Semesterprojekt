@@ -1,0 +1,1335 @@
+{
+  "@@last_modified": "2020-04-06T13:45:49.539285",
+  "appbar__edit_button": "Rediger",
+  "@appbar__edit_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "save": "Gem",
+  "@save": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "yes": "Ja",
+  "@yes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "no": "Nej",
+  "@no": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "ok": "Ok",
+  "@ok": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "exit": "Forlad",
+  "@exit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "resume": "Fortsæt",
+  "@resume": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "secs": "Sek",
+  "@secs": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "mins": "Min",
+  "@mins": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hours": "Timer",
+  "@hours": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "days": "Dage",
+  "@days": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "player": "Spiller",
+  "@player": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "rank": "Placering",
+  "@rank": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "handicap": "Handicap",
+  "@handicap": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "points": "Points",
+  "@points": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hole": "Hul",
+  "@hole": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "time": "Tid",
+  "@time": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "you": "Dig",
+  "@you": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "admin": "Bestyrer",
+  "@admin": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "name": "Navn",
+  "@name": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "email": "Email",
+  "@email": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "country": "Land",
+  "@country": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "club_number": "Klubnummer",
+  "@club_number": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status": "Status",
+  "@status": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "bufferzone": "Bufferzone",
+  "@bufferzone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "world_rank": "Verdensplacering",
+  "@world_rank": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "danish": "Dansk",
+  "@danish": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "english": "Engelsk",
+  "@english": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialog__are_you_sure": "Er du sikker?",
+  "@dialog__are_you_sure": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialog__delete_from": "Er du sikker på du vil fjerne {username} fra {deleteFrom}?",
+  "@dialog__delete_from": {
+    "type": "text",
+    "placeholders": {
+      "username": {},
+      "deleteFrom": {}
+    }
+  },
+  "dialog__delete": "Er du sikker på du vil fjerne {username} fra dine venner?",
+  "@dialog__delete": {
+    "type": "text",
+    "placeholders": {
+      "username": {}
+    }
+  },
+  "dialog__delete_group": "Vil du slette gruppen {group}?",
+  "@dialog__delete_group": {
+    "type": "text",
+    "placeholders": {
+      "group": {}
+    }
+  },
+  "add__group_members": "+ Tilføj gruppemedlemmer",
+  "@add__group_members": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth__email_caption": "Email",
+  "@auth__email_caption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth__password_caption": "Adgangskode",
+  "@auth__password_caption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth__signup_button": "Ny spiller",
+  "@auth__signup_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth__terms_button": "Vilkår og betingelser",
+  "@auth__terms_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_intro__login_button": "Log ind",
+  "@auth_intro__login_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_login__title": "Log ind",
+  "@auth_login__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_login__reset_password_button": "Nulstil adgangskode",
+  "@auth_login__reset_password_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_login__login_button": "Log ind",
+  "@auth_login__login_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_login__join_button": "Har du ikke en konto? Opret dig her",
+  "@auth_login__join_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__title": "Kom igang",
+  "@auth_signup__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__username_caption": "Brugernavn",
+  "@auth_signup__username_caption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__username_hint": "Navn",
+  "@auth_signup__username_hint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__country_caption": "Land",
+  "@auth_signup__country_caption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__country_hint": "Danmark",
+  "@auth_signup__country_hint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_forgot_password__title": "Glemt adgangskode",
+  "@auth_forgot_password__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_forgot_password__email_caption": "Skriv din email adresse",
+  "@auth_forgot_password__email_caption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_forgot_password__reset_password_button": "Nulstil adgangskode",
+  "@auth_forgot_password__reset_password_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__confirm_password_caption": "Bekræft adgangskode",
+  "@auth_signup__confirm_password_caption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__dgu_number_caption": "Klub nummer",
+  "@auth_signup__dgu_number_caption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__dgu_number_hint": "00-000",
+  "@auth_signup__dgu_number_hint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_forgot_password__progress_text": "Sender en adgangskode din vej...",
+  "@auth_forgot_password__progress_text": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_login__progress_text": "Logger dig ind...",
+  "@auth_login__progress_text": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "auth_signup__progress_text": "Opretter dig...",
+  "@auth_signup__progress_text": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__status_button": "Status",
+  "@menu__status_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__profile_button": "Profil",
+  "@menu__profile_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__friends_button": "Venner",
+  "@menu__friends_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__group_button": "Grupper",
+  "@menu__group_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__club_button": "Klub",
+  "@menu__club_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__settings_section": "Indstillinger",
+  "@menu__settings_section": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__app_settings_button": "App indstillinger",
+  "@menu__app_settings_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__help_and_feedback_button": "Hjælp og feedback",
+  "@menu__help_and_feedback_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__about_button": "Om appen",
+  "@menu__about_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__log_out_button": "Log ud",
+  "@menu__log_out_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "friends__title": "Venner",
+  "@friends__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "friends__notification": "Ny venneanmodning",
+  "@friends__notification": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "friends__add_friends_button": "+ Tilføj nye venner",
+  "@friends__add_friends_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "friends__list_first_title": "Spiller",
+  "@friends__list_first_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "friends__list_second_title": "Handicap",
+  "@friends__list_second_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__title": "Grupper",
+  "@groups__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__notification": "Ny gruppe invitation",
+  "@groups__notification": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__create_new_group": "+ Opret ny gruppe",
+  "@groups__create_new_group": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__create_group_title": "Opret gruppe",
+  "@groups__create_group_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+    "groups__single_group_list__first_title": "Spiller",
+  "@groups__single_group_list__first_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__single_group_list__second_title": "Handicap",
+  "@groups__single_group_list__second_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__group_list__first_title": "Gruppenavn",
+  "@groups__group_list__first_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__group_list__second_title": "Gns. handicap",
+  "@groups__group_list__second_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__delete_group": "Slet gruppen",
+  "@groups__delete_group": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "groups__saving_group_popup": "Gemmer gruppen...",
+  "@groups__saving_group_popup": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "club__title": "Klub",
+  "@club__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "club__add_club_members_button": "+ Tilføj nyt klubmedlem",
+  "@club__add_club_members_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "club__group_list__first_title": "Klubmedlem",
+  "@club__group_list__first_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "club__group_list__second_title": "Handicap",
+  "@club__group_list__second_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__elaborate_rule__title": "Uddyb regel",
+  "@game_flow__elaborate_rule__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__seconds_short": "Sek.",
+  "@game_flow__seconds_short": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__minutes_short": "Min.",
+  "@game_flow__minutes_short": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__hours_short": "Timer",
+  "@game_flow__hours_short": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__days_short": "Dage",
+  "@game_flow__days_short": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_appbar__question_duration": "Varighed",
+  "@game_appbar__question_duration": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_appbar__your_score": "Din score",
+  "@game_appbar__your_score": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_appbar__players": "Spillere",
+  "@game_appbar__players": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "privacy_policy__title": "Privat politik",
+  "@privacy_policy__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "terms_conditions__title": "Vilkår og betingelser",
+  "@terms_conditions__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_tournaments__start": "Begynder",
+  "@game_tournaments__start": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_tournaments__are_you_sure": "Er du sikker på du vil deltage i turneringen?",
+  "@game_tournaments__are_you_sure": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_tournaments__ongoing_tournaments": "Igangværende turneringer",
+  "@game_tournaments__ongoing_tournaments": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_tournaments__upcoming_tournaments": "Kommende turneringer",
+  "@game_tournaments__upcoming_tournaments": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_tournaments__join_tournaments": "Deltag i turneringen",
+  "@game_tournaments__join_tournaments": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_tournaments__no_tournaments": "Der er ingen kommende eller igangværende turneringer...",
+  "@game_tournaments__no_tournaments": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validation__enter_valid_email": "Skriv en gyldig email",
+  "@validation__enter_valid_email": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validation__too_short_password": "Adgangskoden skal være længere end 6 bogstaver",
+  "@validation__too_short_password": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validation__reenter_password": "Venligst genindtast adgangskode",
+  "@validation__reenter_password": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validation__password_not_the_same": "Adgangskode skal være den samme",
+  "@validation__password_not_the_same": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validation__enter_name": "Indtast et navn for at søge",
+  "@validation__enter_name": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validation__dgu_number": "Klub nummer bør være 5 tal",
+  "@validation__dgu_number": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validation__too_short": "{tooShort} bør være mindst {length} bogstaver",
+  "@validation__too_short": {
+    "type": "text",
+    "placeholders": {
+      "tooShort": {},
+      "length": {}
+    }
+  },
+  "validation__too_long": "{tooLong} bør være under {length} bogstaver",
+  "@validation__too_long": {
+    "type": "text",
+    "placeholders": {
+      "tooLong": {},
+      "length": {}
+    }
+  },
+  "about__title": "Om appen",
+  "@about__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "about__copyrights_title": "Ophavsret",
+  "@about__copyrights_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "about__copyrights": "Excerpts from The Rules of Golf and interpretations are reprinted with permission. \n\nCopyright © (2019) R&A Rules Limited. All rights reserved. All rules questions Copyright © (2019) GolfQuiz / Appicorn ApS. All rights reserved",
+  "@about__copyrights": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "about__policies_title": "Politikker",
+  "@about__policies_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "about__policies_privacy_button": "Privat politik",
+  "@about__policies_privacy_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "about__policies_terms_button": "Vilkår og betingelser",
+  "@about__policies_terms_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "about__about_app_title": "Om denne app",
+  "@about__about_app_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "about__about_app": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "@about__about_app": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__title": "App indstillinger",
+  "@app_settings__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__audio_title": "Lyd indstillinger",
+  "@app_settings__audio_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__audio": "Lyd",
+  "@app_settings__audio": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__notifications_title": "Notifikationsindstillinger",
+  "@app_settings__notifications_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__notifications": "Notifikationer",
+  "@app_settings__notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__privacy_title": "Privat indstillinger",
+  "@app_settings__privacy_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__privacy_club": "Forbind profil til klub",
+  "@app_settings__privacy_club": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__privacy_ranking": "Synlig på ranglister",
+  "@app_settings__privacy_ranking": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__language_title": "Vælg sprog",
+  "@app_settings__language_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings__language_hint": "Sprog",
+  "@app_settings__language_hint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "help_and_feedback__title": "Hjælp & Feedback",
+  "@help_and_feedback__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "help_and_feedback__how_to_play_title": "Sådan spiller du",
+  "@help_and_feedback__how_to_play_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "help_and_feedback__how_to_play": "Vejledning",
+  "@help_and_feedback__how_to_play": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "help_and_feedback__handicap_rules_title": "Golf Rule Handicap",
+  "@help_and_feedback__handicap_rules_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "help_and_feedback__handicap_rules": "Handicap regel beskrivelse",
+  "@help_and_feedback__handicap_rules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "help_and_feedback__contact_title": "Kontakt os",
+  "@help_and_feedback__contact_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "help_and_feedback__contact": "greenkeeper@golfquis.com",
+  "@help_and_feedback__contact": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__title": "Status",
+  "@status__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__ranking_title": "Placering",
+  "@status__ranking_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__ranking_world_overlay": "Verdensplacering",
+  "@status__ranking_world_overlay": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__ranking_friends_button": "Venneplacering",
+  "@status__ranking_friends_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__ranking_friends_overlay": "Venneplacering",
+  "@status__ranking_friends_overlay": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__ranking_club_button": "Klub placering",
+  "@status__ranking_club_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__ranking_club_overlay": "Klub placering",
+  "@status__ranking_club_overlay": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__game_overview_title": "Spil oversigt",
+  "@status__game_overview_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__games_played": "Spillede spil",
+  "@status__games_played": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__games_won": "Spil vundet",
+  "@status__games_won": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "status__games_lost": "Spil tabt",
+  "@status__games_lost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_list__solo_matches": "Solo matcher",
+  "@game_list__solo_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_list__two_player_matches": "To spiller matcher",
+  "@game_list__two_player_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_list__group_matches": "Gruppe matcher",
+  "@game_list__group_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_list__tournaments_matches": "Turneringsmatcher",
+  "@game_list__tournaments_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_list__active_matches": "Aktive matcher",
+  "@game_list__active_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_list__inactive_matches": "Tidligere matcher",
+  "@game_list__inactive_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_list__hole_out_of": "Hul {currentHole} ud af {maxHoles}",
+  "@game_list__hole_out_of": {
+    "type": "text",
+    "placeholders": {
+      "currentHole": {},
+      "maxHoles": {}
+    }
+  },
+  "game_list__total_score": "Samlet score på {score}",
+  "@game_list__total_score": {
+    "type": "text",
+    "placeholders": {
+      "score": {}
+    }
+  },
+  "game_list__date_ended_at": "Sluttede {end}",
+  "@game_list__date_ended_at": {
+    "type": "text",
+    "placeholders": {
+      "end": {}
+    }
+  },
+  "Your turn": "Din tur",
+  "@Your turn": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "Their turn": "Deres tur",
+  "@Their turn": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_list__num_of_players": "{amountOfPlayers} spillere",
+  "@game_list__num_of_players": {
+    "type": "text",
+    "placeholders": {
+      "amountOfPlayers": {}
+    }
+  },
+  "game_list__seconds_left": "{seconds} sekunder tilbage",
+  "@game_list__seconds_left": {
+    "type": "text",
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "game_list__minutes_left": "{minutes} minutter tilbage",
+  "@game_list__minutes_left": {
+    "type": "text",
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "game_list__hours_left": "{hours} timer tilbage",
+  "@game_list__hours_left": {
+    "type": "text",
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "game_list__days_left": "{days} dage tilbage",
+  "@game_list__days_left": {
+    "type": "text",
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "game_list__seconds_until": "Start om {seconds} sekunder",
+  "@game_list__seconds_until": {
+    "type": "text",
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "game_list__minutes_until": "Starter om {minutes} minutter",
+  "@game_list__minutes_until": {
+    "type": "text",
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "game_list__hours_until": "Starter om {hours} timer",
+  "@game_list__hours_until": {
+    "type": "text",
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "game_list__days_until": "Starter om {days} dage",
+  "@game_list__days_until": {
+    "type": "text",
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "active_games_card__show_all_matches": "Vis alle matcher",
+  "@active_games_card__show_all_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "add_all_button_text": "+ Tilføj alle spillere",
+  "@add_all_button_text": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "progressbar_text": "Din fremdrift",
+  "@progressbar_text": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__title": "Spil",
+  "@games__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__start_new_match": "Start ny match",
+  "@games__start_new_match": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__start_new_match__solo_match": "Solo match",
+  "@games__start_new_match__solo_match": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__start_new_match__two_player_match": "To spiller match",
+  "@games__start_new_match__two_player_match": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__start_new_match__group_match": "Gruppe match",
+  "@games__start_new_match__group_match": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__your_matches": "Dine matcher",
+  "@games__your_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__your_matches__solo_matches": "Solo matcher",
+  "@games__your_matches__solo_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__your_matches__two_player_matches": "To spiller matcher",
+  "@games__your_matches__two_player_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__your_matches__group_matches": "Gruppe matcher",
+  "@games__your_matches__group_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "games__your_matches__tournament_matches": "Turneringer",
+  "@games__your_matches__tournament_matches": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home__title": "Hjem",
+  "@home__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home__tournaments": "Turneringer",
+  "@home__tournaments": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home__tournaments__upcomming": "Kommende turneringer",
+  "@home__tournaments__upcomming": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home__your_status": "Din status",
+  "@home__your_status": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home__your_status__handicap": "Handicap",
+  "@home__your_status__handicap": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home__your_status__bufferzone": "Bufferzone",
+  "@home__your_status__bufferzone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home__your_status__world_rank": "Verdensplacering",
+  "@home__your_status__world_rank": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home__tip_of_the_day": "Dagens tip",
+  "@home__tip_of_the_day": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__title": "Menu",
+  "@menu__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "menu__email_error": "Ingen email fundet?",
+  "@menu__email_error": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "bottom_navigation__home": "Hjem",
+  "@bottom_navigation__home": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "bottom_navigation__games": "Spil",
+  "@bottom_navigation__games": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "bottom_navigation__menu": "Menu",
+  "@bottom_navigation__menu": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__title__group_match": "Gruppe match",
+  "@create_match__title__group_match": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__title__two_player_match": "To spiller",
+  "@create_match__title__two_player_match": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__title__solo_match": "Solo",
+  "@create_match__title__solo_match": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__match_name": "Match navn",
+  "@create_match__match_name": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__match_name__hint_text": "Match navn",
+  "@create_match__match_name__hint_text": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__question_duration": "Spørgsmålsvarighed",
+  "@create_match__question_duration": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__question_duration__custom": "Brugerdefineret varighed",
+  "@create_match__question_duration__custom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__question_duration__seconds": "{seconds}s",
+  "@create_match__question_duration__seconds": {
+    "type": "text",
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "create_match__player_response_time": "Spiller svartid",
+  "@create_match__player_response_time": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__player_response_time__days": "{days} dage",
+  "@create_match__player_response_time__days": {
+    "type": "text",
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "create_match__player_invite": "Inviter spillere",
+  "@create_match__player_invite": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__player_invite__friends": "Ven",
+  "@create_match__player_invite__friends": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__player_invite__group": "Gruppe",
+  "@create_match__player_invite__group": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__player_invite__club": "Klub",
+  "@create_match__player_invite__club": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__start_button": "Start",
+  "@create_match__start_button": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__handicap": "Handicap",
+  "@create_match__handicap": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_match__handicap__switch_text": "Spil med handicap",
+  "@create_match__handicap__switch_text": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__question__title": "GolfQuiz",
+  "@game_flow__question__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__question__q_duration": "Varighed",
+  "@game_flow__question__q_duration": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__question__your_score": "Din score",
+  "@game_flow__question__your_score": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__hole": "Hul {gameProgress}",
+  "@game_flow__result__hole": {
+    "type": "text",
+    "placeholders": {
+      "gameProgress": {}
+    }
+  },
+  "game_flow__result__rule": "Regel {ruleString}",
+  "@game_flow__result__rule": {
+    "type": "text",
+    "placeholders": {
+      "ruleString": {}
+    }
+  },
+  "game_flow__result__your_score": "Din score",
+  "@game_flow__result__your_score": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__friends_ranking": "Venneplacering",
+  "@game_flow__result__friends_ranking": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__elaborate_rule": "Uddyb regel",
+  "@game_flow__result__elaborate_rule": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__rule_overlay__title": "Uddybelse af regel",
+  "@game_flow__result__rule_overlay__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__scoreboard": "Scoreboard",
+  "@game_flow__result__scoreboard": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__pause_dialog": "Er du sikker på du vil pause spillet?",
+  "@game_flow__result__pause_dialog": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__continue": "Fortsæt",
+  "@game_flow__result__continue": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__correct": "Korrekt",
+  "@game_flow__result__correct": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__result__wrong": "Forkert",
+  "@game_flow__result__wrong": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__q_duration": "Varighed",
+  "@game_flow__scoreboard__q_duration": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__your_score": "Din score",
+  "@game_flow__scoreboard__your_score": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__end_game": "Afslut spil",
+  "@game_flow__scoreboard__end_game": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__pause_dialog": "Er du sikker på du vil pause spillet?",
+  "@game_flow__scoreboard__pause_dialog": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__resume": "Fortsæt",
+  "@game_flow__scoreboard__resume": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__hole": "Hul",
+  "@game_flow__scoreboard__hole": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__time": "Tid",
+  "@game_flow__scoreboard__time": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__points": "Points",
+  "@game_flow__scoreboard__points": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__handicap": "Handicap",
+  "@game_flow__scoreboard__handicap": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "game_flow__scoreboard__player": "Spiller",
+  "@game_flow__scoreboard__player": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "invite_helper__max_players": "Max {maxPlayersTwoPlayerMatch} spillere",
+  "@invite_helper__max_players": {
+    "type": "text",
+    "placeholders": {
+      "maxPlayersTwoPlayerMatch": {}
+    }
+  },
+  "invite_helper__two_player__dialog_text": "To spiller match kan kun indeholde to spillere. Fjern {name} for at tilføje en anden spiller.",
+  "@invite_helper__two_player__dialog_text": {
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "invite_helper__group__dialog_text": "Denne match indeholder allerede: \n{players} \n\nVenligst fjern en spiller, for at tilføje en ny.",
+  "@invite_helper__group__dialog_text": {
+    "type": "text",
+    "placeholders": {
+      "players": {}
+    }
+  },
+  "find_player__title": "Find spiller",
+  "@find_player__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "find_player__search_player": "Søg efter en spiller",
+  "@find_player__search_player": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "find_player__search_player_hint": "Søg efter en spiller",
+  "@find_player__search_player_hint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "find_player__add_popup__title": "Tilføj {name}?",
+  "@find_player__add_popup__title": {
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "find_player__add_popup__description": "Vil du tilføje {name} {description}",
+  "@find_player__add_popup__description": {
+    "type": "text",
+    "placeholders": {
+      "name": {},
+      "description": {}
+    }
+  },
+  "find_player__add_popup__to_friends": "til dine venner?",
+  "@find_player__add_popup__to_friends": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "find_player__add_popup__to_group": "til gruppen?",
+  "@find_player__add_popup__to_group": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "find_player__add_popup__to_club": "til klubben?",
+  "@find_player__add_popup__to_club": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "find_player__load_players": "Finder spillere...",
+  "@find_player__load_players": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit_profile__title": "Rediger profil",
+  "@edit_profile__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit_profile__old_password": "Gammelt adgangskode",
+  "@edit_profile__old_password": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit_profile__new_password": "Ny adgangskode",
+  "@edit_profile__new_password": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit_profile__confirm_new_password": "Bekræft ny adgangskode",
+  "@edit_profile__confirm_new_password": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit_profile__save_loading": "Gemmer din profil...",
+  "@edit_profile__save_loading": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "profile__title": "Min profil",
+  "@profile__title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "profile__game_overview": "Spil oversigt",
+  "@profile__game_overview": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "profile__game_overview__played": "Spillede spil",
+  "@profile__game_overview__played": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "profile__game_overview__won": "Spil vundet",
+  "@profile__game_overview__won": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "profile__game_overview__lost": "Spil tabt",
+  "@profile__game_overview__lost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "error__data_was_not_recieved": "En fejl opstod! \nVenligst kontakt vores suppport, hvis denne fejl fortsat opstår.",
+  "@error__data_was_not_recieved": {
+    "type": "text",
+    "placeholders": {}
+  }
+}
