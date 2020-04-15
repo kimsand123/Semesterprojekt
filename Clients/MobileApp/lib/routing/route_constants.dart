@@ -1,7 +1,6 @@
 // Auth
 const String introRoute = 'intro';
 const String loginRoute = 'login';
-const String signupRoute = 'signup';
 const String forgotPasswordRoute = 'forgot-password';
 
 // Tabbar navigation

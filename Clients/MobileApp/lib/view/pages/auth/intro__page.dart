@@ -35,14 +35,6 @@ class _IntroPageState extends BasePageState<IntroPage> with BasicPage {
               Navigator.pushNamed(context, loginRoute);
             },
           ),
-          AuthButtonComponent(
-            margin: EdgeInsets.only(top: 20.0),
-            text: Text(appLocale().auth__signup_button,
-                style: appTheme().textTheme.button),
-            onPressed: () {
-              Navigator.pushNamed(context, signupRoute);
-            },
-          ),
         ]),
         Column(children: [
           Padding(

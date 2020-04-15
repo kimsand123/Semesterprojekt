@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/tournament.dart';
 import 'package:golfquiz/models/user.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/pages/auth/forgot_password__page.dart';
 import 'package:golfquiz/view/pages/auth/intro__page.dart';
 import 'package:golfquiz/view/pages/auth/login__page.dart';
-import 'package:golfquiz/view/pages/auth/signup__page.dart';
 import 'package:golfquiz/view/pages/bottom_navigation/navigation__container.dart';
 import 'package:golfquiz/view/pages/game_flow/create/create_multiplayer_match__page.dart';
 import 'package:golfquiz/view/pages/game_flow/create/create_solo_match__page.dart';
@@ -31,11 +28,6 @@ class Router {
         return MaterialPageRoute(
             settings: RouteSettings(name: introRoute),
             builder: (_) => IntroPage());
-
-      case signupRoute:
-        return MaterialPageRoute(
-            settings: RouteSettings(name: signupRoute),
-            builder: (_) => SignupPage());
 
       case loginRoute:
         return MaterialPageRoute(

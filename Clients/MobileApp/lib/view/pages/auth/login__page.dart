@@ -124,14 +124,6 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
           },
         ),
         BorderlessButtonComponent(
-          margin: EdgeInsets.only(top: 8.0),
-          text: Text(appLocale().auth_login__join_button,
-              style: appTheme().textTheme.button),
-          onPressed: () {
-            Navigator.popAndPushNamed(context, signupRoute);
-          },
-        ),
-        BorderlessButtonComponent(
           margin:
               EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
           text: Text(appLocale().auth__terms_button,
