@@ -17,5 +17,8 @@ urlpatterns = [
 
     # Other paths
     path('', default_views.welcome),
+    re_path(r'players/?/', player_views.players_bad_path),
+    re_path(r'games/?/', game_views.games_bad_path),
+    re_path(r'invites/?/', invite_views.invites_bad_path),
     re_path(r'$', default_views.bad_request),
 ]

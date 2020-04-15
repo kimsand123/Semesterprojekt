@@ -29,7 +29,7 @@ def bad_request(request):
     json_data = {
         'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
         'status': status.HTTP_400_BAD_REQUEST,
-        'error': 'You have requested a wrong path.',  # TODO mention all available paths
+        'error': 'You have requested a wrong path.',
         'available endpoints': default_url + 'players/, ' + default_url + 'games/, ' + default_url + 'invites/'
     }
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST)

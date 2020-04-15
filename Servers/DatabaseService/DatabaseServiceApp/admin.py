@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .sql_models import *
 
 
 class ChoiceInline(admin.TabularInline):
@@ -8,20 +8,20 @@ class ChoiceInline(admin.TabularInline):
 
 
 class ChoiceInlineTwo(admin.TabularInline):
-    model = GamePlayerGame
+    model = GamePlayerRound
     extra = 3
 
 
-class UserAdmin(admin.ModelAdmin):
+class PlayerAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Identifiers', {'fields': ['username', ]}),
         ('Personal info', {'fields': ['first_name', 'last_name', ]}),
         ('Contact info', {'fields': ['email', ]}),
-        ('Misc', {'fields': ['study_programme', 'score']}),
+        ('Misc', {'fields': ['study_programme', 'high_score']}),
     ]
-    list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'study_programme', 'score')
+    list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'study_programme', 'high_score')
     list_filter = ['study_programme']
-    search_fields = ['campus_id', 'first_name', 'last_name', 'email', 'study_programme', 'score']
+    search_fields = ['campus_id', 'first_name', 'last_name', 'email', 'study_programme', 'high_score']
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -34,11 +34,10 @@ class GameAdmin(admin.ModelAdmin):
     search_fields = ['id', 'match_name', 'question_duration']
 
 
-admin.site.register(Player, UserAdmin)
-admin.site.register(QuestionSetGame)
-admin.site.register(GamePlayerGame)
+admin.site.register(Player, PlayerAdmin)
+admin.site.register(GameQuestion)
+admin.site.register(GamePlayerRound)
 admin.site.register(Invite)
-admin.site.register(QuestionSet)
 admin.site.register(Question)
 admin.site.register(Answer)
 admin.site.register(Game, GameAdmin)

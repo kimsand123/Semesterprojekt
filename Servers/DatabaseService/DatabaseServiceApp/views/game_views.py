@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils import json
 
-from DatabaseServiceApp.models import Game
+from DatabaseServiceApp.sql_models import Game
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
@@ -34,6 +34,22 @@ def single_game(request, id):
         return __single_game_delete(request, id)
     else:
         return __bad_method(request, 'GET, PUT, DELETE')
+
+
+# Bad games path
+@api_view(all_methods)
+def games_bad_path(request):
+    print('** Bad request under Game: ' + request.get_raw_uri())
+    default_url = 'http://' + request.get_host() + '/games/'
+
+    json_data = {
+        'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
+        'status': status.HTTP_400_BAD_REQUEST,
+        'error': 'You have requested a wrong path.',
+        'available game endpoints': default_url + ', ' + default_url + 'id/',
+        'helper':'Maybe you have forgotten a slash ?'
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST)
 
 
 """
