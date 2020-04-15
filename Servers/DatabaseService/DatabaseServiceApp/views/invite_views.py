@@ -1,10 +1,8 @@
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import JsonResponse
-from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework.utils import json
 
+from DatabaseServiceApp.helper_methods import *
 from DatabaseServiceApp.sql_models import Invite
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
@@ -19,6 +17,7 @@ def invites(request):
 
     elif request.method == 'POST':
         return __invites_post(request)
+
     else:
         return __bad_method(request, 'GET, POST')
 
@@ -28,10 +27,13 @@ def invites(request):
 def single_invite(request, id):
     if request.method == 'GET':
         return __single_invite_get(request, id)
+
     elif request.method == 'PUT':
         return __single_invite_put(request, id)
+
     elif request.method == 'DELETE':
         return __single_invite_delete(request, id)
+
     else:
         return __bad_method(request, 'GET, PUT, DELETE')
 
@@ -39,7 +41,8 @@ def single_invite(request, id):
 # Bad invite path
 @api_view(all_methods)
 def invites_bad_path(request):
-    print('** Bad request under Invite: ' + request.get_raw_uri())
+    print_origin(request, 'Invites - Bad path')
+
     default_url = 'http://' + request.get_host() + '/invites/'
 
     json_data = {
@@ -47,9 +50,10 @@ def invites_bad_path(request):
         'status': status.HTTP_400_BAD_REQUEST,
         'error': 'You have requested a wrong path.',
         'available invite endpoints': default_url + ', ' + default_url + 'id/',
-        'helper':'Maybe you have forgotten a slash ?'
+        'helper': 'Maybe you have forgotten a slash ?'
     }
-    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+
 
 """
 -----------------------------
@@ -58,34 +62,44 @@ METHOD IMPLEMENTATIONS
 """
 
 
+# -----------------------------
+# Bad method
+# -----------------------------
 def __bad_method(request, allowed_methods):
-    print('** Invites -Bad method-: ' + request.get_raw_uri())
+    print_origin(request, 'Invites - Bad method')
     json_data = {
         'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
         'status': status.HTTP_405_METHOD_NOT_ALLOWED,
         'error': 'This method is not allowed here',
         'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, content_type='application/json')
 
 
+# -----------------------------
+# Invites GET
+# -----------------------------
 def __invites_get(request):
-    print('** Invites [GET]: ' + request.get_raw_uri())
+    print_origin(request, 'Invites')
 
     query_set = Invite.objects.all().values()
     object_data = json.dumps(list(query_set), ensure_ascii=False, cls=DjangoJSONEncoder)
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'invites': json.loads(object_data),
-        'message': 'This is a dummy response'
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
+        'invites': json.loads(object_data)
+
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
 
 
+# -----------------------------
+# Invites POST
+# -----------------------------
 def __invites_post(request):
-    print('** Invites [POST]: ' + request.get_raw_uri())
+    print_origin(request, 'Invites')
 
     json_dict = dict(json.loads(request.body))
 
@@ -96,14 +110,17 @@ def __invites_post(request):
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'message': 'This is a dummy response',
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
 
 
+# -----------------------------
+# Single invite GET
+# -----------------------------
 def __single_invite_get(request, id):
-    print('** Single invite [GET]: ' + request.get_raw_uri())
+    print_origin(request, 'Single invite')
 
     query_set = Invite.objects.all().filter(id=id).values()
     single_object = list(query_set)[0]
@@ -113,30 +130,35 @@ def __single_invite_get(request, id):
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'invite': json.loads(object_data),
-        'message': 'This is a dummy response',
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
 
 
+# -----------------------------
+# Single invite PUT
+# -----------------------------
 def __single_invite_put(request, id):
-    print('** Single invite [PUT]: ' + request.get_raw_uri())
+    print_origin(request, 'Single invite')
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'message': 'This is a dummy response',
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
 
 
+# -----------------------------
+# Single invite DELETE
+# -----------------------------
 def __single_invite_delete(request, id):
-    print('** Single invite [DELETE]: ' + request.get_raw_uri())
+    print_origin(request, 'Single invite')
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'message': 'This is a dummy response',
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')

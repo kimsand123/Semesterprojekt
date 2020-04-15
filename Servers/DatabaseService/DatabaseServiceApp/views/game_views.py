@@ -1,10 +1,8 @@
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import JsonResponse
-from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework.utils import json
 
+from DatabaseServiceApp.helper_methods import *
 from DatabaseServiceApp.sql_models import Game
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
@@ -39,7 +37,7 @@ def single_game(request, id):
 # Bad games path
 @api_view(all_methods)
 def games_bad_path(request):
-    print('** Bad request under Game: ' + request.get_raw_uri())
+    print_origin(request, 'Games - Bad request')
     default_url = 'http://' + request.get_host() + '/games/'
 
     json_data = {
@@ -47,9 +45,9 @@ def games_bad_path(request):
         'status': status.HTTP_400_BAD_REQUEST,
         'error': 'You have requested a wrong path.',
         'available game endpoints': default_url + ', ' + default_url + 'id/',
-        'helper':'Maybe you have forgotten a slash ?'
+        'helper': 'Maybe you have forgotten a slash ?'
     }
-    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
 
 
 """
@@ -59,44 +57,57 @@ METHOD IMPLEMENTATIONS
 """
 
 
+# -----------------------------
+# Bad method
+# -----------------------------
 def __bad_method(request, allowed_methods):
-    print('** Games -Bad method-: ' + request.get_raw_uri())
+    print_origin(request, 'Games - Bad method')
     json_data = {
         'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
         'status': status.HTTP_405_METHOD_NOT_ALLOWED,
         'error': 'This method is not allowed here',
         'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, content_type='application/json')
 
 
+# -----------------------------
+# Games GET
+# -----------------------------
 def __games_get(request):
-    print('** Games [GET]: ' + request.get_raw_uri())
+    print_origin(request, 'Games')
 
     query_set = Game.objects.all().values()
     object_data = json.dumps(list(query_set), ensure_ascii=False, cls=DjangoJSONEncoder)
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
         'games': json.loads(object_data)
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
 
 
+# -----------------------------
+# Games POST
+# -----------------------------
 def __games_post(request):
-    print('** Games [POST]: ' + request.get_raw_uri())
+    print_origin(request, 'Games')
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'message': 'This is a dummy response'
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
 
 
+# -----------------------------
+# Single game GET
+# -----------------------------
 def __single_game_get(request, id):
-    print('** Single Game [GET]: ' + request.get_raw_uri())
+    print_origin(request, 'Single game')
 
     query_set = Game.objects.all().filter(id=id).values()
     single_object = list(query_set)[0]
@@ -106,29 +117,36 @@ def __single_game_get(request, id):
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
         'game': json.loads(object_data)
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
 
 
+# -----------------------------
+# Single game PUT
+# -----------------------------
 def __single_game_put(request, id):
-    print('** Single Game [PUT]: ' + request.get_raw_uri())
+    print_origin(request, 'Single game')
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'message': 'This is a dummy response'
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
 
 
+# -----------------------------
+# Single game DELETE
+# -----------------------------
 def __single_game_delete(request, id):
-    print('** Single Game [DELETE]: ' + request.get_raw_uri())
+    print_origin(request, 'Single game')
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'message': 'This is a dummy response'
+        'status': status.HTTP_501_NOT_IMPLEMENTED,
+        'message': 'This is not implemented yet',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK)
+    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
