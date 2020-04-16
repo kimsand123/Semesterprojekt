@@ -1,55 +1,81 @@
 from json import JSONDecodeError
+
+from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework.utils import json
 
+from DatabaseServiceApp.database_helpers.player_database_helper import *
 from DatabaseServiceApp.helper_methods import *
+from DatabaseServiceApp.serializers import PlayerSerializer
 from DatabaseServiceApp.sql_models import Player
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
 
-correct_player_json = '' + \
-                      '{' + \
-                      ' "player": ' + \
-                      '{' + \
-                      '"username": "s123456",' + \
-                      '"email":"s123456@student.dtu.dk",' + \
-                      '"first_name":"Torben",' + \
-                      '"last_name":"Test",' + \
-                      '"study_programme":"Software technology",' + \
-                      '"high_score":2000' + \
-                      '}' + \
-                      '}'
+correct_player_json = {'player': {'username': 's123456'}}.__str__()
 
 
 # path: /players/
 @api_view(all_methods)
 def players(request):
-    if request.method == 'GET':
-        return __players_get(request)
+    try:
+        if request.method == 'GET':
+            return __players_get(request)
 
-    elif request.method == 'POST':
-        return __players_post(request)
-    else:
-        return __bad_method(request, 'GET, POST')
+        elif request.method == 'POST':
+            return __players_post(request)
+        else:
+            return __bad_method(request, 'GET, POST')
+
+    except JSONDecodeError:
+        return bad_json(request, 'player', correct_player_json)
+
+    except IntegrityError as e:
+        print('Error occurred: ' + e.__str__())
+        json_data = {
+            'url': '[' + request.method + '] ' + request.get_raw_uri(),
+            'status': status.HTTP_409_CONFLICT,
+            'error': e.__str__(),
+        }
+        return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
 
 
 # path: /players/<int:player_id>/
 @api_view(all_methods)
 def single_player(request, player_id):
-    if request.method == 'GET':
-        return __single_player_get(request, player_id)
+    try:
+        if request.method == 'GET':
+            return __single_player_get(request, player_id)
 
-    elif request.method == 'PUT':
-        return __single_player_put(request, player_id)
+        elif request.method == 'PUT':
+            return __single_player_put(request, player_id)
 
-    elif request.method == 'DELETE':
-        return __single_player_delete(request, player_id)
+        elif request.method == 'DELETE':
+            return __single_player_delete(request, player_id)
 
-    else:
-        return __bad_method(request, 'GET, PUT, DELETE')
+        else:
+            return __bad_method(request, 'GET, PUT, DELETE')
+
+    except JSONDecodeError:
+        return bad_json(request, 'player', correct_player_json)
+
+    except IntegrityError as e:
+        json_data = {
+            'url': '[' + request.method + '] ' + request.get_raw_uri(),
+            'status': status.HTTP_404_NOT_FOUND,
+            'error': e.__str__(),
+        }
+        return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
+
+    except (Player.DoesNotExist, IndexError):
+        json_data = {
+            'url': '[' + request.method + '] ' + request.get_raw_uri(),
+            'status': status.HTTP_404_NOT_FOUND,
+            'error': 'The player with id:\'' + player_id + '\' is not in the database',
+        }
+        return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
 
 
 # Bad player path
@@ -95,13 +121,14 @@ def __bad_method(request, allowed_methods):
 def __players_get(request):
     print_origin(request, 'Players')
 
-    query_set = Player.objects.all().values()
-    object_data = json.dumps(list(query_set), ensure_ascii=False, cls=DjangoJSONEncoder)
+    players_query = player_database_get_all()
+    serializer = PlayerSerializer()
+    return_data = json.loads(serializer.serialize(players_query).__str__())
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
         'status': status.HTTP_200_OK,
-        'players': json.loads(object_data)
+        'players': return_data,
     }
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
 
@@ -112,78 +139,28 @@ def __players_get(request):
 def __players_post(request):
     print_origin(request, 'Players')
 
-    try:
-        json_body = json.loads(request.body)
+    json_body = json.loads(request.body)
 
-        # Early exit on missing player in json
-        if not is_key_in_dict(json_body, 'player'):
-            return bad_json(request, 'player', correct_player_json)
+    # Get database response, and if it returns a string, send a missing property json back
+    database_response = player_database_create(json_body)
+    if isinstance(database_response, str):
+        return missing_property_in_json(request, database_response, correct_player_json)
 
-        json_user = json_body['player']
+    # Serialize the object
+    serializer = PlayerSerializer()
+    serialize_object = json.loads(serializer.serialize([database_response]).__str__())
 
-        # Check for required attributes in the player object
-        if not is_key_in_dict(json_user, 'username'):
-            return missing_property_in_json(request, 'username', correct_player_json)
-        elif not is_key_in_dict(json_user, 'email'):
-            return missing_property_in_json(request, 'email', correct_player_json)
-        elif not is_key_in_dict(json_user, 'first_name'):
-            return missing_property_in_json(request, 'first_name', correct_player_json)
-        elif not is_key_in_dict(json_user, 'last_name'):
-            return missing_property_in_json(request, 'last_name', correct_player_json)
-        elif not is_key_in_dict(json_user, 'study_programme'):
-            return missing_property_in_json(request, 'study_programme', correct_player_json)
+    return_data = serialize_object[0]
 
-        # Type check before saving to database
-        if not isinstance(json_user['username'], str):
-            return wrong_property_type(request, 'username', 'string')
-        elif not isinstance(json_user['email'], str):
-            return wrong_property_type(request, 'email', 'string')
-        elif not isinstance(json_user['first_name'], str):
-            return wrong_property_type(request, 'first_name', 'string')
-        elif not isinstance(json_user['last_name'], str):
-            return wrong_property_type(request, 'last_name', 'string')
-        elif not isinstance(json_user['study_programme'], str):
-            return wrong_property_type(request, 'study_programme', 'string')
-
-        # Check if high_score is in the json_user
-        if is_key_in_dict(json_user, 'high_score'):
-            # Type check high_score
-            if not isinstance(json_user['high_score'], int):
-                return wrong_property_type(request, 'high_score', 'int')
-
-            # Save the object in database
-            player = Player(username=json_user['username'], email=json_user['email'],
-                            first_name=json_user['first_name'], last_name=json_user['last_name'],
-                            study_programme=json_user['study_programme'], high_score=json_user['high_score'])
-            player.save()
-
-        else:
-            # Save the object in database
-            player = Player(username=json_user['username'], email=json_user['email'],
-                            first_name=json_user['first_name'], last_name=json_user['last_name'],
-                            study_programme=json_user['study_programme'])
-            player.save()
-
-        # Remove '_state' key/value
-        player.__dict__.__delitem__('_state')
-
-        object_data = json.dumps(player.__dict__, ensure_ascii=False, cls=DjangoJSONEncoder)
-
-        # Prepare jsonResponse data
-        json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_200_OK,
-            'message': 'You have posted a new user',
-            'player': json.loads(object_data),
-        }
-        return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
-                            content_type='application/json')
-
-    except JSONDecodeError:
-        return bad_json(request, 'player', correct_player_json)
-    except IntegrityError as e:
-        print(e)
-        return JsonResponse(data=e.__str__(), safe=False, status=status.HTTP_409_CONFLICT)
+    # Prepare jsonResponse data
+    json_data = {
+        'url': '[' + request.method + '] ' + request.get_raw_uri(),
+        'status': status.HTTP_200_OK,
+        'message': 'You have posted a new user',
+        'player': return_data
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
+                        content_type='application/json')
 
 
 # -----------------------------
@@ -192,30 +169,19 @@ def __players_post(request):
 def __single_player_get(request, player_id):
     print_origin(request, 'Single player')
 
-    try:
-        if str(player_id).isdigit():
-            player = Player.objects.get(id=player_id)
-            player.__dict__.__delitem__('_state')
-        else:
-            player = Player.objects.get(username=player_id)
-            player.__dict__.__delitem__('_state')
+    player_query = player_database_get_one(player_id)
 
-        object_data = json.dumps(player.__dict__, ensure_ascii=False, cls=DjangoJSONEncoder)
+    serializer = PlayerSerializer()
+    serialize_object = json.loads(serializer.serialize([player_query]).__str__())
 
-        json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_200_OK,
-            'player': json.loads(object_data)
-        }
-        return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
+    return_data = serialize_object[0]
 
-    except Player.DoesNotExist:
-        json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_404_NOT_FOUND,
-            'error': 'The player with id:\'' + player_id + '\' is not in the database',
-        }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
+    json_data = {
+        'url': '[' + request.method + '] ' + request.get_raw_uri(),
+        'status': status.HTTP_200_OK,
+        'player': return_data
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
 
 
 # -----------------------------
@@ -223,87 +189,29 @@ def __single_player_get(request, player_id):
 # -----------------------------
 def __single_player_put(request, player_id):
     print_origin(request, 'Single player')
-    try:
-        try:
-            if str(player_id).isdigit():
-                player = Player.objects.get(id=player_id)
-            else:
-                player = Player.objects.get(username=player_id)
 
-            json_body = json.loads(request.body)
+    json_body = json.loads(request.body)
 
-            # Early exit on missing player in json
-            if not is_key_in_dict(json_body, 'player'):
-                return bad_json(request, 'player', correct_player_json)
+    # Get database response, and if it returns a string, send a missing property json back
+    database_response = player_database_update(json_body, player_id)
+    if isinstance(database_response, str):
+        return missing_property_in_json(request, database_response, correct_player_json)
 
-            json_user = json_body['player']
+    # Serialize the object
+    serializer = PlayerSerializer()
+    serialize_object = json.loads(serializer.serialize([database_response]).__str__())
 
-            # Check for required attributes in the player object
-            # Type check before saving to object
-            if is_key_in_dict(json_user, 'username'):
-                if not isinstance(json_user['username'], str):
-                    return wrong_property_type(request, 'username', 'string')
-                else:
-                    player.username = json_user['username']
+    return_data = serialize_object[0]
 
-            if is_key_in_dict(json_user, 'email'):
-                if not isinstance(json_user['email'], str):
-                    return wrong_property_type(request, 'email', 'string')
-                else:
-                    player.email = json_user['email']
-
-            if is_key_in_dict(json_user, 'first_name'):
-                if not isinstance(json_user['first_name'], str):
-                    return wrong_property_type(request, 'first_name', 'string')
-                else:
-                    player.first_name = json_user['first_name']
-
-            if is_key_in_dict(json_user, 'last_name'):
-                if not isinstance(json_user['last_name'], str):
-                    return wrong_property_type(request, 'last_name', 'string')
-                else:
-                    player.last_name = json_user['last_name']
-
-            if is_key_in_dict(json_user, 'study_programme'):
-                if not isinstance(json_user['study_programme'], str):
-                    return wrong_property_type(request, 'study_programme', 'string')
-                else:
-                    player.study_programme = json_user['study_programme']
-
-            if is_key_in_dict(json_user, 'high_score'):
-                if not isinstance(json_user['high_score'], int):
-                    return wrong_property_type(request, 'high_score', 'int')
-                else:
-                    player.high_score = json_user['high_score']
-
-            # Save changed object to database
-            player.save()
-
-            # Remove '_state' key/value
-            player.__dict__.__delitem__('_state')
-
-            # Prepare jsonResponse data
-            json_data = {
-                'url': '[' + request.method + '] ' + request.get_raw_uri(),
-                'status': status.HTTP_200_OK,
-                'message': 'You have changed user with id: \'' + player_id + '\'',
-                'player': str(player.__dict__),
-            }
-            return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
-                                content_type='application/json')
-        except JSONDecodeError:
-            return bad_json(request, 'player', correct_player_json)
-        except IntegrityError as e:
-            print(e)
-            return JsonResponse(data=e.__str__(), safe=False, status=status.HTTP_409_CONFLICT)
-
-    except Player.DoesNotExist:
-        json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_404_NOT_FOUND,
-            'error': 'The player with id:\'' + player_id + '\' is not in the database',
-        }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
+    # Prepare jsonResponse data
+    json_data = {
+        'url': '[' + request.method + '] ' + request.get_raw_uri(),
+        'status': status.HTTP_200_OK,
+        'message': 'You have changed user with id: \'' + player_id + '\'',
+        'player': return_data,
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
+                        content_type='application/json')
 
 
 # -----------------------------
@@ -312,23 +220,16 @@ def __single_player_put(request, player_id):
 def __single_player_delete(request, player_id):
     print_origin(request, 'Single player')
 
-    try:
-        if str(player_id).isdigit():
-            Player.objects.filter(id=player_id).delete()
-        else:
-            Player.objects.filter(username=player_id).delete()
+    players_deleted = player_database_delete(player_id)
 
-        json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'message': 'Player with id:\'' + player_id + '\' was deleted',
-            'status': status.HTTP_202_ACCEPTED,
-        }
-        return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, content_type='application/json')
+    serializer = PlayerSerializer()
+    serialize_object = json.loads(serializer.serialize([players_deleted]).__str__())
 
-    except IndexError:
-        json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_404_NOT_FOUND,
-            'error': 'The player with id:\'' + player_id + '\' is not in the database',
-        }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
+    return_data = serialize_object[0]
+
+    json_data = {
+        'url': '[' + request.method + '] ' + request.get_raw_uri(),
+        'status': status.HTTP_202_ACCEPTED,
+        'deleted_player': return_data
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, content_type='application/json')

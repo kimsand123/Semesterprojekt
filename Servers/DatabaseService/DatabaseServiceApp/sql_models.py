@@ -1,4 +1,8 @@
+import json
+
 from django.db import models
+
+from DatabaseServiceApp.helper_methods import is_key_in_dict
 
 """
 ***************************
@@ -23,6 +27,27 @@ class Player(models.Model):
                str(self.username) + ', ' + \
                str(self.first_name) + ', ' + \
                str(self.last_name[:1]) + '.)'
+
+    def from__dict(self, player_dict):
+        if is_key_in_dict(player_dict, 'username'):
+            self.username = player_dict['username']
+
+        if is_key_in_dict(player_dict, 'email'):
+            self.email = player_dict['email']
+
+        if is_key_in_dict(player_dict, 'first_name'):
+            self.first_name = player_dict['first_name']
+
+        if is_key_in_dict(player_dict, 'last_name'):
+            self.last_name = player_dict['last_name']
+
+        if is_key_in_dict(player_dict, 'study_programme'):
+            self.study_programme = player_dict['study_programme']
+
+        if is_key_in_dict(player_dict, 'high_score'):
+            self.high_score = player_dict['high_score']
+
+        return self
 
 
 # ***
