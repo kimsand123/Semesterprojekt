@@ -15,12 +15,13 @@ def is_key_in_dict(dictionary, key):
 # -----------------------------
 # Bad json
 # -----------------------------
-def bad_json(request, json_object, proper_way):
+def bad_json(request, json_object, proper_way_dict):
     json_data = {
         'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
         'status': status.HTTP_400_BAD_REQUEST,
         'error': 'Your json is badly formatted',
-        'helper': 'You should format the ' + json_object + ' like this: ' + proper_way,
+        'helper': 'See the key \'correct-form\' to get help',
+        'correct-form': proper_way_dict
     }
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, content_type='application/json')
 

@@ -1,6 +1,5 @@
 from json import JSONDecodeError
 
-from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
@@ -14,7 +13,15 @@ from DatabaseServiceApp.sql_models import Player
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
 
-correct_player_json = {'player': {'username': 's123456'}}.__str__()
+__correct_player_json = {'player':
+                           {
+                               'username': 's123456',
+                               'email': 's123456@student.dtu.dk',
+                               'first_name': 'Søren',
+                               'last_name': 'Træsko',
+                               'study_programme': 'Software technology',
+                               'high_score': 's123456',
+                            }}
 
 
 # path: /players/
@@ -30,7 +37,7 @@ def players(request):
             return __bad_method(request, 'GET, POST')
 
     except JSONDecodeError:
-        return bad_json(request, 'player', correct_player_json)
+        return bad_json(request, 'player', __correct_player_json)
 
     except IntegrityError as e:
         print('Error occurred: ' + e.__str__())
@@ -59,7 +66,7 @@ def single_player(request, player_id):
             return __bad_method(request, 'GET, PUT, DELETE')
 
     except JSONDecodeError:
-        return bad_json(request, 'player', correct_player_json)
+        return bad_json(request, 'player', __correct_player_json)
 
     except IntegrityError as e:
         json_data = {
@@ -144,7 +151,7 @@ def __players_post(request):
     # Get database response, and if it returns a string, send a missing property json back
     database_response = player_database_create(json_body)
     if isinstance(database_response, str):
-        return missing_property_in_json(request, database_response, correct_player_json)
+        return missing_property_in_json(request, database_response, __correct_player_json)
 
     # Serialize the object
     serializer = PlayerSerializer()
@@ -195,7 +202,7 @@ def __single_player_put(request, player_id):
     # Get database response, and if it returns a string, send a missing property json back
     database_response = player_database_update(json_body, player_id)
     if isinstance(database_response, str):
-        return missing_property_in_json(request, database_response, correct_player_json)
+        return missing_property_in_json(request, database_response, __correct_player_json)
 
     # Serialize the object
     serializer = PlayerSerializer()

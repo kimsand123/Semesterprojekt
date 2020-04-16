@@ -16,7 +16,19 @@ class PlayerSerializer(Serializer):
         return mapped_object
 
 
-class Game(Serializer):
+class InviteSerializer(Serializer):
+    def get_dump_object(self, obj):
+        mapped_object = {
+            'sender_player_id': obj.sender_player_id,
+            'receiver_player_id': obj.receiver_player_id,
+            'game_id': obj.game_id,
+            'accepted': obj.accepted,
+        }
+
+        return mapped_object
+
+
+class GameSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
             'id': obj.id,
@@ -27,7 +39,7 @@ class Game(Serializer):
         return mapped_object
 
 
-class GamePlayer(Serializer):
+class GamePlayerSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
             'id': obj.id,
@@ -39,7 +51,7 @@ class GamePlayer(Serializer):
         return mapped_object
 
 
-class GameRound(Serializer):
+class GameRoundSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
             'id': obj.id,
@@ -49,7 +61,7 @@ class GameRound(Serializer):
 
         return mapped_object
 
-class GamePlayerRound(Serializer):
+class GamePlayerRoundSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
             'id': obj.id,
@@ -61,7 +73,7 @@ class GamePlayerRound(Serializer):
         return mapped_object
 
 
-class GameQuestion(Serializer):
+class GameQuestionSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
             'id': obj.id,
@@ -71,7 +83,7 @@ class GameQuestion(Serializer):
 
         return mapped_object
 
-class RestGame(Serializer):
+class RestGameSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
             'match_name': obj.match_name,

@@ -1,52 +1,87 @@
+from json import JSONDecodeError
+from sqlite3 import IntegrityError
+
 from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.decorators import api_view
 from rest_framework.utils import json
 
+from DatabaseServiceApp.database_helpers.invite_database_helper import invite_database_get_all
 from DatabaseServiceApp.helper_methods import *
-from DatabaseServiceApp.sql_models import Invite, Player, Game
+from DatabaseServiceApp.serializers import InviteSerializer
+from DatabaseServiceApp.sql_models import Invite, Game
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
 
-correct_invite_json = '' + \
-                      '{' + \
-                      ' "invite": ' + \
-                      '{' + \
-                      '"sender_player_id": 1,' + \
-                      '"receiver_player_id": 2,' + \
-                      '"game_id": 1,' + \
-                      '"accepted":false' + \
-                      '}' + \
-                      '}'
+__correct_invite_json = {'invite':
+    {
+        'sender_player_id': '1',
+        'receiver_player_id': '2',
+        'game_id': '1',
+        'accepted': 'false',
+    }}
 
 
 # path: /invites/
 @api_view(all_methods)
 def invites(request):
-    if request.method == 'GET':
-        return __invites_get(request)
+    try:
+        if request.method == 'GET':
+            return __invites_get(request)
 
-    elif request.method == 'POST':
-        return __invites_post(request)
+        elif request.method == 'POST':
+            return __invites_post(request)
 
-    else:
-        return __bad_method(request, 'GET, POST')
+        else:
+            return __bad_method(request, 'GET, POST')
+
+    except JSONDecodeError:
+        return bad_json(request, 'invite', __correct_invite_json)
+
+    except IntegrityError as e:
+        print('Error occurred: ' + e.__str__())
+        json_data = {
+            'url': '[' + request.method + '] ' + request.get_raw_uri(),
+            'status': status.HTTP_409_CONFLICT,
+            'error': e.__str__(),
+        }
+        return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
 
 
 # path: /invites/<int:user_id>/
 @api_view(all_methods)
 def single_invite(request, invite_id):
-    if request.method == 'GET':
-        return __single_invite_get(request, invite_id)
+    try:
+        if request.method == 'GET':
+            return __single_invite_get(request, invite_id)
 
-    elif request.method == 'PUT':
-        return __single_invite_put(request, invite_id)
+        elif request.method == 'PUT':
+            return __single_invite_put(request, invite_id)
 
-    elif request.method == 'DELETE':
-        return __single_invite_delete(request, invite_id)
+        elif request.method == 'DELETE':
+            return __single_invite_delete(request, invite_id)
 
-    else:
-        return __bad_method(request, 'GET, PUT, DELETE')
+        else:
+            return __bad_method(request, 'GET, PUT, DELETE')
+
+    except JSONDecodeError:
+        return bad_json(request, 'invite', __correct_invite_json)
+
+    except IntegrityError as e:
+        json_data = {
+            'url': '[' + request.method + '] ' + request.get_raw_uri(),
+            'status': status.HTTP_404_NOT_FOUND,
+            'error': e.__str__(),
+        }
+        return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
+
+    except (Invite.DoesNotExist, IndexError):
+        json_data = {
+            'url': '[' + request.method + '] ' + request.get_raw_uri(),
+            'status': status.HTTP_404_NOT_FOUND,
+            'error': 'The invite with id:\'' + invite_id + '\' is not in the database',
+        }
+        return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
 
 
 # Bad invite path
@@ -93,6 +128,18 @@ def __bad_method(request, allowed_methods):
 def __invites_get(request):
     print_origin(request, 'Invites')
 
+    invites_query = invite_database_get_all()
+    serializer = InviteSerializer()
+    return_data = json.loads(serializer.serialize(invites_query).__str__())
+
+    json_data = {
+        'url': '[' + request.method + '] ' + request.get_raw_uri(),
+        'status': status.HTTP_200_OK,
+        'invites': return_data,
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
+
+    """
     query_set = Invite.objects.all().values()
     list_of_objects = list(query_set)
 
@@ -125,6 +172,8 @@ def __invites_get(request):
         invite.__delitem__('game_id_id')
         invite['game'] = json.loads(json_game)
         # TODO: Add the whole item
+    
+
 
     object_data = json.dumps(list_of_objects, ensure_ascii=False, cls=DjangoJSONEncoder)
 
@@ -135,6 +184,7 @@ def __invites_get(request):
 
     }
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
+    """
 
 
 # -----------------------------
@@ -168,7 +218,7 @@ def __single_invite_get(request, id):
     invite = list(query_set)[0]
 
     # Get sender_player
-    sender_player = Player.objects.get(id=invite['sender_player_id_id']).__dict__
+    sender_player = Invite.objects.get(id=invite['sender_player_id_id']).__dict__
     sender_player.__delitem__('_state')
     json_sender_player = json.dumps(sender_player, ensure_ascii=False, cls=DjangoJSONEncoder)
 
@@ -177,7 +227,7 @@ def __single_invite_get(request, id):
     invite['sender_player'] = json.loads(json_sender_player)
 
     # Get sender_player
-    receiver_player = Player.objects.get(id=invite['receiver_player_id_id']).__dict__
+    receiver_player = Invite.objects.get(id=invite['receiver_player_id_id']).__dict__
     receiver_player.__delitem__('_state')
     json_receiver_player = json.dumps(receiver_player, ensure_ascii=False, cls=DjangoJSONEncoder)
 
