@@ -25,31 +25,6 @@ class Player(models.Model):
                str(self.last_name[:1]) + '.)'
 
 
-"""
-    def __dict__(self):
-        return {
-               "id": self.id,
-               "username": str(self.username),
-               "email": str(self.email),
-               "first_name": str(self.first_name),
-               "last_name": str(self.last_name),
-               "study_programme": str(self.study_programme),
-               "high_score": str(self.high_score),
-               }
-
-    def __json__(self):
-        return '{' + \
-               '"id":"' + str(self.id) + '", ' + \
-               '"username":"' + str(self.username) + '", ' + \
-               '"email":"' + str(self.email) + '", ' + \
-               '"first_name":"' + str(self.first_name) + '", ' + \
-               '"last_name":"' + str(self.last_name) + '", ' + \
-               '"study_programme":"' + str(self.study_programme) + '", ' + \
-               '"high_score":"' + str(self.high_score) + '", ' + \
-               '}'
-"""
-
-
 # ***
 # Game
 # ***

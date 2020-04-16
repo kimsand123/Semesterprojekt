@@ -41,10 +41,13 @@ def players(request):
 def single_player(request, player_id):
     if request.method == 'GET':
         return __single_player_get(request, player_id)
+
     elif request.method == 'PUT':
         return __single_player_put(request, player_id)
+
     elif request.method == 'DELETE':
         return __single_player_delete(request, player_id)
+
     else:
         return __bad_method(request, 'GET, PUT, DELETE')
 
@@ -164,12 +167,14 @@ def __players_post(request):
         # Remove '_state' key/value
         player.__dict__.__delitem__('_state')
 
+        object_data = json.dumps(player.__dict__, ensure_ascii=False, cls=DjangoJSONEncoder)
+
         # Prepare jsonResponse data
         json_data = {
             'url': '[' + request.method + '] ' + request.get_raw_uri(),
             'status': status.HTTP_200_OK,
             'message': 'You have posted a new user',
-            'player': str(player.__dict__),
+            'player': json.loads(object_data),
         }
         return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
                             content_type='application/json')
@@ -195,10 +200,12 @@ def __single_player_get(request, player_id):
             player = Player.objects.get(username=player_id)
             player.__dict__.__delitem__('_state')
 
+        object_data = json.dumps(player.__dict__, ensure_ascii=False, cls=DjangoJSONEncoder)
+
         json_data = {
             'url': '[' + request.method + '] ' + request.get_raw_uri(),
             'status': status.HTTP_200_OK,
-            'player': str(player.__dict__)
+            'player': json.loads(object_data)
         }
         return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
 
