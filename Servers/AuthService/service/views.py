@@ -63,15 +63,18 @@ def login(request):
 
         #Register user at gameservice and get gameservice ip and port
 
-        gameservice_ip, gameservice_port = registerUserWithGameService(AUTH_SERVICE_ACCESS_KEY, user_token, user)
+        print("user: " + str(user))
+
+        gameservice_ip, gameservice_port, player_id = registerUserWithGameService(AUTH_SERVICE_ACCESS_KEY, user_token, user)
 
         #If gameservice responds with proper data, return the userobject, usertoken and gameservice ip and port to client.
         if gameservice_ip != None:
             user['usertoken'] = user_token
             user['gameservice_ip'] = gameservice_ip
             user['gameservice_port'] = gameservice_port
+            user['player_id'] = player_id
             print("user: " + str(user))
-            print("user returned to client with token, ip and port " + str(time), file=logfile)
+            print("user returned to client with token, ip, port and player_id" + str(time), file=logfile)
             return Response(user, status=status.HTTP_200_OK)
         else:
             print("user not returned to client, could not register user with gameservice" + str(time), file=logfile)
@@ -90,10 +93,10 @@ def login(request):
 
 def registerUserWithGameService(service_key, user_token, user):
 
-    URL = "http://127.0.0.1:9700/players/registeruser"
+    URL = "http://127.0.0.1:9700/players/registeruser/"
     print("service_key: "+service_key)
     print("user_token: "+ user_token)
-    user_object =   {"username":user['brugernavn'],"first_name":user['fornavn'],"last_name":user['efternavn'],"email":user['email']}
+    user_object =   {"username":user['brugernavn'],"first_name":user['fornavn'],"last_name":user['efternavn'],"email":user['email'],"study_programme":user['studeretning']}
     print("userobject: "+ str(user_object))
 
     #user_object = User.objects.all()
@@ -108,8 +111,9 @@ def registerUserWithGameService(service_key, user_token, user):
         print("data: "+str(data))
         gameservice_ip = data['gameservice_ip']
         gameservice_port = data['gameservice_port']
+        player_id = data['player_id']
         #gameservice_ip = "192.168.1.1"
         #gameservice_port = "9700"
     except requests.ConnectionError as e:
         return None, None
-    return gameservice_ip, gameservice_port
+    return gameservice_ip, gameservice_port, player_id
