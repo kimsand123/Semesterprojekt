@@ -1,5 +1,5 @@
 from DatabaseServiceApp.helper_methods import is_key_in_dict
-from DatabaseServiceApp.sql_models import Game
+from DatabaseServiceApp.models import Game
 
 
 def game_database_get_all():

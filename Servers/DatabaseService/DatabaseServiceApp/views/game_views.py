@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.utils import json
 
 from DatabaseServiceApp.helper_methods import *
-from DatabaseServiceApp.sql_models import Game
+from DatabaseServiceApp.models import Game
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']

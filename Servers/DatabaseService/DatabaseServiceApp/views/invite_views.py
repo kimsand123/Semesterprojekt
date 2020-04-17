@@ -1,14 +1,13 @@
 from json import JSONDecodeError
-from sqlite3 import IntegrityError
 
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework.utils import json
 
-from DatabaseServiceApp.database_helpers.invite_database_helper import invite_database_get_all
+from DatabaseServiceApp.database_helpers.invite_database_helper import InviteDatabase
 from DatabaseServiceApp.helper_methods import *
-from DatabaseServiceApp.serializers import InviteSerializer
-from DatabaseServiceApp.sql_models import Invite, Game
+from DatabaseServiceApp.models import Invite, Game
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
@@ -47,6 +46,9 @@ def invites(request):
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
 
+    except AttributeError:
+        return bad_json(request, 'invite', __correct_invite_json)
+
 
 # path: /invites/<int:user_id>/
 @api_view(all_methods)
@@ -70,7 +72,7 @@ def single_invite(request, invite_id):
     except IntegrityError as e:
         json_data = {
             'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_404_NOT_FOUND,
+            'status': status.HTTP_409_CONFLICT,
             'error': e.__str__(),
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
@@ -82,6 +84,9 @@ def single_invite(request, invite_id):
             'error': 'The invite with id:\'' + invite_id + '\' is not in the database',
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
+
+    except AttributeError:
+        return bad_json(request, 'invite', __correct_invite_json)
 
 
 # Bad invite path
@@ -128,9 +133,7 @@ def __bad_method(request, allowed_methods):
 def __invites_get(request):
     print_origin(request, 'Invites')
 
-    invites_query = invite_database_get_all()
-    serializer = InviteSerializer()
-    return_data = json.loads(serializer.serialize(invites_query).__str__())
+    return_data = InviteDatabase.get_all_return_serialized()
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
@@ -139,53 +142,6 @@ def __invites_get(request):
     }
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
 
-    """
-    query_set = Invite.objects.all().values()
-    list_of_objects = list(query_set)
-
-    for invite in list_of_objects:
-        # Get sender_player
-        sender_player = Player.objects.get(id=invite['sender_player_id_id']).__dict__
-        sender_player.__delitem__('_state')
-        json_sender_player = json.dumps(sender_player, ensure_ascii=False, cls=DjangoJSONEncoder)
-
-        # Insert replacement for sender_player
-        invite.__delitem__('sender_player_id_id')
-        invite['sender_player'] = json.loads(json_sender_player)
-
-        # Get sender_player
-        receiver_player = Player.objects.get(id=invite['receiver_player_id_id']).__dict__
-        receiver_player.__delitem__('_state')
-        json_receiver_player = json.dumps(receiver_player, ensure_ascii=False, cls=DjangoJSONEncoder)
-
-        # Insert replacement for receiver_player
-        invite.__delitem__('receiver_player_id_id')
-        invite['receiver_player'] = json.loads(json_receiver_player)
-
-        # Get game
-        game = Game.objects.get(id=invite['game_id_id']).__dict__
-        game.__delitem__('_state')
-        game['todo'] = 'More of the object to come..'
-        json_game = json.dumps(game, ensure_ascii=False, cls=DjangoJSONEncoder)
-
-        # Insert replacement for game
-        invite.__delitem__('game_id_id')
-        invite['game'] = json.loads(json_game)
-        # TODO: Add the whole item
-    
-
-
-    object_data = json.dumps(list_of_objects, ensure_ascii=False, cls=DjangoJSONEncoder)
-
-    json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
-        'invites': json.loads(object_data)
-
-    }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
-    """
-
 
 # -----------------------------
 # Invites POST
@@ -193,65 +149,38 @@ def __invites_get(request):
 def __invites_post(request):
     print_origin(request, 'Invites')
 
-    json_dict = dict(json.loads(request.body))
+    json_dict = json.loads(request.body)
 
-    # TODO: Not working yet
-    invite = Invite(sender_player_id=json_dict['sender_player_id'], receiver_player_id=json_dict['receiver_player_id'],
-                    game_id=json_dict['game_id'], accepted=json_dict['accepted'])
-    invite.save()
+    # Create a database entry
+    return_data = InviteDatabase.create_return_serialized(json_dict)
 
+    # if it returns a string, send a missing property json back
+    if isinstance(return_data, str):
+        return missing_property_in_json(request, return_data, __correct_invite_json)
+
+    # Prepare jsonResponse data
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_501_NOT_IMPLEMENTED,
-        'message': 'This is not implemented yet',
+        'status': status.HTTP_201_CREATED,
+        'message': 'You have posted a new invite',
+        'invite': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
+                        content_type='application/json')
 
 
 # -----------------------------
 # Single invite GET
 # -----------------------------
-def __single_invite_get(request, id):
+def __single_invite_get(request, invite_id):
     print_origin(request, 'Single invite')
 
-    query_set = Invite.objects.all().filter(id=id).values()
-    invite = list(query_set)[0]
-
-    # Get sender_player
-    sender_player = Invite.objects.get(id=invite['sender_player_id_id']).__dict__
-    sender_player.__delitem__('_state')
-    json_sender_player = json.dumps(sender_player, ensure_ascii=False, cls=DjangoJSONEncoder)
-
-    # Insert replacement for sender_player
-    invite.__delitem__('sender_player_id_id')
-    invite['sender_player'] = json.loads(json_sender_player)
-
-    # Get sender_player
-    receiver_player = Invite.objects.get(id=invite['receiver_player_id_id']).__dict__
-    receiver_player.__delitem__('_state')
-    json_receiver_player = json.dumps(receiver_player, ensure_ascii=False, cls=DjangoJSONEncoder)
-
-    # Insert replacement for receiver_player
-    invite.__delitem__('receiver_player_id_id')
-    invite['receiver_player'] = json.loads(json_receiver_player)
-
-    # Get game
-    game = Game.objects.get(id=invite['game_id_id']).__dict__
-    game.__delitem__('_state')
-    game['todo'] = 'More of the object to come..'
-    json_game = json.dumps(game, ensure_ascii=False, cls=DjangoJSONEncoder)
-
-    # Insert replacement for game
-    invite.__delitem__('game_id_id')
-    invite['game'] = json.loads(json_game)
-    # TODO: Add the whole item
-
-    object_data = json.dumps(invite, ensure_ascii=False, cls=DjangoJSONEncoder)
+    return_data = InviteDatabase.get_one_return_serialized(invite_id)
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
         'status': status.HTTP_200_OK,
-        'invite': json.loads(object_data)
+        'invite': return_data
 
     }
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
@@ -260,26 +189,40 @@ def __single_invite_get(request, id):
 # -----------------------------
 # Single invite PUT
 # -----------------------------
-def __single_invite_put(request, id):
+def __single_invite_put(request, invite_id):
     print_origin(request, 'Single invite')
 
+    json_body = json.loads(request.body)
+
+    # Update a database entry
+    return_data = InviteDatabase.update_return_serialized(json_body, invite_id)
+
+    # if it returns a string, send a missing property json back
+    if isinstance(return_data, str):
+        return missing_property_in_json(request, return_data, __correct_invite_json)
+
+    # Prepare jsonResponse data
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_501_NOT_IMPLEMENTED,
-        'message': 'This is not implemented yet',
+        'status': status.HTTP_202_ACCEPTED,
+        'message': 'You have changed the invite with id: \'' + invite_id + '\'',
+        'player': return_data,
     }
-    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=True, encoder=DjangoJSONEncoder,
+                        content_type='application/json')
 
 
 # -----------------------------
 # Single invite DELETE
 # -----------------------------
-def __single_invite_delete(request, id):
+def __single_invite_delete(request, invite_id):
     print_origin(request, 'Single invite')
+
+    return_data = InviteDatabase.delete_return_serialized(invite_id)
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_501_NOT_IMPLEMENTED,
-        'message': 'This is not implemented yet',
+        'status': status.HTTP_202_ACCEPTED,
+        'deleted_invite': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_501_NOT_IMPLEMENTED, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, content_type='application/json')

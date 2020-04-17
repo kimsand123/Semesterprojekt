@@ -8,7 +8,7 @@ from rest_framework.utils import json
 from DatabaseServiceApp.database_helpers.player_database_helper import *
 from DatabaseServiceApp.helper_methods import *
 from DatabaseServiceApp.serializers import PlayerSerializer
-from DatabaseServiceApp.sql_models import Player
+from DatabaseServiceApp.models import Player
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
@@ -48,6 +48,9 @@ def players(request):
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
 
+    except AttributeError:
+        return bad_json(request, 'player', __correct_player_json)
+
 
 # path: /players/<int:player_id>/
 @api_view(all_methods)
@@ -71,7 +74,7 @@ def single_player(request, player_id):
     except IntegrityError as e:
         json_data = {
             'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_404_NOT_FOUND,
+            'status': status.HTTP_409_CONFLICT,
             'error': e.__str__(),
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
@@ -83,6 +86,9 @@ def single_player(request, player_id):
             'error': 'The player with id:\'' + player_id + '\' is not in the database',
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
+
+    except AttributeError:
+        return bad_json(request, 'player', __correct_player_json)
 
 
 # Bad player path
@@ -128,9 +134,7 @@ def __bad_method(request, allowed_methods):
 def __players_get(request):
     print_origin(request, 'Players')
 
-    players_query = player_database_get_all()
-    serializer = PlayerSerializer()
-    return_data = json.loads(serializer.serialize(players_query).__str__())
+    return_data = PlayerDatabase.get_all_return_serialized()
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
@@ -148,21 +152,17 @@ def __players_post(request):
 
     json_body = json.loads(request.body)
 
-    # Get database response, and if it returns a string, send a missing property json back
-    database_response = player_database_create(json_body)
-    if isinstance(database_response, str):
-        return missing_property_in_json(request, database_response, __correct_player_json)
+    # Create a database entry
+    return_data = PlayerDatabase.create_return_serialized(json_body)
 
-    # Serialize the object
-    serializer = PlayerSerializer()
-    serialize_object = json.loads(serializer.serialize([database_response]).__str__())
-
-    return_data = serialize_object[0]
+    # if it returns a string, send a missing property json back
+    if isinstance(return_data, str):
+        return missing_property_in_json(request, return_data, __correct_player_json)
 
     # Prepare jsonResponse data
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
+        'status': status.HTTP_201_CREATED,
         'message': 'You have posted a new user',
         'player': return_data
     }
@@ -176,12 +176,7 @@ def __players_post(request):
 def __single_player_get(request, player_id):
     print_origin(request, 'Single player')
 
-    player_query = player_database_get_one(player_id)
-
-    serializer = PlayerSerializer()
-    serialize_object = json.loads(serializer.serialize([player_query]).__str__())
-
-    return_data = serialize_object[0]
+    return_data = PlayerDatabase.get_one_return_serialized(player_id)
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
@@ -199,25 +194,21 @@ def __single_player_put(request, player_id):
 
     json_body = json.loads(request.body)
 
-    # Get database response, and if it returns a string, send a missing property json back
-    database_response = player_database_update(json_body, player_id)
-    if isinstance(database_response, str):
-        return missing_property_in_json(request, database_response, __correct_player_json)
+    # Update a database entry
+    return_data = PlayerDatabase.update_return_serialized(json_body, player_id)
 
-    # Serialize the object
-    serializer = PlayerSerializer()
-    serialize_object = json.loads(serializer.serialize([database_response]).__str__())
-
-    return_data = serialize_object[0]
+    # if it returns a string, send a missing property json back
+    if isinstance(return_data, str):
+        return missing_property_in_json(request, return_data, __correct_player_json)
 
     # Prepare jsonResponse data
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
+        'status': status.HTTP_202_ACCEPTED,
         'message': 'You have changed user with id: \'' + player_id + '\'',
         'player': return_data,
     }
-    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=True, encoder=DjangoJSONEncoder,
                         content_type='application/json')
 
 
@@ -227,12 +218,7 @@ def __single_player_put(request, player_id):
 def __single_player_delete(request, player_id):
     print_origin(request, 'Single player')
 
-    players_deleted = player_database_delete(player_id)
-
-    serializer = PlayerSerializer()
-    serialize_object = json.loads(serializer.serialize([players_deleted]).__str__())
-
-    return_data = serialize_object[0]
+    return_data = PlayerDatabase.delete_return_serialized(player_id)
 
     json_data = {
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
@@ -240,3 +226,4 @@ def __single_player_delete(request, player_id):
         'deleted_player': return_data
     }
     return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, content_type='application/json')
+

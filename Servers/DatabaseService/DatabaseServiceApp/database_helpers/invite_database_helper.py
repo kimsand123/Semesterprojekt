@@ -1,74 +1,163 @@
+import json
+
 from DatabaseServiceApp.helper_methods import is_key_in_dict
-from DatabaseServiceApp.sql_models import Invite
+from DatabaseServiceApp.serializers import InviteSerializer
+from DatabaseServiceApp.models import Invite
 
 
-def invite_database_get_all():
-    return Invite.objects.all()
+class InviteDatabase:
+    # -----------
+    #   Get all
+    # -----------
+    @staticmethod
+    def get_all():
+        invite_query = Invite.objects.all()
+        return invite_query
 
+    @staticmethod
+    def get_all_return_serialized():
+        invite_query = InviteDatabase.get_all()
+        serializer = InviteSerializer()
+        return_data = json.loads(serializer.serialize(invite_query).__str__())
+        return return_data
 
-def invite_database_get_one(invite_id):
-    return Invite.objects.get(id=invite_id)
+    # -----------
+    #   Get one
+    # -----------
+    @staticmethod
+    def get_one(invite_id):
+        invite_query = Invite.objects.get(id=invite_id)
+        return invite_query
 
+    @staticmethod
+    def get_one_return_serialized(invite_id):
 
-def invite_database_create(json_body):
-    # Early exit on missing invite in json
-    if not is_key_in_dict(json_body, 'invite'):
-        return 'invite'
+        invite_query = InviteDatabase.get_one(invite_id)
 
-    json_user = json_body['invite']
+        serializer = InviteSerializer()
+        serialize_object = json.loads(serializer.serialize([invite_query]).__str__())
 
-    # Check for required attributes in the invite object
-    if not is_key_in_dict(json_user, 'sender_player_id'):
-        return 'sender_player_id'
-    elif not is_key_in_dict(json_user, 'receiver_player_id'):
-        return 'receiver_player_id'
-    elif not is_key_in_dict(json_user, 'game_id'):
-        return 'game_id'
+        return_data = serialize_object[0]
 
-    if is_key_in_dict(json_user, 'accepted'):
-        # Save the object in database
-        invite = Invite(sender_player_id=json_user['sender_player_id'],
-                        receiver_player_id=json_user['receiver_player_id'],
-                        game_id=json_user['game_id'],
-                        accepted=json_user['accepted'])
-    else:
-        # Save the object in database
-        invite = Invite(sender_player_id=json_user['sender_player_id'],
-                        receiver_player_id=json_user['receiver_player_id'],
-                        game_id=json_user['game_id'])
-    invite.save()
+        return return_data
 
-    return invite
+    # -----------
+    #   Create one
+    # -----------
+    @staticmethod
+    def create(json_body):
+        # Early exit on missing invite in json
+        if not is_key_in_dict(json_body, 'invite'):
+            return 'invite'
 
+        json_user = json_body['invite']
 
-def invite_database_update(json_body, invite_id):
-    # Early exit on missing invite in json
-    if not is_key_in_dict(json_body, 'invite'):
-        return 'invite'
+        # Check for required attributes in the invite object
+        if not is_key_in_dict(json_user, 'sender_player_id'):
+            return 'sender_player_id'
+        elif not is_key_in_dict(json_user, 'receiver_player_id'):
+            return 'receiver_player_id'
+        elif not is_key_in_dict(json_user, 'game_id'):
+            return 'game_id'
 
-    json_user = json_body['invite']
+        if is_key_in_dict(json_user, 'accepted'):
+            # Save the object in database
+            invite = Invite(sender_player_id=json_user['sender_player_id'],
+                            receiver_player_id=json_user['receiver_player_id'],
+                            game_id=json_user['game_id'],
+                            accepted=json_user['accepted'])
+        else:
+            # Save the object in database
+            invite = Invite(sender_player_id=json_user['sender_player_id'],
+                            receiver_player_id=json_user['receiver_player_id'],
+                            game_id=json_user['game_id'])
+        invite.save()
 
-    invite = invite_database_get_one(invite_id)
+        return invite
 
-    # Change only the provided attributes
-    if is_key_in_dict(json_user, 'sender_player_id'):
-        invite.sender_player_id = json_user['sender_player_id']
+    @staticmethod
+    def create_return_serialized(json_body):
+        invite = InviteDatabase.create(json_body)
 
-    if is_key_in_dict(json_user, 'receiver_player_id'):
-        invite.receiver_player_id = json_user['receiver_player_id']
+        # if it returns a string, return the string
+        if isinstance(invite, str):
+            return invite
 
-    if is_key_in_dict(json_user, 'game_id'):
-        invite.game_id = json_user['game_id']
+        # Serialize the object
+        serializer = InviteSerializer()
+        serialize_object = json.loads(serializer.serialize([invite]).__str__())
 
-    if is_key_in_dict(json_user, 'accepted'):
-        invite.accepted = json_user['accepted']
+        return_data = serialize_object[0]
 
-    invite.save()
+        return return_data
 
-    return invite
+    # -----------
+    #   Update one
+    # -----------
+    @staticmethod
+    def update(json_body, invite_id):
+        # Early exit on missing invite in json
+        if not is_key_in_dict(json_body, 'invite'):
+            return 'invite'
 
+        json_user = json_body['invite']
 
-def invite_database_delete(invite_id):
-    invite = Invite.objects.get(id=invite_id)
-    Invite.objects.get(id=invite_id).delete()
-    return invite
+        invite = InviteDatabase.get_one(invite_id)
+
+        # Change only the provided attributes
+        if is_key_in_dict(json_user, 'sender_player_id'):
+            invite.sender_player_id = json_user['sender_player_id']
+
+        if is_key_in_dict(json_user, 'receiver_player_id'):
+            invite.receiver_player_id = json_user['receiver_player_id']
+
+        if is_key_in_dict(json_user, 'game_id'):
+            invite.game_id = json_user['game_id']
+
+        if is_key_in_dict(json_user, 'accepted'):
+            invite.accepted = json_user['accepted']
+
+        invite.save()
+
+        return invite
+
+    @staticmethod
+    def update_return_serialized(json_body, invite_id):
+        invite = InviteDatabase.update(json_body, invite_id)
+
+        # if it returns a string, return the string
+        if isinstance(invite, str):
+            return invite
+
+        # Serialize the object
+        serializer = InviteSerializer()
+        serialize_object = json.loads(serializer.serialize([invite]).__str__())
+
+        return_data = serialize_object[0]
+
+        return return_data
+
+    # -----------
+    #   Delete one
+    # -----------
+    @staticmethod
+    def delete(invite_id):
+        invite = Invite.objects.get(id=invite_id)
+        Invite.objects.get(id=invite_id).delete()
+        return invite
+
+    @staticmethod
+    def delete_return_serialized(json_body):
+        invite = InviteDatabase.delete(json_body)
+
+        # if it returns a string, return the string
+        if isinstance(invite, str):
+            return invite
+
+        # Serialize the object
+        serializer = InviteSerializer()
+        serialize_object = json.loads(serializer.serialize([invite]).__str__())
+
+        return_data = serialize_object[0]
+
+        return return_data

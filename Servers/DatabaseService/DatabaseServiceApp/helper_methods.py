@@ -29,12 +29,13 @@ def bad_json(request, json_object, proper_way_dict):
 # -----------------------------
 # Missing property in json
 # -----------------------------
-def missing_property_in_json(request, name_missing, proper_way):
+def missing_property_in_json(request, name_missing, proper_way_dict):
     json_data = {
         'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
         'status': status.HTTP_400_BAD_REQUEST,
         'error': 'The object json is missing a ' + name_missing + ' attribute',
-        'helper': 'Here is an example on a correct json: ' + proper_way,
+        'helper': 'Here is an example on a correct json: ',
+        'correct-form': proper_way_dict
     }
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, content_type='application/json')
 

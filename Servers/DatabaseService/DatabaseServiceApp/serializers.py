@@ -1,3 +1,5 @@
+import json
+
 from django.core.serializers.json import Serializer
 
 
@@ -18,10 +20,18 @@ class PlayerSerializer(Serializer):
 
 class InviteSerializer(Serializer):
     def get_dump_object(self, obj):
+        player_serializer = PlayerSerializer()
+        game_serializer = GameSerializer()
+
+        sender_player = json.loads(player_serializer.serialize([obj.sender_player]))[0]
+        receiver_player = json.loads(player_serializer.serialize([obj.receiver_player]))[0]
+        game = json.loads(game_serializer.serialize([obj.game]))[0]
+
         mapped_object = {
-            'sender_player_id': obj.sender_player_id,
-            'receiver_player_id': obj.receiver_player_id,
-            'game_id': obj.game_id,
+            'id': obj.id,
+            'sender_player': sender_player,
+            'receiver_player': receiver_player,
+            'game': game,
             'accepted': obj.accepted,
         }
 
@@ -61,6 +71,7 @@ class GameRoundSerializer(Serializer):
 
         return mapped_object
 
+
 class GamePlayerRoundSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
@@ -82,6 +93,7 @@ class GameQuestionSerializer(Serializer):
         }
 
         return mapped_object
+
 
 class RestGameSerializer(Serializer):
     def get_dump_object(self, obj):

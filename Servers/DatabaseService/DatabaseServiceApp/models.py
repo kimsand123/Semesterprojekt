@@ -79,58 +79,58 @@ class Answer(models.Model):
 # ***
 class Question(models.Model):
     question_text = models.CharField(max_length=100)
-    answers_correct_id = models.ForeignKey(Answer,
-                                           on_delete=models.CASCADE,
-                                           to_field='id',
-                                           related_name='question_answers_correct_id')
-    answers_1_id = models.ForeignKey(Answer,
-                                     on_delete=models.CASCADE,
-                                     to_field='id',
-                                     related_name='question_answers_1_id')
-    answers_2_id = models.ForeignKey(Answer,
-                                     on_delete=models.CASCADE,
-                                     to_field='id',
-                                     related_name='question_answers_2_id')
-    answers_3_id = models.ForeignKey(Answer,
-                                     on_delete=models.CASCADE,
-                                     to_field='id',
-                                     related_name='question_answers_3_id')
+    answers_correct = models.ForeignKey(Answer,
+                                        on_delete=models.CASCADE,
+                                        to_field='id',
+                                        related_name='question_answers_correct_id')
+    answers_1 = models.ForeignKey(Answer,
+                                  on_delete=models.CASCADE,
+                                  to_field='id',
+                                  related_name='question_answers_1_id')
+    answers_2 = models.ForeignKey(Answer,
+                                  on_delete=models.CASCADE,
+                                  to_field='id',
+                                  related_name='question_answers_2_id')
+    answers_3 = models.ForeignKey(Answer,
+                                  on_delete=models.CASCADE,
+                                  to_field='id',
+                                  related_name='question_answers_3_id')
 
     def __str__(self):
         return str(self.id) + '(' + \
                str(self.question_text) + ', ' + \
-               str(self.answers_correct_id) + ', ' + \
-               str(self.answers_1_id) + ', ' + \
-               str(self.answers_2_id) + ', ' + \
-               str(self.answers_3_id) + ')'
+               str(self.answers_correct) + ', ' + \
+               str(self.answers_1) + ', ' + \
+               str(self.answers_2) + ', ' + \
+               str(self.answers_3) + ')'
 
 
 # ***
 # GameQuestion
 # ***
 class GameQuestion(models.Model):
-    game_id = models.ForeignKey(Game, on_delete=models.CASCADE, to_field='id')
-    question_id = models.ForeignKey(Question, on_delete=models.CASCADE, to_field='id')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, to_field='id')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, to_field='id')
 
     def __str__(self):
         return str(self.id) + '(' + \
-               str(self.game_id) + ', ' + \
-               str(self.question_id) + ')'
+               str(self.game) + ', ' + \
+               str(self.question) + ')'
 
 
 # ***
 # GamePlayer
 # ***
 class GamePlayer(models.Model):
-    player_id = models.ForeignKey(Player,
-                                  on_delete=models.CASCADE,
-                                  to_field='id')
+    player = models.ForeignKey(Player,
+                               on_delete=models.CASCADE,
+                               to_field='id')
     game_progress = models.IntegerField()
     score = models.IntegerField()
 
     def __str__(self):
         return str(self.id) + '(' + \
-               str(self.player_id) + ' ,' + \
+               str(self.player) + ' ,' + \
                str(self.game_progress) + ' - ' + \
                str(self.score) + ')'
 
@@ -152,35 +152,35 @@ class GameRound(models.Model):
 # GamePlayerRound
 # ***
 class GamePlayerRound(models.Model):
-    game_id = models.ForeignKey(Game, on_delete=models.CASCADE, to_field='id')
-    game_player_id = models.ForeignKey(GamePlayer, on_delete=models.CASCADE, to_field='id')
-    game_round_id = models.ForeignKey(GameRound, on_delete=models.CASCADE, to_field='id')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, to_field='id')
+    game_player = models.ForeignKey(GamePlayer, on_delete=models.CASCADE, to_field='id')
+    game_round = models.ForeignKey(GameRound, on_delete=models.CASCADE, to_field='id')
 
     def __str__(self):
         return str(self.id) + '(' + \
-               str(self.game_id) + ', ' + \
-               str(self.game_player_id) + ', ' + \
-               str(self.game_round_id) + ')'
+               str(self.game) + ', ' + \
+               str(self.game_player) + ', ' + \
+               str(self.game_round) + ')'
 
 
 # ***
 # Invite
 # ***
 class Invite(models.Model):
-    sender_player_id = models.ForeignKey(Player,
-                                         on_delete=models.CASCADE,
-                                         to_field='id',
-                                         related_name='invite_sender')
-    receiver_player_id = models.ForeignKey(Player,
-                                           on_delete=models.CASCADE,
-                                           to_field='id',
-                                           related_name='invite_receiver')
-    game_id = models.ForeignKey(Game, on_delete=models.CASCADE)
+    sender_player = models.ForeignKey(Player,
+                                      on_delete=models.CASCADE,
+                                      to_field='id',
+                                      related_name='invite_sender')
+    receiver_player = models.ForeignKey(Player,
+                                        on_delete=models.CASCADE,
+                                        to_field='id',
+                                        related_name='invite_receiver')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
     accepted = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id) + '(' + \
-               str(self.sender_player_id) + ', ' + \
-               str(self.receiver_player_id) + ', ' + \
-               str(self.game_id) + ', ' + \
+               str(self.sender_player) + ', ' + \
+               str(self.receiver_player) + ', ' + \
+               str(self.game) + ', ' + \
                str(self.accepted) + ')'
