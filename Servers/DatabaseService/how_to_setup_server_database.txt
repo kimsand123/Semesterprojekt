@@ -1,0 +1,6 @@
+When the server has not run before, 
+run the following terminal commands in this folder:
+
+(py / python / python3) manage.py sqlmigrate DatabaseServiceApp 0001
+(py / python / python3) manage.py migrate
+(py / python / python3) manage.py loaddata dumptables.json

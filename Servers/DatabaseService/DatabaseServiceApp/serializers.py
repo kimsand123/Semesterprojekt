@@ -51,9 +51,11 @@ class GameSerializer(Serializer):
 
 class GamePlayerSerializer(Serializer):
     def get_dump_object(self, obj):
+        player_serializer = PlayerSerializer()
+        player = json.loads(player_serializer.serialize([obj.player]))[0]
+
         mapped_object = {
-            'id': obj.id,
-            'player_id': obj.player_id,
+            'player': player,
             'game_progress': obj.game_progress,
             'score': obj.score,
         }
@@ -74,11 +76,18 @@ class GameRoundSerializer(Serializer):
 
 class GamePlayerRoundSerializer(Serializer):
     def get_dump_object(self, obj):
+
+        game_player_serializer = GamePlayerSerializer()
+        game_player = json.loads(game_player_serializer.serialize([obj.game_player]))[0]
+
+        game_round_serializer = GameRoundSerializer()
+        game_round = json.loads(game_round_serializer.serialize([obj.game_round]))[0]
+
         mapped_object = {
-            'id': obj.id,
-            'game_id': obj.game_id,
-            'game_player_id': obj.game_player_id,
-            'game_round_id': obj.game_round_id,
+            'id':obj.id,
+            'game_player': game_player,
+            'game_round': game_round,
+
         }
 
         return mapped_object
@@ -86,22 +95,40 @@ class GamePlayerRoundSerializer(Serializer):
 
 class GameQuestionSerializer(Serializer):
     def get_dump_object(self, obj):
+        question_serializer = QuestionSerializer()
+        question = json.loads(question_serializer.serialize([obj.question]))[0]
+
         mapped_object = {
-            'id': obj.id,
-            'game_id': obj.game_id,
-            'question_id': obj.question_id,
+            obj.question_id: question,
         }
 
         return mapped_object
 
 
-class RestGameSerializer(Serializer):
+class QuestionSerializer(Serializer):
+    def get_dump_object(self, obj):
+        answer_serializer = AnswerSerializer()
+        answers_correct = json.loads(answer_serializer.serialize([obj.answers_correct]))[0]
+        answers_1 = json.loads(answer_serializer.serialize([obj.answers_1]))[0]
+        answers_2 = json.loads(answer_serializer.serialize([obj.answers_2]))[0]
+        answers_3 = json.loads(answer_serializer.serialize([obj.answers_3]))[0]
+
+        mapped_object = {
+            'question_text': obj.question_text,
+            'answers_correct': answers_correct,
+            'answers_1': answers_1,
+            'answers_2': answers_2,
+            'answers_3': answers_3,
+        }
+
+        return mapped_object
+
+
+class AnswerSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
-            'match_name': obj.match_name,
-            'question_duration': obj.question_duration,
-            'questions': obj.questions,
-            'player_status': obj.player_status,
+            'id': obj.id,
+            'answer_text': obj.answer_text,
         }
 
         return mapped_object

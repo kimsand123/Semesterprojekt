@@ -36,7 +36,8 @@ def players(request):
         else:
             return __bad_method(request, 'GET, POST')
 
-    except JSONDecodeError:
+    except JSONDecodeError as e:
+        print('Error occurred: ' + e.__str__())
         return bad_json(request, 'player', __correct_player_json)
 
     except IntegrityError as e:
@@ -48,7 +49,8 @@ def players(request):
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
 
-    except AttributeError:
+    except AttributeError as e:
+        print('Error occurred: ' + e.__str__())
         return bad_json(request, 'player', __correct_player_json)
 
 
@@ -68,10 +70,12 @@ def single_player(request, player_id):
         else:
             return __bad_method(request, 'GET, PUT, DELETE')
 
-    except JSONDecodeError:
+    except JSONDecodeError as e:
+        print('Error occurred: ' + e.__str__())
         return bad_json(request, 'player', __correct_player_json)
 
     except IntegrityError as e:
+        print('Error occurred: ' + e.__str__())
         json_data = {
             'url': '[' + request.method + '] ' + request.get_raw_uri(),
             'status': status.HTTP_409_CONFLICT,
@@ -79,7 +83,8 @@ def single_player(request, player_id):
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
 
-    except (Player.DoesNotExist, IndexError):
+    except (Player.DoesNotExist, IndexError) as e:
+        print('Error occurred: ' + e.__str__())
         json_data = {
             'url': '[' + request.method + '] ' + request.get_raw_uri(),
             'status': status.HTTP_404_NOT_FOUND,
@@ -87,7 +92,8 @@ def single_player(request, player_id):
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
 
-    except AttributeError:
+    except AttributeError as e:
+        print('Error occurred: ' + e.__str__())
         return bad_json(request, 'player', __correct_player_json)
 
 

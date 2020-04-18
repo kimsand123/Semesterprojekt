@@ -50,27 +50,27 @@ class InviteDatabase:
         if not is_key_in_dict(json_body, 'invite'):
             return 'invite'
 
-        json_user = json_body['invite']
+        json_invite = json_body['invite']
 
         # Check for required attributes in the invite object
-        if not is_key_in_dict(json_user, 'sender_player_id'):
+        if not is_key_in_dict(json_invite, 'sender_player_id'):
             return 'sender_player_id'
-        elif not is_key_in_dict(json_user, 'receiver_player_id'):
+        elif not is_key_in_dict(json_invite, 'receiver_player_id'):
             return 'receiver_player_id'
-        elif not is_key_in_dict(json_user, 'game_id'):
+        elif not is_key_in_dict(json_invite, 'game_id'):
             return 'game_id'
 
-        if is_key_in_dict(json_user, 'accepted'):
+        if is_key_in_dict(json_invite, 'accepted'):
             # Save the object in database
-            invite = Invite(sender_player_id=json_user['sender_player_id'],
-                            receiver_player_id=json_user['receiver_player_id'],
-                            game_id=json_user['game_id'],
-                            accepted=json_user['accepted'])
+            invite = Invite(sender_player_id=json_invite['sender_player_id'],
+                            receiver_player_id=json_invite['receiver_player_id'],
+                            game_id=json_invite['game_id'],
+                            accepted=json_invite['accepted'])
         else:
             # Save the object in database
-            invite = Invite(sender_player_id=json_user['sender_player_id'],
-                            receiver_player_id=json_user['receiver_player_id'],
-                            game_id=json_user['game_id'])
+            invite = Invite(sender_player_id=json_invite['sender_player_id'],
+                            receiver_player_id=json_invite['receiver_player_id'],
+                            game_id=json_invite['game_id'])
         invite.save()
 
         return invite
@@ -100,22 +100,22 @@ class InviteDatabase:
         if not is_key_in_dict(json_body, 'invite'):
             return 'invite'
 
-        json_user = json_body['invite']
+        json_invite = json_body['invite']
 
         invite = InviteDatabase.get_one(invite_id)
 
         # Change only the provided attributes
-        if is_key_in_dict(json_user, 'sender_player_id'):
-            invite.sender_player_id = json_user['sender_player_id']
+        if is_key_in_dict(json_invite, 'sender_player_id'):
+            invite.sender_player_id = json_invite['sender_player_id']
 
-        if is_key_in_dict(json_user, 'receiver_player_id'):
-            invite.receiver_player_id = json_user['receiver_player_id']
+        if is_key_in_dict(json_invite, 'receiver_player_id'):
+            invite.receiver_player_id = json_invite['receiver_player_id']
 
-        if is_key_in_dict(json_user, 'game_id'):
-            invite.game_id = json_user['game_id']
+        if is_key_in_dict(json_invite, 'game_id'):
+            invite.game_id = json_invite['game_id']
 
-        if is_key_in_dict(json_user, 'accepted'):
-            invite.accepted = json_user['accepted']
+        if is_key_in_dict(json_invite, 'accepted'):
+            invite.accepted = json_invite['accepted']
 
         invite.save()
 

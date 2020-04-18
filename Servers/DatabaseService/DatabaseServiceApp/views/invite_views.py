@@ -7,7 +7,7 @@ from rest_framework.utils import json
 
 from DatabaseServiceApp.database_helpers.invite_database_helper import InviteDatabase
 from DatabaseServiceApp.helper_methods import *
-from DatabaseServiceApp.models import Invite, Game
+from DatabaseServiceApp.models import Invite
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
@@ -34,7 +34,8 @@ def invites(request):
         else:
             return __bad_method(request, 'GET, POST')
 
-    except JSONDecodeError:
+    except JSONDecodeError as e:
+        print('Error occurred: ' + e.__str__())
         return bad_json(request, 'invite', __correct_invite_json)
 
     except IntegrityError as e:
@@ -46,7 +47,8 @@ def invites(request):
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
 
-    except AttributeError:
+    except AttributeError as e:
+        print('Error occurred: ' + e.__str__())
         return bad_json(request, 'invite', __correct_invite_json)
 
 
@@ -66,10 +68,12 @@ def single_invite(request, invite_id):
         else:
             return __bad_method(request, 'GET, PUT, DELETE')
 
-    except JSONDecodeError:
+    except JSONDecodeError as e:
+        print('Error occurred: ' + e.__str__())
         return bad_json(request, 'invite', __correct_invite_json)
 
     except IntegrityError as e:
+        print('Error occurred: ' + e.__str__())
         json_data = {
             'url': '[' + request.method + '] ' + request.get_raw_uri(),
             'status': status.HTTP_409_CONFLICT,
@@ -77,7 +81,8 @@ def single_invite(request, invite_id):
         }
         return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
 
-    except (Invite.DoesNotExist, IndexError):
+    except (Invite.DoesNotExist, IndexError) as e:
+        print('Error occurred: ' + e.__str__())
         json_data = {
             'url': '[' + request.method + '] ' + request.get_raw_uri(),
             'status': status.HTTP_404_NOT_FOUND,
@@ -206,7 +211,7 @@ def __single_invite_put(request, invite_id):
         'url': '[' + request.method + '] ' + request.get_raw_uri(),
         'status': status.HTTP_202_ACCEPTED,
         'message': 'You have changed the invite with id: \'' + invite_id + '\'',
-        'player': return_data,
+        'invite': return_data,
     }
     return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=True, encoder=DjangoJSONEncoder,
                         content_type='application/json')
