@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -11,27 +10,22 @@ import suds
 import requests
 from datetime import datetime
 
-#from .models import User
-#from .serializers import UserSerializer
-
 AUTH_SERVICE_ACCESS_KEY = "HBdjm4VDLxn8mU2Eh7EzwNdhAEYp7bm9HvgwEJVGeM6NaBFvFFS48qbSHUYKLkuZPRWKxvGJsu4RewuuR6SVEEbH5aUqjD7H8wMeEPBd5d4G8UfB7QxhuTPPF8KKZg53zvUdv63ravcBAzdgPRbxcVu7pb6NPRfVLf3fFznvCX5ey2by6kGe3HrZX6kBTsJxTS6cL4KwkQDaN5YTq5jzQrQ4wLaXBYzx9y4w5sXdfkhLWuCL5wdFMtgbd8cNTemR"
 
 def nothing(request):
     return HttpResponse("Hello, world. You're at the root index")
 
 # Create your views here.
-#@api_view(['GET'])
-def index(request):
-    return HttpResponse("Hello, world. You're at the service index")
 
 @api_view(['POST'])
 @csrf_exempt
 def login(request):
-    #try to do a log
+    #Open up a logfile
     logfile = open('AuthServerLog.txt', 'a')
-
     time=datetime.now()
+    #print login post to the logfile
     print("login post " + str(time),file = logfile )
+
     #get data from the json posted to the method
     try:
         decoded = request.body.decode('utf-8')
@@ -52,32 +46,26 @@ def login(request):
     #Create a soap client object
     url = 'http://javabog.dk:9901/brugeradmin?wsdl'
     client = Client(url, faults=True)
-    user_token = None
 
     #try and get the userobject from javabog.dk
     try:
-        print("OK")
         #Get user and create token
         user = client.service.hentBruger(username, password)
         user_token = str(uuid.uuid1())
 
         #Register user at gameservice and get gameservice ip and port
-
-        print("user: " + str(user))
-
         gameservice_ip, gameservice_port, player_id = registerUserWithGameService(AUTH_SERVICE_ACCESS_KEY, user_token, user)
 
         #If gameservice responds with proper data, return the userobject, usertoken and gameservice ip and port to client.
         if gameservice_ip != None:
-            user['usertoken'] = user_token
+            user['user_token'] = user_token
             user['gameservice_ip'] = gameservice_ip
             user['gameservice_port'] = gameservice_port
             user['player_id'] = player_id
-            print("user: " + str(user))
-            print("user returned to client with token, ip, port and player_id" + str(time), file=logfile)
+            print("user returned to client with token: " + user_token + ", ip: "+gameservice_ip+", port: "+gameservice_port+" and player_id: " + str(player_id) + ", "+ str(time), file=logfile)
             return Response(user, status=status.HTTP_200_OK)
         else:
-            print("user not returned to client, could not register user with gameservice" + str(time), file=logfile)
+            print("user not returned to client, could not register user with gameservice due to error: " + player_object+ ", " + str(time), file=logfile)
 
     #if the communication with javabog.dk did not go through as expected
     except suds.WebFault as detail:
@@ -94,21 +82,22 @@ def login(request):
 def registerUserWithGameService(service_key, user_token, user):
 
     URL = "http://127.0.0.1:9700/players/registeruser/"
-    print("service_key: "+service_key)
-    print("user_token: "+ user_token)
-    user_object =   {"username":user['brugernavn'],"first_name":user['fornavn'],"last_name":user['efternavn'],"email":user['email'],"study_programme":user['studeretning'],"high_score":0}
+    user_object =  {'player':{"username":user['brugernavn'],"first_name":user['fornavn'],"last_name":user['efternavn'],"email":user['email'],"study_programme":user['studeretning'],"high_score":0}}
     print("userobject: "+ str(user_object))
     body_data = {"service_key":service_key, "user_token":user_token, "user_object":user_object}
     try:
         #Connect to gameservice for registration of the user.
         r = requests.post(url = URL, json = body_data)
         data = r.json()
-        print("data: "+str(data))
+        #player_json = json.loads(data.get('player_object').replace('\'', '\"'))
+        #player_respond_json = data['player_object']
+        #player_id = player_respond_json['player_id']
+
+        player_id = data['player_id']
         gameservice_ip = data['gameservice_ip']
         gameservice_port = data['gameservice_port']
-        player_id = data['player_id']
-        #gameservice_ip = "192.168.1.1"
-        #gameservice_port = "9700"
+
     except requests.ConnectionError as e:
         return None, None
     return gameservice_ip, gameservice_port, player_id
+

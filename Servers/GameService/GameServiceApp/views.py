@@ -34,6 +34,51 @@ def check_token_list_for_old_tokens():
         print("token_user_list after check and removal: " + str(token_user_list))
         time.sleep(FREQUENCY_OF_TOKEN_LIST_CHECK_SEC)
 
+def token_status(token):
+    print("token_list: "+ str(token_user_list))
+    print ("token "+ token)
+    for json_object in token_user_list:
+        data = json.loads(json_object)
+        if data["user_token"] == token:
+            return True
+    return False
+
+def connection_service(endpoint_url, body_data, method):
+    build_URL = "http://"+DATABASE_SERVICE_IP+":"+DATABASE_SERVICE_PORT+endpoint_url
+    print("METHOD: " + method)
+    print("BODY_DATA: " + str(body_data))
+    print ("URL: " + build_URL)
+    try:
+        if method == "POST":
+            if body_data != None:
+                r = requests.post(url=build_URL, json=body_data)
+            else:
+                r = requests.post(url = build_URL)
+        if method == "GET":
+            if body_data != None:
+                r = requests.get(url = build_URL, json=body_data)
+            else:
+                r = requests.get( url = build_URL)
+        if method == "PUT":
+            if body_data != None:
+                r = requests.put(url = build_URL, json=body_data)
+            else:
+                r = requests.put( url = build_URL)
+        data = r.json()
+    except requests.exceptions as e:
+        return e
+    return data
+
+def get_json_data_object(request):
+    try:
+        decoded = request.body.decode('utf-8')
+        request_json = json.loads(decoded)
+        print("json : "+ str(request_json))
+    except:
+        return "json error"
+    return request_json
+
+
 #def main():
 #    print("start token thread")
 #    _thread.start_new_thread(check_token_list_for_old_tokens())
@@ -77,6 +122,37 @@ def get_player(request, player_id):
     else:
         return Response(data = "Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
 
+@api_view(['POST'])
+def register_user(request):
+    print("Register User")
+    logfile = open('GameServerLog.txt', 'a')
+    req_json = get_json_data_object(request)
+    #print ("req_json "+  str(req_json))
+    try:
+        print("service_key: " + req_json['service_key'])
+        if req_json['service_key'] == AUTH_SERVICE_ACCESS_KEY:
+            #adding token to token list
+            token = req_json['user_token']
+            # Check if user is in our database
+            player_id = check_and_add_user(req_json['user_object'])
+            # Add token, timestamp and player_id to token_user_list
+            if token not in token_user_list:
+                user_list_object = {"user_token": token, "time_stamp": str(datetime.now()), "player_id": player_id}
+                user_list_object_json = json.dumps(user_list_object)
+                token_user_list.append(user_list_object_json)
+                #print("tokenlist: " + str(token_user_list))
+                gameservice_ip = "127.0.0.1"
+                gameservice_port ="9700"
+                response={"gameservice_ip":gameservice_ip,"gameservice_port":gameservice_port,"player_id":player_id}
+                print("response before sending: " + str(response))
+                return Response(response, status=status.HTTP_200_OK)
+            else:
+                return Response(data = "You cannot log in twice at the same time", status = status.HTTP_208_ALREADY_REPORTED )
+        else:
+            return Response(status.HTTP_401_UNAUTHORIZED)
+    except:
+        return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 def invites(request):
     if request.method == 'GET':
         if token_status(str(request['token'])):
@@ -106,93 +182,20 @@ def accept_invite(request, invite_id):
     else:
         return Response("Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
 
-@api_view(['POST'])
-def register_user(request):
-    print("Register User")
-    logfile = open('GameServerLog.txt', 'a')
-    req_json = get_json_data_object(request)
-    #print ("req_json "+  str(req_json))
-    try:
-        print("service_key: " + req_json['service_key'])
-        if req_json['service_key'] == AUTH_SERVICE_ACCESS_KEY:
-            #adding token to token list
-            token = req_json['user_token']
-            # Check if user is in our database
-            player_id = check_and_add_user(req_json['user_object'])
-            # Add token, timestamp and player_id to token_user_list
-            if token not in token_user_list:
-                user_list_object = {"user_token": token, "time_stamp": str(datetime.now()), "player_id": str(player_id)}
-                user_list_object_json = json.dumps(user_list_object)
-                token_user_list.append(user_list_object_json)
-                print("tokenlist: " + str(token_user_list))
-                gameservice_ip = "127.0.0.1"
-                gameservice_port ="9700"
-                response={"gameservice_ip":gameservice_ip,"gameservice_port":gameservice_port,"player_id":str(player_id)}
-                print("response before sending: " + str(response))
-                return Response(response, status=status.HTTP_200_OK)
-            else:
-                return Response(data = "You cannot log in twice at the same time", status = status.HTTP_208_ALREADY_REPORTED )
-        else:
-            return Response(status.HTTP_401_UNAUTHORIZED)
-    except:
-        return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-def token_status(token):
-    print("token_list: "+ str(token_user_list))
-    print ("token "+ token)
-    for json_object in token_user_list:
-        data = json.loads(json_object)
-        if data["user_token"] == token:
-            return True
-    return False
-
 def check_and_add_user(user):
-    dtu_username = user['username']
-    print("dtu_username: " + dtu_username)
-    data = connection_service("/players/" + dtu_username, None, "GET")
+    player = user['player']
+    dtu_username = player['username']
+    #print("dtu_username: " + dtu_username)
+    data = connection_service("/players/" + dtu_username+"/", None, "GET")
     #If the player exists
-    if data != None:
-        player_id = data['player_id']
+
+    if 'player' in data:
+       player = data['player'] #json.loads(data('player').replace('\'', '\"'))
+       player_id = player['id']
     else:
-        formparams = user
-        player_id = connection_service(("/players/", formparams, "POST"))
-    #player_id = random.randint(0, 10000)
+        player_id = connection_service("/players/", user, "POST")
     return player_id
 
-def connection_service(endpoint_url, body_data, method):
-    build_URL = DATABASE_SERVICE_IP+":"+DATABASE_SERVICE_PORT+endpoint_url
-    print("METHOD: " + method)
-    print("BODY_DATA: " + str(body_data))
-    print ("URL: " + build_URL)
-    try:
-        if method == "POST":
-            if body_data != None:
-                r = requests.post(url=build_URL, json=body_data)
-            else:
-                r = requests.post(url = build_URL)
-        if method == "GET":
-            if body_data != None:
-                r = requests.get(url = build_URL, json=body_data)
-            else:
-                r = requests.get( url = build_URL)
-        if method == "PUT":
-            if body_data != None:
-                r = requests.put(url = build_URL, json=body_data)
-            else:
-                r = requests.put( url = build_URL)
-        data = r.json()
-    except requests.exceptions as e:
-        return e
-    return data
-
-def get_json_data_object(request):
-    try:
-        decoded = request.body.decode('utf-8')
-        request_json = json.loads(decoded)
-        print("json : "+ str(request_json))
-    except:
-        return "json error"
-    return request_json
 
 ##TIL SEBASTIAN. Husk at update timestamp til now i token_user_list for
 # den token der foretager et "gamemove"
