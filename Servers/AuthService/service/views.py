@@ -96,13 +96,8 @@ def registerUserWithGameService(service_key, user_token, user):
     URL = "http://127.0.0.1:9700/players/registeruser/"
     print("service_key: "+service_key)
     print("user_token: "+ user_token)
-    user_object =   {"username":user['brugernavn'],"first_name":user['fornavn'],"last_name":user['efternavn'],"email":user['email'],"study_programme":user['studeretning']}
+    user_object =   {"username":user['brugernavn'],"first_name":user['fornavn'],"last_name":user['efternavn'],"email":user['email'],"study_programme":user['studeretning'],"high_score":0}
     print("userobject: "+ str(user_object))
-
-    #user_object = User.objects.all()
-    #serializer = UserSerializer(user)
-    #user_object = serializer.data
-    #print("user_object: " + str(user_object))
     body_data = {"service_key":service_key, "user_token":user_token, "user_object":user_object}
     try:
         #Connect to gameservice for registration of the user.
