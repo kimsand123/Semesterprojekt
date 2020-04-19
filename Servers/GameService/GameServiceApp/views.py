@@ -99,8 +99,7 @@ def get_players(request):
         return Response(data = 'Json decode error. Your body should look like {"user_token":"Yourtoken"}', status = status.HTTP_400_BAD_REQUEST)
     print("req_json: "+ str(req_json))
     if token_status(req_json['user_token']):
-        #response = connection_service("/user/", None, "GET")
-        response = [{"name":"Kim"},{"name":"Putte"}]
+        response = connection_service("/players/", None, "GET")
         return Response(data = response, status = status.HTTP_200_OK)
     else:
         return Response(data = "Token not valid. Please login again", status = status.HTTP_401_UNAUTHORIZED)
@@ -115,9 +114,9 @@ def get_player(request, player_id):
         print("json error")
         return Response(data='Json decode error. The endpoint is /players/player_id and your body should look like {"user_token":"Yourtoken"}',
                         status=status.HTTP_400_BAD_REQUEST)
-    if token_status(req_json['token']):
-        #response = connection_service("/user/" + player_id, None, "GET")
-        response = {"test":"kim"}
+    if token_status(req_json['user_token']):
+        response = connection_service("/players/" + player_id+"/", None, "GET")
+        #response = {"test":"kim"}
         return Response(data = response, status=status.HTTP_200_OK)
     else:
         return Response(data = "Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
@@ -130,13 +129,17 @@ def register_user(request):
     #print ("req_json "+  str(req_json))
     try:
         print("service_key: " + req_json['service_key'])
+        #Is the access key right.
         if req_json['service_key'] == AUTH_SERVICE_ACCESS_KEY:
-            #adding token to token list
-            token = req_json['user_token']
+
             # Check if user is in our database
             player_id = check_and_add_user(req_json['user_object'])
-            # Add token, timestamp and player_id to token_user_list
-            if token not in token_user_list:
+
+            #If the player is not already logged in
+            if player_id not in token_user_list:
+
+                # Add token, timestamp and player_id to token_user_list
+                token = req_json['user_token']
                 user_list_object = {"user_token": token, "time_stamp": str(datetime.now()), "player_id": player_id}
                 user_list_object_json = json.dumps(user_list_object)
                 token_user_list.append(user_list_object_json)
@@ -189,11 +192,11 @@ def check_and_add_user(user):
     data = connection_service("/players/" + dtu_username+"/", None, "GET")
     #If the player exists
 
-    if 'player' in data:
-       player = data['player'] #json.loads(data('player').replace('\'', '\"'))
-       player_id = player['id']
-    else:
-        player_id = connection_service("/players/", user, "POST")
+    if 'player' not in data:
+        data = connection_service("/players/", user, "POST")
+
+    player = data['player']
+    player_id = player['id']
     return player_id
 
 
