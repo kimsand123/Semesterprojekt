@@ -197,6 +197,47 @@ def check_and_add_user(user):
     return player_id
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##TIL SEBASTIAN. Husk at update timestamp til now i token_user_list for
 # den token der foretager et "gamemove"
 
