@@ -176,6 +176,27 @@ def invites(request):
             else:
                 return Response("Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
 
+@api_view(['POST'])
+def create_invite(request):
+    if token_status(str(request['token'])):
+        sender_player_id = request['sender_player_id']
+        reciever_player_id = request['reciever_player_id']
+        match_name = request['match_name']
+        question_duration = request['question_duration']
+
+        try:
+                response = connection_service("/players/"+reciever_player_id+"/", None, "GET")
+        except:
+                return Response ("The player you want to invite does not exist anymore", status=status.HTTP_204_NO_CONTENT)
+
+        form_param = {"invite":{"sender_player_id":sender_player_id,"reciever_player_id":reciever_player_id,"match_name":match_name,"question_duration":question_duration,"accepted":False}}
+        response = connection_service("/invites/", form_param, "POST")
+        return Response(response = "Player " + response['first_name'] + " " + response['last_name']+ " has been invited to play", status = status.HTTP_200_OK)
+
+    else:
+        return Response("Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
+
+
 @api_view(['PUT'])
 def accept_invite(request, invite_id):
     if token_status(str(request['token'])):
