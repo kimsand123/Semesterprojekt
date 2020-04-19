@@ -147,18 +147,23 @@ def token_status(token):
     return False
 
 def check_and_add_user(user):
-#    dtu_usr_id = user['username']
-#    data = connection_service("/user/" + dtu_usr_id, None, "GET")
-#    if data != None:
-#        player_id = data['player_id']
-#    else:
-#        formparams = user
-#        player_id = connection_service(("/user/", formparams, "POST"))
-    player_id = random.randint(0, 10000)
+    dtu_username = user['username']
+    print("dtu_username: " + dtu_username)
+    data = connection_service("/players/" + dtu_username, None, "GET")
+    #If the player exists
+    if data != None:
+        player_id = data['player_id']
+    else:
+        formparams = user
+        player_id = connection_service(("/players/", formparams, "POST"))
+    #player_id = random.randint(0, 10000)
     return player_id
 
 def connection_service(endpoint_url, body_data, method):
     build_URL = DATABASE_SERVICE_IP+":"+DATABASE_SERVICE_PORT+endpoint_url
+    print("METHOD: " + method)
+    print("BODY_DATA: " + str(body_data))
+    print ("URL: " + build_URL)
     try:
         if method == "POST":
             if body_data != None:
