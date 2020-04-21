@@ -1,16 +1,18 @@
 import Vue from 'vue'
+import VueRouter from 'vue-router'
 import VueAnime from 'vue-animejs'
 import FlexboxgridVue from '@vivid-web/flexboxgrid-vue';
 import App from './App'
-import router from './router'
+import routes from './routes'
 
 Vue.use(FlexboxgridVue);
 Vue.use(VueAnime);
+Vue.use(VueRouter);
 Vue.config.productionTip = false
 
+const router = new VueRouter({ routes })
+
 new Vue({
-    el: '#app',
+    render: h => h(App),
     router,
-    components: { App },
-    template: '<App/>'
-})
+}).$mount('#app');

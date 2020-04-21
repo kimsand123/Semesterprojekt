@@ -41,7 +41,7 @@ export default {
       const passwordField = document.querySelector('#password')
 
       if(usernameField.value === "s170423" && passwordField.value === "test") {
-        this.$router.push({path: "/home-page", query: {name: usernameField.value}})
+        this.$router.push({path: "/homepage", query: {name: usernameField.value}})
       } else {
         alert('Username or password was incorrect')
       }
