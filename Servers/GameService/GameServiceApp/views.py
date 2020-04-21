@@ -180,27 +180,29 @@ def invites(request):
 @csrf_exempt
 def invites(request):
     req_json = get_json_data_object(request)
-
-    if request.method == 'POST':
-        if token_status(req_json['user_token']):
+    if token_status(req_json['user_token']):
+        if request.method == 'POST':
             sender_player_id = req_json['sender_player_id']
             reciever_player_id = req_json['reciever_player_id']
             match_name = req_json['match_name']
             question_duration = req_json['question_duration']
 
             try:
-                    response = connection_service("/players/" + reciever_player_id+"/", None, "GET")
+                    response = connection_service("/players/" + str(reciever_player_id) +"/", None, "GET")
             except:
                     return Response ("The player you want to invite does not exist anymore", status=status.HTTP_204_NO_CONTENT)
 
-            form_param = {"invite":{"sender_player_id":sender_player_id,"reciever_player_id":reciever_player_id,"match_name":match_name,"question_duration":question_duration,"accepted":False}}
+            form_param = {"invite":{"sender_player_id":str(sender_player_id),"receiver_player_id":str(reciever_player_id),"match_name":match_name,"question_duration":str(question_duration),"accepted":False}}
             response = connection_service("/invites/", form_param, "POST")
             return Response(response = "Player " + response['first_name'] + " " + response['last_name']+ " has been invited to play", status = status.HTTP_200_OK)
+
+
+        if request.method == 'GET':
+            
+            return Response("asdf", status=status.HTTP_200_OK)
         else:
             return Response("Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
 
-    if request.method == 'GET':
-        return Response("asdf", status=status.HTTP_200_OK)
 
 @api_view(['PUT'])
 def accept_invite(request, invite_id):
