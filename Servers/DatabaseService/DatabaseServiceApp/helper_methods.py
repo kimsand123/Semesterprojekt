@@ -59,7 +59,7 @@ def print_origin(request, name):
     print('** ' + name + ' [' + request.method + ']: ' + request.get_raw_uri())
     print('** Request from ' +
           '(Address: ' + request.META['REMOTE_ADDR'] +
-          ', Name: ' + request.META['COMPUTERNAME'] +
-          ', OS: ' + request.META['OS'] +
+          # Not available on linux #', Name: ' + request.META['COMPUTERNAME'] +
+          # Not available on linux #', OS: ' + request.META['OS'] +
           ', Agent: ' + request.META['HTTP_USER_AGENT'] +
           ')')

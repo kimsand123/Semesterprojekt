@@ -1,0 +1,8 @@
+## How to run the docker container
+## Remember to have docker installed
+
+Run the following, from a terminal within this folder:
+
+docker-compose up --build -d
+docker-compose run gq-database-service  /usr/local/bin/python manage.py sqlmigrate DatabaseServiceApp 0001
+docker-compose run gq-database-service  /usr/local/bin/python manage.py migrate

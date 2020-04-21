@@ -25,7 +25,7 @@ SECRET_KEY = 'zmatnp^g2sja-jtr$+bzc_f)$!#3%#75ra)noqu7tdfh5f8fx4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ["0.0.0.0", "api.dinodev.dk", "localhost", "127.0.0.1"]
 
 
 # Application definition
