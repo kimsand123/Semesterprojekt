@@ -53,30 +53,30 @@ class PlayerDatabase:
         if not is_key_in_dict(json_body, 'player'):
             return 'player'
 
-        json_user = json_body['player']
+        json_player = json_body['player']
 
         # Check for required attributes in the player object
-        if not is_key_in_dict(json_user, 'username'):
+        if not is_key_in_dict(json_player, 'username'):
             return 'username'
-        elif not is_key_in_dict(json_user, 'email'):
+        elif not is_key_in_dict(json_player, 'email'):
             return 'email'
-        elif not is_key_in_dict(json_user, 'first_name'):
+        elif not is_key_in_dict(json_player, 'first_name'):
             return 'first_name'
-        elif not is_key_in_dict(json_user, 'last_name'):
+        elif not is_key_in_dict(json_player, 'last_name'):
             return 'last_name'
-        elif not is_key_in_dict(json_user, 'study_programme'):
+        elif not is_key_in_dict(json_player, 'study_programme'):
             return 'study_programme'
 
-        if is_key_in_dict(json_user, 'high_score'):
+        if is_key_in_dict(json_player, 'high_score'):
             # Save the object in database
-            player = Player(username=json_user['username'], email=json_user['email'],
-                            first_name=json_user['first_name'], last_name=json_user['last_name'],
-                            study_programme=json_user['study_programme'], high_score=json_user['high_score'])
+            player = Player(username=json_player['username'], email=json_player['email'],
+                            first_name=json_player['first_name'], last_name=json_player['last_name'],
+                            study_programme=json_player['study_programme'], high_score=json_player['high_score'])
         else:
             # Save the object in database
-            player = Player(username=json_user['username'], email=json_user['email'],
-                            first_name=json_user['first_name'], last_name=json_user['last_name'],
-                            study_programme=json_user['study_programme'])
+            player = Player(username=json_player['username'], email=json_player['email'],
+                            first_name=json_player['first_name'], last_name=json_player['last_name'],
+                            study_programme=json_player['study_programme'])
         player.save()
 
         return player
@@ -106,28 +106,28 @@ class PlayerDatabase:
         if not is_key_in_dict(json_body, 'player'):
             return 'player'
 
-        json_user = json_body['player']
+        json_player = json_body['player']
 
         player = PlayerDatabase.get_one(player_id)
 
         # Change only the provided attributes
-        if is_key_in_dict(json_user, 'username'):
-            player.username = json_user['username']
+        if is_key_in_dict(json_player, 'username'):
+            player.username = json_player['username']
 
-        if is_key_in_dict(json_user, 'email'):
-            player.email = json_user['email']
+        if is_key_in_dict(json_player, 'email'):
+            player.email = json_player['email']
 
-        if is_key_in_dict(json_user, 'first_name'):
-            player.first_name = json_user['first_name']
+        if is_key_in_dict(json_player, 'first_name'):
+            player.first_name = json_player['first_name']
 
-        if is_key_in_dict(json_user, 'last_name'):
-            player.last_name = json_user['last_name']
+        if is_key_in_dict(json_player, 'last_name'):
+            player.last_name = json_player['last_name']
 
-        if is_key_in_dict(json_user, 'study_programme'):
-            player.study_programme = json_user['study_programme']
+        if is_key_in_dict(json_player, 'study_programme'):
+            player.study_programme = json_player['study_programme']
 
-        if is_key_in_dict(json_user, 'high_score'):
-            player.high_score = json_user['high_score']
+        if is_key_in_dict(json_player, 'high_score'):
+            player.high_score = json_player['high_score']
 
         player.save()
 

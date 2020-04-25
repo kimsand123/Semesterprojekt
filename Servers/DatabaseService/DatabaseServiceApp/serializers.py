@@ -107,28 +107,13 @@ class GameQuestionSerializer(Serializer):
 
 class QuestionSerializer(Serializer):
     def get_dump_object(self, obj):
-        answer_serializer = AnswerSerializer()
-        answers_correct = json.loads(answer_serializer.serialize([obj.answers_correct]))[0]
-        answers_1 = json.loads(answer_serializer.serialize([obj.answers_1]))[0]
-        answers_2 = json.loads(answer_serializer.serialize([obj.answers_2]))[0]
-        answers_3 = json.loads(answer_serializer.serialize([obj.answers_3]))[0]
-
-        mapped_object = {
-            'question_text': obj.question_text,
-            'answers_correct': answers_correct,
-            'answers_1': answers_1,
-            'answers_2': answers_2,
-            'answers_3': answers_3,
-        }
-
-        return mapped_object
-
-
-class AnswerSerializer(Serializer):
-    def get_dump_object(self, obj):
         mapped_object = {
             'id': obj.id,
-            'answer_text': obj.answer_text,
+            'question_text': obj.question_text,
+            'correct_answer': obj.correct_answer,
+            'answer_1': obj.answer_1,
+            'answer_2': obj.answer_2,
+            'answer_3': obj.answer_3,
         }
 
         return mapped_object

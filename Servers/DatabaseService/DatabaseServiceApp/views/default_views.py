@@ -1,5 +1,4 @@
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponse
 from rest_framework.decorators import api_view
 
 from DatabaseServiceApp.helper_methods import *
@@ -20,10 +19,11 @@ def welcome(request):
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'players endpoint': '/players/',
         'games endpoint': '/games/',
-        'invites endpoint': '/invites/'
+        'invites endpoint': '/invites/',
+        'questions endpoint': '/questions/'
     }
 
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -38,6 +38,46 @@ def bad_path(request):
         'error': 'You have requested a wrong path.',
         'players endpoint': '/players/',
         'games endpoint': '/games/',
-        'invites endpoint': '/invites/'
+        'invites endpoint': '/invites/',
+        'questions endpoint': '/questions/'
     }
-    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
+
+
+# -----------------------------
+# Bad json
+# -----------------------------
+def bad_json(request, proper_way_dict):
+    json_data = {
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+        'error': 'Your json is badly formatted',
+        'helper': 'See the key \'correct-form\' to get help',
+        'correct-form': proper_way_dict
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
+
+
+# -----------------------------
+# Missing property in json
+# -----------------------------
+def missing_property_in_json(request, name_missing, proper_way_dict):
+    json_data = {
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+        'error': 'The object json is missing a ' + name_missing + ' attribute',
+        'helper': 'See the key \'correct-form\' to get help',
+        'correct-form': proper_way_dict
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
+
+
+# -----------------------------
+# Wrong property type in json
+# -----------------------------
+def wrong_property_type(request, proper_way_dict):
+    json_data = {
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+        'error': 'One of the attributes is not the correct type',
+        'helper': 'See the key \'correct-form\' to get help',
+        'correct-form': proper_way_dict
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)

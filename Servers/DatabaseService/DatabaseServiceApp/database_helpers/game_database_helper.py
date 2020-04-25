@@ -3,7 +3,7 @@ import json
 from DatabaseServiceApp.helper_methods import is_key_in_dict
 from DatabaseServiceApp.models import Game, GameQuestion, GamePlayerRound, GamePlayer, GameRound
 from DatabaseServiceApp.serializers import GameSerializer, GameQuestionSerializer, \
-    GamePlayerSerializer, GamePlayerRoundSerializer
+    GamePlayerRoundSerializer
 
 
 class GameDatabase:
@@ -87,16 +87,22 @@ class GameDatabase:
 
         json_game = json_body['game']
 
-        # Check for required attributes in the game object
-        if not is_key_in_dict(json_game, 'match_name'):
-            return 'match_name'
-        if not is_key_in_dict(json_game, 'question_duration'):
-            return 'question_duration'
+        # If a game_id from invite was transferred, use that
+        if is_key_in_dict(json_game, 'invite_game_id'):
+            game = GameDatabase.get_one_return_serialized(json_game['invite_game_id'])
+            created_game_id = game['id']
 
-        game = Game(match_name=json_game['match_name'], question_duration=json_game['question_duration'])
+        # Else create a new game with the params
+        else:
+            # Check for required attributes in the game object
+            if not is_key_in_dict(json_game, 'match_name'):
+                return 'match_name'
+            if not is_key_in_dict(json_game, 'question_duration'):
+                return 'question_duration'
 
-        game.save()
-        created_game_id = game.id
+            game = Game(match_name=json_game['match_name'], question_duration=json_game['question_duration'])
+            game.save()
+            created_game_id = game.id
 
         # Add questions if it is in the json
         if is_key_in_dict(json_game, 'questions'):

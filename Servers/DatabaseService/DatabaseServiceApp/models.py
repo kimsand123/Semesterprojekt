@@ -16,7 +16,7 @@ Models for SQL
 # ***
 class Player(models.Model):
     username = models.CharField(max_length=7, unique=True)
-    email = models.CharField(max_length=50)
+    email = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     study_programme = models.CharField(max_length=100)
@@ -64,45 +64,22 @@ class Game(models.Model):
 
 
 # ***
-# Answer
-# ***
-class Answer(models.Model):
-    answer_text = models.CharField(max_length=100)
-
-    def __str__(self):
-        return str(self.id) + '(' + \
-               str(self.answer_text) + ')'
-
-
-# ***
 # Question
 # ***
 class Question(models.Model):
-    question_text = models.CharField(max_length=100)
-    answers_correct = models.ForeignKey(Answer,
-                                        on_delete=models.CASCADE,
-                                        to_field='id',
-                                        related_name='question_answers_correct_id')
-    answers_1 = models.ForeignKey(Answer,
-                                  on_delete=models.CASCADE,
-                                  to_field='id',
-                                  related_name='question_answers_1_id')
-    answers_2 = models.ForeignKey(Answer,
-                                  on_delete=models.CASCADE,
-                                  to_field='id',
-                                  related_name='question_answers_2_id')
-    answers_3 = models.ForeignKey(Answer,
-                                  on_delete=models.CASCADE,
-                                  to_field='id',
-                                  related_name='question_answers_3_id')
+    question_text = models.CharField(max_length=100, unique=True)
+    correct_answer = models.IntegerField()
+    answer_1 = models.CharField(max_length=100)
+    answer_2 = models.CharField(max_length=100)
+    answer_3 = models.CharField(max_length=100)
 
     def __str__(self):
         return str(self.id) + '(' + \
                str(self.question_text) + ', ' + \
-               str(self.answers_correct) + ', ' + \
-               str(self.answers_1) + ', ' + \
-               str(self.answers_2) + ', ' + \
-               str(self.answers_3) + ')'
+               str(self.correct_answer) + ', ' + \
+               str(self.answer_1) + ', ' + \
+               str(self.answer_2) + ', ' + \
+               str(self.answer_3) + ')'
 
 
 # ***

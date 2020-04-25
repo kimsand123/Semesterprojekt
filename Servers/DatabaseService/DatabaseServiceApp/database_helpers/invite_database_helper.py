@@ -2,7 +2,7 @@ import json
 
 from DatabaseServiceApp.helper_methods import is_key_in_dict
 from DatabaseServiceApp.serializers import InviteSerializer
-from DatabaseServiceApp.models import Invite
+from DatabaseServiceApp.models import Invite, Game
 
 
 class InviteDatabase:
@@ -57,20 +57,27 @@ class InviteDatabase:
             return 'sender_player_id'
         elif not is_key_in_dict(json_invite, 'receiver_player_id'):
             return 'receiver_player_id'
-        elif not is_key_in_dict(json_invite, 'game_id'):
-            return 'game_id'
+        if not is_key_in_dict(json_invite, 'match_name'):
+            return 'match_name'
+        if not is_key_in_dict(json_invite, 'question_duration'):
+            return 'question_duration'
+
+        game = Game(match_name=json_invite['match_name'],
+                    question_duration=json_invite['question_duration'])
+        game.save()
 
         if is_key_in_dict(json_invite, 'accepted'):
+
             # Save the object in database
             invite = Invite(sender_player_id=json_invite['sender_player_id'],
                             receiver_player_id=json_invite['receiver_player_id'],
-                            game_id=json_invite['game_id'],
+                            game_id=game.id,
                             accepted=json_invite['accepted'])
         else:
             # Save the object in database
             invite = Invite(sender_player_id=json_invite['sender_player_id'],
                             receiver_player_id=json_invite['receiver_player_id'],
-                            game_id=json_invite['game_id'])
+                            game_id=game.id)
         invite.save()
 
         return invite

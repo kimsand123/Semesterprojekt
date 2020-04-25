@@ -8,17 +8,21 @@ from rest_framework.utils import json
 from DatabaseServiceApp.database_helpers.invite_database_helper import InviteDatabase
 from DatabaseServiceApp.helper_methods import *
 from DatabaseServiceApp.models import Invite
+from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
 
-__correct_invite_json = {'invite':
-    {
-        'sender_player_id': '1',
-        'receiver_player_id': '2',
-        'game_id': '1',
-        'accepted': 'false',
-    }}
+__correct_invite_json = {
+    "invite":
+        {
+            "sender_player_id": 1,
+            "receiver_player_id": 1,
+            "match_name": "Example match",
+            "question_duration": 15,
+            "accepted": False
+        }
+}
 
 
 # path: /invites/
@@ -34,24 +38,28 @@ def invites(request):
         else:
             return __bad_method(request, 'GET, POST')
 
-    except JSONDecodeError as e:
-        print('Error occurred: ' + e.__str__())
-        return bad_json(request, 'invite', __correct_invite_json)
-
     except IntegrityError as e:
-        print('Error occurred: ' + e.__str__())
+        print('IntegrityError occurred: ' + e.__str__())
         json_data = {
             'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': e.__str__(),
         }
-        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, encoder=DjangoJSONEncoder)
+        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, safe=False, encoder=DjangoJSONEncoder)
 
-    except AttributeError as e:
-        print('Error occurred: ' + e.__str__())
-        return bad_json(request, 'invite', __correct_invite_json)
+    except JSONDecodeError as e:
+        print('JSONDecodeError occurred: ' + e.__str__())
+        return bad_json(request, __correct_invite_json)
+
+    except (AttributeError, KeyError) as e:
+        print('AttributeError or KeyError occurred: ' + e.__str__())
+        return bad_json(request, __correct_invite_json)
+
+    except (ValueError, TypeError) as e:
+        print('ValueError or TypeError occurred: ' + e.__str__())
+        return wrong_property_type(request, __correct_invite_json)
 
 
-# path: /invites/<int:user_id>/
+# path: /invites/<int:invite_id>/
 @api_view(all_methods)
 def single_invite(request, invite_id):
     try:
@@ -67,28 +75,33 @@ def single_invite(request, invite_id):
         else:
             return __bad_method(request, 'GET, PUT, DELETE')
 
-    except JSONDecodeError as e:
-        print('Error occurred: ' + e.__str__())
-        return bad_json(request, 'invite', __correct_invite_json)
-
     except IntegrityError as e:
-        print('Error occurred: ' + e.__str__())
+        print('IntegrityError occurred: ' + e.__str__())
         json_data = {
             'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': e.__str__(),
         }
-        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, encoder=DjangoJSONEncoder)
+        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, safe=False, encoder=DjangoJSONEncoder)
 
     except (Invite.DoesNotExist, IndexError) as e:
-        print('Error occurred: ' + e.__str__())
+        print('Invite.DoesNotExist or IndexError occurred: ' + e.__str__())
         json_data = {
             'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': 'The invite with id:\'' + invite_id + '\' is not in the database',
         }
-        return JsonResponse(data=json_data, status=status.HTTP_404_NOT_FOUND, encoder=DjangoJSONEncoder)
+        return JsonResponse(data=json_data, status=status.HTTP_404_NOT_FOUND, safe=False, encoder=DjangoJSONEncoder)
 
-    except AttributeError:
-        return bad_json(request, 'invite', __correct_invite_json)
+    except JSONDecodeError as e:
+        print('JSONDecodeError occurred: ' + e.__str__())
+        return bad_json(request, __correct_invite_json)
+
+    except (AttributeError, KeyError) as e:
+        print('AttributeError or KeyError occurred: ' + e.__str__())
+        return bad_json(request, __correct_invite_json)
+
+    except (ValueError, TypeError) as e:
+        print('ValueError or TypeError occurred: ' + e.__str__())
+        return wrong_property_type(request, __correct_invite_json)
 
 
 # Bad invite path
@@ -101,11 +114,11 @@ def invites_bad_path(request):
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'error': 'You have requested a wrong path.',
-        'helper': 'Maybe you have forgotten a slash ?',
+        'helper': 'Maybe you have forgotten a slash?',
         'invites endpoint': default_url,
         'single invite endpoint': default_url + '1/',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
 
 
 """
@@ -125,7 +138,8 @@ def __bad_method(request, allowed_methods):
         'error': 'This method is not allowed here',
         'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, safe=False,
+                        encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -140,7 +154,7 @@ def __invites_get(request):
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'invites': return_data,
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -164,7 +178,7 @@ def __invites_post(request):
         'message': 'You have posted a new invite',
         'invite': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=False, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -178,9 +192,8 @@ def __single_invite_get(request, invite_id):
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'invite': return_data
-
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -204,7 +217,7 @@ def __single_invite_put(request, invite_id):
         'message': 'You have changed the invite with id: \'' + invite_id + '\'',
         'invite': return_data,
     }
-    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -219,4 +232,4 @@ def __single_invite_delete(request, invite_id):
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'deleted_invite': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)
