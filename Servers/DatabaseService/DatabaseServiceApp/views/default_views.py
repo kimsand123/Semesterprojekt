@@ -1,3 +1,5 @@
+from django.core.serializers.json import DjangoJSONEncoder
+from django.http import HttpResponse
 from rest_framework.decorators import api_view
 
 from DatabaseServiceApp.helper_methods import *
@@ -13,17 +15,15 @@ all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS
 def welcome(request):
     print_origin(request, 'Welcome')
 
-    default_url = 'http://' + request.get_host() + '/'
-
     json_data = {
-        'status': status.HTTP_200_OK,
         'message': 'Welcome to this DatabaseService',
-        'players endpoint': default_url + 'players/',
-        'games endpoint': default_url + 'games/',
-        'invites endpoint': default_url + 'invites/'
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+        'players endpoint': '/players/',
+        'games endpoint': '/games/',
+        'invites endpoint': '/invites/'
     }
 
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -32,12 +32,12 @@ def welcome(request):
 @api_view(all_methods)
 def bad_path(request):
     print_origin(request, 'Default bad path')
-    default_url = 'http://' + request.get_host() + '/'
 
     json_data = {
-        'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_400_BAD_REQUEST,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'error': 'You have requested a wrong path.',
-        'available endpoints': default_url + 'players/, ' + default_url + 'games/, ' + default_url + 'invites/'
+        'players endpoint': '/players/',
+        'games endpoint': '/games/',
+        'invites endpoint': '/invites/'
     }
-    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, encoder=DjangoJSONEncoder)

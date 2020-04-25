@@ -76,11 +76,10 @@ def games(request):
     except IntegrityError as e:
         print('Error occurred: ' + e.__str__())
         json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_409_CONFLICT,
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': e.__str__(),
         }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
+        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, encoder=DjangoJSONEncoder)
 
     except AttributeError as e:
         print('Error occurred: ' + e.__str__())
@@ -110,20 +109,18 @@ def single_game(request, game_id):
     except IntegrityError as e:
         print('Error occurred: ' + e.__str__())
         json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_409_CONFLICT,
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': e.__str__(),
         }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
+        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, encoder=DjangoJSONEncoder)
 
     except (Game.DoesNotExist, IndexError) as e:
         print('Error occurred: ' + e.__str__())
         json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_404_NOT_FOUND,
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': 'The game with id:\'' + game_id + '\' is not in the database',
         }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse(data=json_data, status=status.HTTP_404_NOT_FOUND, encoder=DjangoJSONEncoder)
 
     except AttributeError as e:
         print('Error occurred: ' + e.__str__())
@@ -134,16 +131,16 @@ def single_game(request, game_id):
 @api_view(all_methods)
 def games_bad_path(request):
     print_origin(request, 'Games - Bad request')
-    default_url = 'http://' + request.get_host() + '/games/'
+    default_url = '/games/'
 
     json_data = {
-        'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_400_BAD_REQUEST,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'error': 'You have requested a wrong path.',
-        'available game endpoints': default_url + ', ' + default_url + 'id/',
-        'helper': 'Maybe you have forgotten a slash ?'
+        'helper': 'Maybe you have forgotten a slash?',
+        'games endpoint': default_url,
+        'single game endpoint': default_url + '1/'
     }
-    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, encoder=DjangoJSONEncoder)
 
 
 """
@@ -159,12 +156,11 @@ METHOD IMPLEMENTATIONS
 def __bad_method(request, allowed_methods):
     print_origin(request, 'Games - Bad method')
     json_data = {
-        'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'error': 'This method is not allowed here',
         'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -176,11 +172,10 @@ def __games_get(request):
     return_data = GameDatabase.get_all_return_serialized()
 
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'games': return_data,
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -200,13 +195,11 @@ def __games_post(request):
 
     # Prepare jsonResponse data
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_201_CREATED,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'message': 'You have posted a new game',
         'game': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
-                        content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -218,11 +211,10 @@ def __single_game_get(request, game_id):
     return_data = GameDatabase.get_one_return_serialized(game_id)
 
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'game': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -242,13 +234,11 @@ def __single_game_put(request, game_id):
 
     # Prepare jsonResponse data
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_202_ACCEPTED,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'message': 'You have changed the game with id: \'' + game_id + '\'',
         'game': return_data,
     }
-    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=True, encoder=DjangoJSONEncoder,
-                        content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -260,8 +250,7 @@ def __single_game_delete(request, game_id):
     return_data = GameDatabase.delete_return_serialized(game_id)
 
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_202_ACCEPTED,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'deleted_game': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, encoder=DjangoJSONEncoder)

@@ -41,11 +41,10 @@ def invites(request):
     except IntegrityError as e:
         print('Error occurred: ' + e.__str__())
         json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_409_CONFLICT,
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': e.__str__(),
         }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
+        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, encoder=DjangoJSONEncoder)
 
     except AttributeError as e:
         print('Error occurred: ' + e.__str__())
@@ -75,20 +74,18 @@ def single_invite(request, invite_id):
     except IntegrityError as e:
         print('Error occurred: ' + e.__str__())
         json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_409_CONFLICT,
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': e.__str__(),
         }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_409_CONFLICT)
+        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, encoder=DjangoJSONEncoder)
 
     except (Invite.DoesNotExist, IndexError) as e:
         print('Error occurred: ' + e.__str__())
         json_data = {
-            'url': '[' + request.method + '] ' + request.get_raw_uri(),
-            'status': status.HTTP_404_NOT_FOUND,
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': 'The invite with id:\'' + invite_id + '\' is not in the database',
         }
-        return JsonResponse(data=json_data, safe=False, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse(data=json_data, status=status.HTTP_404_NOT_FOUND, encoder=DjangoJSONEncoder)
 
     except AttributeError:
         return bad_json(request, 'invite', __correct_invite_json)
@@ -99,16 +96,16 @@ def single_invite(request, invite_id):
 def invites_bad_path(request):
     print_origin(request, 'Invites - Bad path')
 
-    default_url = 'http://' + request.get_host() + '/invites/'
+    default_url = '/invites/'
 
     json_data = {
-        'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_400_BAD_REQUEST,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'error': 'You have requested a wrong path.',
-        'available invite endpoints': default_url + ', ' + default_url + 'invite_id/',
-        'helper': 'Maybe you have forgotten a slash ?'
+        'helper': 'Maybe you have forgotten a slash ?',
+        'invites endpoint': default_url,
+        'single invite endpoint': default_url + '1/',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, encoder=DjangoJSONEncoder)
 
 
 """
@@ -124,12 +121,11 @@ METHOD IMPLEMENTATIONS
 def __bad_method(request, allowed_methods):
     print_origin(request, 'Invites - Bad method')
     json_data = {
-        'request-url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'error': 'This method is not allowed here',
         'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
     }
-    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -141,11 +137,10 @@ def __invites_get(request):
     return_data = InviteDatabase.get_all_return_serialized()
 
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'invites': return_data,
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -165,13 +160,11 @@ def __invites_post(request):
 
     # Prepare jsonResponse data
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_201_CREATED,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'message': 'You have posted a new invite',
         'invite': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=True, encoder=DjangoJSONEncoder,
-                        content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -183,12 +176,11 @@ def __single_invite_get(request, invite_id):
     return_data = InviteDatabase.get_one_return_serialized(invite_id)
 
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_200_OK,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'invite': return_data
 
     }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -208,13 +200,11 @@ def __single_invite_put(request, invite_id):
 
     # Prepare jsonResponse data
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_202_ACCEPTED,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'message': 'You have changed the invite with id: \'' + invite_id + '\'',
         'invite': return_data,
     }
-    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=True, encoder=DjangoJSONEncoder,
-                        content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
@@ -226,8 +216,7 @@ def __single_invite_delete(request, invite_id):
     return_data = InviteDatabase.delete_return_serialized(invite_id)
 
     json_data = {
-        'url': '[' + request.method + '] ' + request.get_raw_uri(),
-        'status': status.HTTP_202_ACCEPTED,
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'deleted_invite': return_data
     }
-    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, content_type='application/json')
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, encoder=DjangoJSONEncoder)
