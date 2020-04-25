@@ -8,7 +8,8 @@ from rest_framework.utils import json
 from DatabaseServiceApp.database_helpers.invite_database_helper import InviteDatabase
 from DatabaseServiceApp.helper_methods import *
 from DatabaseServiceApp.models import Invite
-from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type
+from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type, \
+    bad_or_missing_access_key
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
@@ -29,6 +30,9 @@ __correct_invite_json = {
 @api_view(all_methods)
 def invites(request):
     try:
+        if not is_access_key_valid(request):
+            return bad_or_missing_access_key(request)
+
         if request.method == 'GET':
             return __invites_get(request)
 
@@ -63,6 +67,9 @@ def invites(request):
 @api_view(all_methods)
 def single_invite(request, invite_id):
     try:
+        if not is_access_key_valid(request):
+            return bad_or_missing_access_key(request)
+
         if request.method == 'GET':
             return __single_invite_get(request, invite_id)
 

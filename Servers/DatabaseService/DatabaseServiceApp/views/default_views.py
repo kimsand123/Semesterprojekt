@@ -45,6 +45,19 @@ def bad_path(request):
 
 
 # -----------------------------
+# Bad or missing access_key
+# -----------------------------
+def bad_or_missing_access_key(request):
+    json_data = {
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+        'error': 'Your access key is missing or not valid',
+        'helper': 'See the key \'correct-form\' to get help',
+        'correct-form': {'access_key': "Your_special_key_here"}
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
+
+
+# -----------------------------
 # Bad json
 # -----------------------------
 def bad_json(request, proper_way_dict):

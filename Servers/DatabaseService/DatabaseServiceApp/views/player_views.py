@@ -9,7 +9,8 @@ from rest_framework.utils import json
 from DatabaseServiceApp.database_helpers.player_database_helper import *
 from DatabaseServiceApp.helper_methods import *
 from DatabaseServiceApp.models import Player
-from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type
+from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type, \
+    bad_or_missing_access_key
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
@@ -31,6 +32,9 @@ __correct_player_json = {
 @api_view(all_methods)
 def players(request):
     try:
+        if not is_access_key_valid(request):
+            return bad_or_missing_access_key(request)
+
         if request.method == 'GET':
             return __players_get(request)
 
@@ -64,6 +68,9 @@ def players(request):
 @api_view(all_methods)
 def single_player(request, player_id):
     try:
+        if not is_access_key_valid(request):
+            return bad_or_missing_access_key(request)
+
         if request.method == 'GET':
             return __single_player_get(request, player_id)
 

@@ -8,7 +8,8 @@ from rest_framework.utils import json
 from DatabaseServiceApp.database_helpers.question_database_helper import QuestionDatabase
 from DatabaseServiceApp.helper_methods import *
 from DatabaseServiceApp.models import Question
-from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type
+from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type, \
+    bad_or_missing_access_key
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
@@ -29,6 +30,9 @@ __correct_question_json = {
 @api_view(all_methods)
 def questions(request):
     try:
+        if not is_access_key_valid(request):
+            return bad_or_missing_access_key(request)
+
         if request.method == 'GET':
             return __questions_get(request)
 
@@ -62,6 +66,9 @@ def questions(request):
 @api_view(all_methods)
 def single_question(request, question_id):
     try:
+        if not is_access_key_valid(request):
+            return bad_or_missing_access_key(request)
+
         if request.method == 'GET':
             return __single_question_get(request, question_id)
 
@@ -70,7 +77,6 @@ def single_question(request, question_id):
 
         elif request.method == 'DELETE':
             return __single_question_delete(request, question_id)
-
         else:
             return __bad_method(request, 'GET, PUT, DELETE')
 
