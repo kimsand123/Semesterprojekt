@@ -55,6 +55,8 @@ class GamePlayerSerializer(Serializer):
         player = json.loads(player_serializer.serialize([obj.player]))[0]
 
         mapped_object = {
+            'id': obj.id,
+            'game_id': obj.game_id,
             'player': player,
             'game_progress': obj.game_progress,
             'score': obj.score,
@@ -67,27 +69,9 @@ class GameRoundSerializer(Serializer):
     def get_dump_object(self, obj):
         mapped_object = {
             'id': obj.id,
+            'game_player_id': obj.game_player.id,
             'time_spent': obj.time_spent,
             'score': obj.score,
-        }
-
-        return mapped_object
-
-
-class GamePlayerRoundSerializer(Serializer):
-    def get_dump_object(self, obj):
-
-        game_player_serializer = GamePlayerSerializer()
-        game_player = json.loads(game_player_serializer.serialize([obj.game_player]))[0]
-
-        game_round_serializer = GameRoundSerializer()
-        game_round = json.loads(game_round_serializer.serialize([obj.game_round]))[0]
-
-        mapped_object = {
-            'id':obj.id,
-            'game_player': game_player,
-            'game_round': game_round,
-
         }
 
         return mapped_object
@@ -99,6 +83,7 @@ class GameQuestionSerializer(Serializer):
         question = json.loads(question_serializer.serialize([obj.question]))[0]
 
         mapped_object = {
+            'id': obj.id,
             obj.question_id: question,
         }
 

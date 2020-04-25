@@ -1,9 +1,9 @@
 import json
 
 from DatabaseServiceApp.helper_methods import is_key_in_dict
-from DatabaseServiceApp.models import Game, GameQuestion, GamePlayerRound, GamePlayer, GameRound
-from DatabaseServiceApp.serializers import GameSerializer, GameQuestionSerializer, \
-    GamePlayerRoundSerializer
+from DatabaseServiceApp.models import Game, GameQuestion, GamePlayer, GameRound
+from DatabaseServiceApp.serializers import GameSerializer, GameQuestionSerializer, GamePlayerSerializer, \
+    GameRoundSerializer
 
 
 class GameDatabase:
@@ -46,33 +46,32 @@ class GameDatabase:
             game['questions'] = game_question_dict
 
         # --------------------
-        # Add the player_status
-        player_status_query = GamePlayerRound.objects.filter(game=game['id'])
-        serializer = GamePlayerRoundSerializer()
-        player_status_dict = json.loads(serializer.serialize(player_status_query).__str__())
+        # Add the game_players
+        game_players = GamePlayer.objects.filter(game_id=game['id'])
+        serializer = GamePlayerSerializer()
+        game_players_dict = json.loads(serializer.serialize(game_players).__str__())
 
         # Make sure the list is not empty
-        if str(player_status_dict).count('{') >= 1:
-            for status in player_status_dict:
+        if str(game_players_dict).count('{') >= 1:
+            for status in game_players_dict:
                 # Gather needed objects form the status_dict
-                game_player = [status['game_player']][0]
-                game_player_id = game_player['player']['id']
-                game_round = [status['game_round']][0]
+                game_player_id = status['id']
 
                 # Add a player_status dict, if it does not exist
                 if not is_key_in_dict(game, 'player_status'):
-                    game['player_status'] = {}
+                    game['player_status'] = []
 
                 # Get the underlying player_status dict+
                 game_player_status = game['player_status']
 
-                # Add a single player_status dict
-                # containing a game_player and an empty game_round object
-                if not is_key_in_dict(game_player_status, game_player_id):
-                    game_player_status[game_player_id] = {'game_player': game_player, 'game_round': []}
+                # --------------------
+                # Add the game_rounds
+                game_round_query = GameRound.objects.filter(game_player_id=game_player_id)
+                serializer = GameRoundSerializer()
+                game_round_dict = json.loads(serializer.serialize(game_round_query).__str__())
 
-                # Append the game on the player's rounds
-                game_player_status[game_player_id]['game_round'].append(game_round)
+                # Add a single player_status dict
+                game_player_status.append({'game_player': status, 'game_round': game_round_dict})
 
         return game
 
@@ -100,7 +99,8 @@ class GameDatabase:
             if not is_key_in_dict(json_game, 'question_duration'):
                 return 'question_duration'
 
-            game = Game(match_name=json_game['match_name'], question_duration=json_game['question_duration'])
+            game = Game(match_name=json_game['match_name'],
+                        question_duration=json_game['question_duration'])
             game.save()
             created_game_id = game.id
 
@@ -108,13 +108,14 @@ class GameDatabase:
         if is_key_in_dict(json_game, 'questions'):
             questions = json_game['questions']
             for question in questions:
-                GameQuestion(game_id=created_game_id, question_id=question).save()
+                GameQuestion(game_id=created_game_id,
+                             question_id=question).save()
 
         # Add player_status if it is in the json
         if is_key_in_dict(json_game, 'player_status'):
-            player_status = json_game['player_status']
+            player_status_list = json_game['player_status']
 
-            for status in player_status:
+            for status in player_status_list:
                 # Check if data is in dict
                 if not is_key_in_dict(status, 'game_player'):
                     return 'game_player (in player_status)'
@@ -132,27 +133,25 @@ class GameDatabase:
                 elif not is_key_in_dict(game_player_dict, 'score'):
                     return 'score (in game_player)'
 
-                game_player = GamePlayer(player_id=game_player_dict['player_id'],
+                game_player = GamePlayer(game_id=created_game_id, player_id=game_player_dict['player_id'],
                                          game_progress=game_player_dict['game_progress'],
                                          score=game_player_dict['score'])
                 game_player.save()
 
                 # Get the game_rounds
-                game_round_dict = status['game_round']
+                game_round_list = status['game_round']
 
-                for round in game_round_dict:
+                for g_round in game_round_list:
                     # Check if data is in dict
-                    if not is_key_in_dict(round, 'time_spent'):
+                    if not is_key_in_dict(g_round, 'time_spent'):
                         return 'time_spent (in game_round)'
-                    elif not is_key_in_dict(round, 'score'):
+                    elif not is_key_in_dict(g_round, 'score'):
                         return 'score (in game_round)'
 
-                    game_round = GameRound(time_spent=round['time_spent'], score=round['score'])
+                    game_round = GameRound(game_player_id=game_player.id,
+                                           time_spent=g_round['time_spent'],
+                                           score=g_round['score'])
                     game_round.save()
-                    game_player_round = GamePlayerRound(game_id=created_game_id,
-                                                        game_player_id=game_player.id,
-                                                        game_round_id=game_round.id)
-                    game_player_round.save()
 
         # Gather all the again data to return it
         return_data = GameDatabase.get_one_return_serialized(created_game_id)
@@ -188,9 +187,7 @@ class GameDatabase:
             for question in questions:
                 GameQuestion(game_id=created_game_id, question_id=question).save()
 
-        GamePlayerRound.objects.filter(game_id = created_game_id).delete()
-
-        # Add player_status if it is in the json
+        # Update the game_player if it is in the json
         if is_key_in_dict(json_game, 'player_status'):
             player_status = json_game['player_status']
 
@@ -203,6 +200,13 @@ class GameDatabase:
 
                 # Get the game_player
                 game_player_dict = status['game_player']
+                print('game_player_dict: ' + str(game_player_dict))
+
+                # Delete existing game_players
+                GamePlayer.objects.filter(game_id=created_game_id, player_id=game_player_dict['player_id']).delete()
+
+                # Get the game_player
+                game_player_dict = status['game_player']
 
                 # Check if data is in dict
                 if not is_key_in_dict(game_player_dict, 'player_id'):
@@ -212,28 +216,28 @@ class GameDatabase:
                 elif not is_key_in_dict(game_player_dict, 'score'):
                     return 'score (in game_player)'
 
-                game_player = GamePlayer(player_id=game_player_dict['player_id'],
+                game_player = GamePlayer(game_id=created_game_id, player_id=game_player_dict['player_id'],
                                          game_progress=game_player_dict['game_progress'],
                                          score=game_player_dict['score'])
+
                 game_player.save()
 
-                # Get the game_rounds
-                game_round_dict = status['game_round']
+                print('game_player: ' + str(game_player))
 
-                for round in game_round_dict:
+                # Get the game_rounds
+                game_round_list = status['game_round']
+
+                for g_round in game_round_list:
                     # Check if data is in dict
-                    if not is_key_in_dict(round, 'time_spent'):
+                    if not is_key_in_dict(g_round, 'time_spent'):
                         return 'time_spent (in game_round)'
-                    elif not is_key_in_dict(round, 'score'):
+                    elif not is_key_in_dict(g_round, 'score'):
                         return 'score (in game_round)'
 
-                    game_round = GameRound(time_spent=round['time_spent'], score=round['score'])
+                    game_round = GameRound(game_player_id=game_player.id,
+                                           time_spent=g_round['time_spent'],
+                                           score=g_round['score'])
                     game_round.save()
-                    game_player_round = GamePlayerRound(game_id=created_game_id,
-                                                        game_player_id=game_player.id,
-                                                        game_round_id=game_round.id)
-                    game_player_round.save()
-
         # Gather all the again data to return it
         return_data = GameDatabase.get_one_return_serialized(created_game_id)
 

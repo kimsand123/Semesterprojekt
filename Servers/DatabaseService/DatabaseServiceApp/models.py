@@ -99,6 +99,7 @@ class GameQuestion(models.Model):
 # GamePlayer
 # ***
 class GamePlayer(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, to_field='id')
     player = models.ForeignKey(Player,
                                on_delete=models.CASCADE,
                                to_field='id')
@@ -107,6 +108,7 @@ class GamePlayer(models.Model):
 
     def __str__(self):
         return str(self.id) + '(' + \
+               str(self.game) + ' ,' + \
                str(self.player) + ' ,' + \
                str(self.game_progress) + ' - ' + \
                str(self.score) + ')'
@@ -116,28 +118,15 @@ class GamePlayer(models.Model):
 # GameRound
 # ***
 class GameRound(models.Model):
+    game_player = models.ForeignKey(GamePlayer, on_delete=models.CASCADE, to_field='id')
     time_spent = models.DecimalField(max_digits=20, decimal_places=1)
     score = models.IntegerField()
 
     def __str__(self):
         return str(self.id) + '(' + \
+               str(self.game_player) + ', ' + \
                str(self.time_spent) + ', ' + \
                str(self.score) + ')'
-
-
-# ***
-# GamePlayerRound
-# ***
-class GamePlayerRound(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, to_field='id')
-    game_player = models.ForeignKey(GamePlayer, on_delete=models.CASCADE, to_field='id')
-    game_round = models.ForeignKey(GameRound, on_delete=models.CASCADE, to_field='id')
-
-    def __str__(self):
-        return str(self.id) + '(' + \
-               str(self.game) + ', ' + \
-               str(self.game_player) + ', ' + \
-               str(self.game_round) + ')'
 
 
 # ***

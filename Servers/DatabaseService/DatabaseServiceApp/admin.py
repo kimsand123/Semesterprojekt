@@ -7,11 +7,6 @@ class ChoiceInline(admin.TabularInline):
     extra = 3
 
 
-class ChoiceInlineTwo(admin.TabularInline):
-    model = GamePlayerRound
-    extra = 3
-
-
 class PlayerAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Identifiers', {'fields': ['username', ]}),
@@ -26,7 +21,6 @@ class PlayerAdmin(admin.ModelAdmin):
 
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(GameQuestion)
-admin.site.register(GamePlayerRound)
 admin.site.register(Invite)
 admin.site.register(Question)
 admin.site.register(Game)

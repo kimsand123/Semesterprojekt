@@ -26,15 +26,15 @@ __correct_game_json = {
                     3
                 ],
             "player_status":
-                {
-                    "16": {
+                [
+                    {
                         "game_player":
                             {
-                                "player_id": 16,
+                                "player_id": 1,
                                 "game_progress": 20,
                                 "score": 10
                             },
-                        "game_round":
+                        "game_rounds":
                             [
                                 {
                                     "time_spent": 20.0,
@@ -46,27 +46,26 @@ __correct_game_json = {
                                 }
                             ]
                     },
-                    "20": {
+                    {
                         "game_player":
                             {
-                                "player": 20,
+                                "player": 2,
                                 "game_progress": 20,
                                 "score": 10
                             },
-                        "game_round":
+                        "game_rounds":
                             [
                                 {
                                     "time_spent": 20.0,
                                     "score": 10
                                 },
                                 {
-
                                     "time_spent": 34.0,
                                     "score": 345
                                 }
                             ]
                     }
-                }
+                ]
 
         }
 }
