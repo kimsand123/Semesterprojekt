@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .Views import player_views, invite_views
+from .Views import player_views, invite_views, games_views
 
 urlpatterns = [
         path('', views.nothing),
@@ -16,9 +16,9 @@ urlpatterns = [
         path('invites/<str:invite_id>/', views.accept_invite), #PUT accept an invite
 
         #Game
-        path('games/', views.get_games), #GET get all games
-        path('games/<int:game_id>/', views.get_game), #GET get single game
-        path('games/<int:game_id>/player_status', views.get_all_player_status), #GET get all player status
-        path('games/<int:game_id>/player_status/<int:player_id>/status', views.set_player_status), #POST player status
+        path('games/', games_views.get_games), #GET get all games
+        path('games/<int:game_id>/', games_views.get_game), #GET get single game
+        path('games/<int:game_id>/player_status', games_views.get_all_player_status), #GET get all player status
+        path('games/<int:game_id>/player_status/<int:player_id>/status', games_views.set_player_status), #POST player status
 
     ]
