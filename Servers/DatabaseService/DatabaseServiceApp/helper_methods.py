@@ -17,13 +17,12 @@ def is_key_in_dict(dictionary, key):
 
 def is_access_key_valid(request):
     try:
-        json_dict = json.loads(request.body)
-
         # Early exit on missing game in json
-        if not is_key_in_dict(json_dict, 'access_key'):
+        if not is_key_in_dict(request.headers, 'Authorization'):
             return False
 
-        access_key_to_check = json_dict['access_key']
+        access_key_to_check = request.headers['Authorization']
+        access_key_to_check = str(access_key_to_check).split(" ")[1]
 
         key_file = open("access_key.txt", "r")
 

@@ -51,10 +51,9 @@ def bad_or_missing_access_key(request):
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'error': 'Your access key is missing or not valid',
-        'helper': 'See the key \'correct-form\' to get help',
-        'correct-form': {'access_key': "Your_special_key_here"}
+        'helper': 'Should be sent as with key:\'Authorization\' and value:\'Bearer {{Your_special_key_here}}\''
     }
-    return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
+    return JsonResponse(data=json_data, status=status.HTTP_401_UNAUTHORIZED, safe=False, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
