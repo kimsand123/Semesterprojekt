@@ -16,6 +16,26 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
-
 if __name__ == '__main__':
     main()
+
+"""
+#TODO: Find solution
+def check_token_list_for_old_tokens():
+    while True:
+        print("token_user_list before check: " + str(token_user_list))
+        for token in token_user_list:
+            now_time = datetime.now()
+            token_time = datetime(token['time_stamp'])
+            if now_time.minute < token_time.minute + MAX_TOKEN_AGE_MIN:
+                token_user_list.remove({"user_token": token})
+        print("token_user_list after check and removal: " + str(token_user_list))
+        time.sleep(FREQUENCY_OF_TOKEN_LIST_CHECK_SEC)
+
+
+# def main():
+#    print("start token thread")
+#    _thread.start_new_thread(check_token_list_for_old_tokens())
+
+# main()
+"""
