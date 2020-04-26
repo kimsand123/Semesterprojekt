@@ -6,7 +6,7 @@
           <div class="form-field-wrapper">
             <h1>GolfQuiz Admin Login</h1>
             <form method="post" @submit.prevent="login">
-              <FormField type="text" placeholder="s170000" label_id="username"/>
+              <FormField type="text" placeholder="admin" label_id="username"/>
               <FormField type="password" placeholder="*******" label_id="password"/>
               <input id="login-button" type="submit" value="Login"/>
             </form>
@@ -40,7 +40,7 @@ export default {
       const usernameField = document.querySelector('#username')
       const passwordField = document.querySelector('#password')
 
-      if(usernameField.value === "s170423" && passwordField.value === "test") {
+      if(usernameField.value === "admin" && passwordField.value === "admin") {
         this.$router.push({path: "/homepage", query: {name: usernameField.value}})
       } else {
         alert('Username or password was incorrect')
