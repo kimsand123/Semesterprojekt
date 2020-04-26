@@ -1,38 +1,54 @@
 from rest_framework.decorators import api_view
-
 from GameServiceApp.check_token import token_status
 from GameServiceApp.helper_methods import *
 
-
 # TIL SEBASTIAN. Husk at update timestamp til now i token_user_list for
 # den token der foretager et "gamemove"
-@api_view(['GET'])
-def get_games(request):
-    json_request = get_json_data_object(request, "Error-message")
-    if json_request == "json error":
-        error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                            'Your body should look like {"user_token": "your_token"}',
-                                            str(request.get_raw_uri()))
-        return Response(data=error_message, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST', 'GET'])
+def games(request):
+    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
+                                               'Your body should probably look like the value in correct_data',
+                                               {"user_token": "your_token"})
+
+    json_request = get_json_data_object(request, decode_error_message)
+    if type(json_request) is Response:
+        return json_request
+
     if token_status(json_request['user_token']):
-        response = connection_service("/games/", None, "GET")
-        return Response(data=response, status=status.HTTP_200_OK)
+        if request.method == 'POST':
+            game_req = json_request['game']
+            print(game_req['player_status'])
+            json_body = {
+                "game": {
+                    "match_name": game_req['match_name'],
+                    "question_duration": game_req['question_duration'],
+                    "questions": game_req['questions'],
+                    "player_status": game_req['player_status']
+                }
+            }
+            response = connection_service("/games/", json_body, "POST")
+            return Response(data=response, status=status.HTTP_201_CREATED)
+        elif request.method == 'GET':
+            response = connection_service("/games/", None, "GET")
+            return Response(data=response, status=status.HTTP_200_OK)
     else:
         error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
 
 
-@api_view(['GET'])
-def get_game(request, game_id):
-    json_request = get_json_data_object(request, "Error-message")
-    if json_request == "json error":
-        error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                            'Your body should look like {"user_token": "your_token"}',
-                                            str(request.get_raw_uri()))
-        return Response(data=error_message, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET', 'PUT'])
+def single_game(request, game_id):
+    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
+                                               'Your body should probably look like the value in correct_data',
+                                               {"user_token": "your_token"})
+    json_request = get_json_data_object(request, decode_error_message)
+    if type(json_request) is Response:
+        return json_request
+
     if token_status(json_request['user_token']):
-        response = connection_service(f"/games/{game_id}/", None, "GET")
-        return Response(data=response, status=status.HTTP_200_OK)
+        if request.method == 'GET':
+            response = connection_service(f"/games/{game_id}/", None, "GET")
+            return Response(data=response, status=status.HTTP_200_OK)
     else:
         error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
@@ -48,7 +64,7 @@ def get_all_player_status(request, game_id):
         return Response(data=error_message, status=status.HTTP_400_BAD_REQUEST)
     if token_status(json_request['user_token']):
         # response = connection_service(f"/games/{game_id}/", None, "GET")
-        response = requests.get(url=f"https://api.dinodev.dk/games/{game_id}/").json()
+        response = requests.get(url=f"http://127.0.0.1:9600/games/{game_id}/").json()
         data = response['game']['player_status']
         return Response(data=data, status=status.HTTP_200_OK)
     else:
@@ -56,29 +72,8 @@ def get_all_player_status(request, game_id):
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
 
 
-@api_view(['POST'])
-def set_player_status(request, game_id, player_id):
-    decoded = request.body.decode('utf-8')
-    data = json.loads(decoded)
-    if token_status(data['token']):
-        if request['game_user_status'] != None:
-            game_player_status = {'game_user_status': str(request['game_user_status']), 'token': str(request['token'])}
-            response = connection_service(f"/games/{game_id}/player_status/{player_id}/status", game_player_status,
-                                          "POST")
-            return Response(data=response, status=status.HTTP_200_OK)
-        else:
-            response = generate_error_json(status.HTTP_400_BAD_REQUEST,
-                                           'Your data is not formatted the proper way',
-                                           'Correct way: {/games/game_id/player_status/player_id/status} and then a JSON  in the body, formatted {“GameUserStatus”:GameUserStatus, "token": token}',
-                                           str(request.get_raw_uri()))
-            return Response(data=response, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        response = generate_error_json(status.HTTP_401_UNAUTHORIZED, 'Your token was invalid', None, None)
-        return Response(data=response, status=status.HTTP_401_UNAUTHORIZED)
-
-
-def generate_error_json(status_code, reason, suggestion, endpoint):
-    if suggestion == None and endpoint == None:
+def generate_error_json(status_code, reason, suggestion, correct_data):
+    if suggestion == None and correct_data == None:
         json_message = {
             'status': status_code,
             'reason': reason
@@ -88,6 +83,6 @@ def generate_error_json(status_code, reason, suggestion, endpoint):
             'status': status_code,
             'reason': reason,
             'suggestion': suggestion,
-            'correct_url': endpoint
+            'correct_data': correct_data
         }
     return json_message

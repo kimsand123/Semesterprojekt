@@ -1,6 +1,6 @@
 import json
 
-token_user_list = []
+token_user_list = ['{"user_token": "test"}']
 
 
 # Check if token is in the token_list and return true otherwise return false

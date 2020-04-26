@@ -15,10 +15,7 @@ urlpatterns = [
     path('invites/<str:invite_id>/', invite_views.accept_invite),  # PUT accept an invite
 
     # Game
-    path('games/', game_views.get_games),  # GET get all games
-    path('games/<int:game_id>/', game_views.get_game),  # GET get single game
+    path('games/', game_views.games),  # GET get all games POST add game
+    path('games/<int:game_id>/', game_views.single_game),  # GET single game PUT edit game
     path('games/<int:game_id>/player_status', game_views.get_all_player_status),  # GET get all player status
-    path('games/<int:game_id>/player_status/<int:player_id>/status', game_views.set_player_status),
-    # POST player status
-
 ]
