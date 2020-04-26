@@ -215,12 +215,9 @@ def invites(request):
             invite_response = "Player " + reciever_player['first_name'] + " " + reciever_player['last_name']+ " has been invited to play"
 
         if request.method == 'GET':
-            player_id = req_json['player_id']
 
-
-
-            invite_response = connection_service("/invites/", None, "GET")
-
+            form_param = {"player_id":req_json['player_id']}
+            invite_response = connection_service("/invites/", form_param, "GET")
         return Response(data = invite_response , status=status.HTTP_200_OK)
     else:
         return Response("Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
