@@ -11,18 +11,44 @@ class GameDatabase:
     #   Get all
     # -----------
     @staticmethod
-    def get_all_return_serialized():
+    def get_all_return_serialized(json_body):
+
         # Get all from games_table
         game_query = Game.objects.all()
         serializer = GameSerializer()
         game_query_dict = json.loads(serializer.serialize(game_query).__str__())
 
-        # Make a list of the correctly filled game objects
         return_list = []
-        for game in game_query_dict:
-            return_list.append(GameDatabase.get_one_return_serialized(game['id']))
 
-        return return_list
+        # If no player_id is in the json_body, build and return the full game list
+        if not is_key_in_dict(json_body, 'player_id'):
+            for game in game_query_dict:
+                received_game = GameDatabase.get_one_return_serialized(game['id'])
+                return_list.append(received_game)
+            return return_list
+
+        # If a player_id is in the json_body, build and return the specific game list
+        else:
+            player_id = json_body['player_id']
+
+            for game in game_query_dict:
+                received_game = GameDatabase.get_one_return_serialized(game['id'])
+
+                # Check for a player_status in the received game
+                if is_key_in_dict(received_game, 'player_status'):
+                    for status in received_game['player_status']:
+
+                        # Check if the player_id is int (then it is an id)
+                        if isinstance(player_id, int):
+                            if status['game_player']['player']['id'] == player_id:
+                                return_list.append(received_game)
+
+                        # Else it should be a username
+                        else:
+                            if status['game_player']['player']['username'] == player_id:
+                                return_list.append(received_game)
+
+            return return_list
 
     # -----------
     #   Get one
