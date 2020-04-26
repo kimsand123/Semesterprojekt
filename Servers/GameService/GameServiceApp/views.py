@@ -48,22 +48,23 @@ def connection_service(endpoint_url, body_data, method):
     print("METHOD: " + method)
     print("BODY_DATA: " + str(body_data))
     print ("URL: " + build_URL)
+    headers = {"Authorization" : "Bearer 5AF4813A4FCE13A2D5436A3E33BAA"}
     try:
         if method == "POST":
             if body_data != None:
-                r = requests.post(url=build_URL, json=body_data)
+                r = requests.post(url=build_URL, json=body_data, headers = headers)
             else:
-                r = requests.post(url = build_URL)
+                r = requests.post(url = build_URL, headers = headers)
         if method == "GET":
             if body_data != None:
-                r = requests.get(url = build_URL, json=body_data)
+                r = requests.get(url = build_URL, json=body_data, headers = headers)
             else:
-                r = requests.get( url = build_URL)
+                r = requests.get( url = build_URL, headers = headers)
         if method == "PUT":
             if body_data != None:
-                r = requests.put(url = build_URL, json=body_data)
+                r = requests.put(url = build_URL, json=body_data, headers = headers)
             else:
-                r = requests.put( url = build_URL)
+                r = requests.put( url = build_URL, headers = headers)
         data = r.json()
     except requests.exceptions as e:
         return e
