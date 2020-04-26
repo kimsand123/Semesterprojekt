@@ -1,4 +1,3 @@
-from django.shortcuts import render
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -6,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import random
 
 import _thread
 import time
@@ -45,7 +43,7 @@ def token_status(token):
     return False
 
 ###Check if user is in db, if it is return id, if not create player and return id
-def check_and_add_user(user):
+def check_or_add_user(user):
     player = user['player']
     dtu_username = player['username']
     data = connection_service("/players/" + dtu_username + "/", None, "GET")
@@ -114,10 +112,12 @@ def nothing(request):
 ###Get all players
 @api_view(['GET'])
 def get_players(request):
+    ###Check if request body is properly json formatted
     req_json = get_json_data_object(request, "There is an error in your body json format. It should be ex{'user_token':'Yourtoken'}")
     if type(req_json) == Response:
         return req_json
 
+    ##If token is present in the list do the following
     if token_status(req_json['user_token']):
         response = connection_service("/players/", None, "GET")
         return Response(data = response, status = status.HTTP_200_OK)
@@ -127,9 +127,12 @@ def get_players(request):
 ###Get specific player
 @api_view(['GET'])
 def get_player(request, player_id):
+    ###Check if request body is properly json formatted
     req_json = get_json_data_object(request, "There is an error in your body json format. It should be ex {'user_token':'Yourtoken'}")
     if type(req_json) == Response:
         return Response(req_json)
+
+    ##If token is present in the list do the following
     if token_status(req_json['user_token']):
         response = connection_service("/players/" + player_id+"/", None, "GET")
         return Response(data = response, status=status.HTTP_200_OK)
@@ -139,19 +142,19 @@ def get_player(request, player_id):
 ###Login   if player already present in db, return playerobject, otherwise create player in db and return playerobject
 @api_view(['POST'])
 def register_user(request):
-    print("Register User")
     logfile = open('GameServerLog.txt', 'a')
+
+    ###Check if request body is properly json formatted
     req_json = get_json_data_object(request, "There is an error in your body json format. It should be ex {'username':'Your_user_name','password':'Your_password'}")
     if type(req_json) == Response:
         return Response(req_json)
-    #print ("req_json "+  str(req_json))
+
     try:
-        print("service_key: " + req_json['service_key'])
         #Is the access key right.
         if req_json['service_key'] == AUTH_SERVICE_ACCESS_KEY:
 
-            # Check if user is in our database
-            player_id = check_and_add_user(req_json['user_object'])
+            # check or add user
+            player_id = check_or_add_user(req_json['user_object'])
 
             #If the player is not already logged in
             if player_id not in token_user_list:
@@ -174,7 +177,7 @@ def register_user(request):
         return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
- ### INVITES ###
+### INVITES ###
 ###POST = Invite player. GET = get all invites
 @api_view(['POST', 'GET'])
 @csrf_exempt
@@ -185,6 +188,7 @@ def invites(request):
     if type(req_json) == Response:
         return req_json
 
+    ##If token is present in the list do the following
     if token_status(req_json['user_token']):
         if request.method == 'POST':
             ##Getting relevant data from the request to use later
@@ -193,7 +197,7 @@ def invites(request):
             match_name = req_json['match_name']
             question_duration = req_json['question_duration']
 
-            ##Check if the invited player still exists in DB
+            ##Check if the invited player already exists in DB
             try:
                     response = connection_service("/players/" + str(reciever_player_id) +"/", None, "GET")
             except:
@@ -211,6 +215,10 @@ def invites(request):
             invite_response = "Player " + reciever_player['first_name'] + " " + reciever_player['last_name']+ " has been invited to play"
 
         if request.method == 'GET':
+            player_id = req_json['player_id']
+
+
+
             invite_response = connection_service("/invites/", None, "GET")
 
         return Response(data = invite_response , status=status.HTTP_200_OK)
@@ -219,21 +227,24 @@ def invites(request):
 
 
 ###Hent alle invites til en spiller.
-#@api_view(['GET'])
-#def get_invites_for_player(request):
-#    req_json = get_json_data_object(request, "There is an error in your body json format. It should be ex {'user_token':'your_user_token'")
-#    if type(req_json) == Response:
-#        return Response(req_json)
+@api_view(['GET'])
+def get_invites_for_player(request):
+    req_json = get_json_data_object(request, "There is an error in your body json format. It should be ex {'user_token':'your_user_token'")
+    if type(req_json) == Response:
+        return Response(req_json)
 
 
 ###Accept invitation
 @api_view(['PUT'])
 def accept_invite(request, invite_id):
+    ##Check if the request body has the proper json format
     req_json = get_json_data_object(request, "There is an error in your body json format. It should be ex {'user_token':'your_user_token'")
     if type(req_json) == Response:
         return Response(req_json)
-    if token_status(req_json['user_token']):
 
+    ##If token is present in the list do the following
+    if token_status(req_json['user_token']):
+        ##Create the json package for the request
         invite_data = {"invite":{"sender_player_id":str(req_json['sender_player_id']),
                        "reciever_player_id":str(req_json['reciever_player_id']),
                        "match_name":req_json['match_name'],
