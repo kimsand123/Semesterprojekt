@@ -10,15 +10,58 @@ class InviteDatabase:
     #   Get all
     # -----------
     @staticmethod
-    def get_all():
-        invite_query = Invite.objects.all()
+    def get_all(json_body):
+        invite_query = {}
+
+        # Early exit on missing invite in json
+        if not is_key_in_dict(json_body, 'player_id'):
+            invite_query = Invite.objects.all()
+        else:
+            player_id = json_body['player_id']
+
+            if isinstance(player_id, str):
+                invite_receiver_query = Invite.objects.all().filter(receiver_player__username=player_id)
+                invite_sender_query = Invite.objects.all().filter(sender_player__username=player_id)
+
+                invite_query = {
+
+                    "invites_as_sender": invite_sender_query,
+                    "invites_as_receiver": invite_receiver_query
+                }
+
+            else:
+                invite_receiver_query = Invite.objects.all().filter(receiver_player_id=player_id)
+                invite_sender_query = Invite.objects.all().filter(sender_player_id=player_id)
+
+                invite_query = {
+                    "invites_as_sender": invite_sender_query,
+                    "invites_as_receiver": invite_receiver_query
+                }
+
         return invite_query
 
     @staticmethod
-    def get_all_return_serialized():
-        invite_query = InviteDatabase.get_all()
-        serializer = InviteSerializer()
-        return_data = json.loads(serializer.serialize(invite_query).__str__())
+    def get_all_return_serialized(json_body):
+        invite_query = InviteDatabase.get_all(json_body)
+
+        return_data = "[]"
+
+        if isinstance(invite_query, dict):
+            invites_as_sender = invite_query['invites_as_sender']
+            invites_as_receiver = invite_query['invites_as_receiver']
+
+            print('wat' + invites_as_receiver.__str__())
+            serializer = InviteSerializer()
+            return_data = {
+                "invites_as_sender": json.loads(serializer.serialize(invites_as_sender).__str__()),
+                "invites_as_receiver": json.loads(serializer.serialize(invites_as_receiver).__str__())
+            }
+
+        else:
+            invites = invite_query
+            serializer = InviteSerializer()
+            return_data = json.loads(serializer.serialize(invites).__str__())
+
         return return_data
 
     # -----------

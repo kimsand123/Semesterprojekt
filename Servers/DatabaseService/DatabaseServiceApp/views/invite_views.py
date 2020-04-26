@@ -155,13 +155,28 @@ def __bad_method(request, allowed_methods):
 def __invites_get(request):
     print_origin(request, 'Invites')
 
-    return_data = InviteDatabase.get_all_return_serialized()
+    try:
+        json_dict = json.loads(request.body)
 
-    json_data = {
-        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
-        'invites': return_data,
-    }
-    return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
+        return_data = InviteDatabase.get_all_return_serialized(json_dict)
+
+
+
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'invites_as_sender': return_data['invites_as_sender'],
+            'invites_as_receiver': return_data['invites_as_receiver'],
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
+
+    except JSONDecodeError:
+        return_data = InviteDatabase.get_all_return_serialized({})
+
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'invites': return_data,
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------
