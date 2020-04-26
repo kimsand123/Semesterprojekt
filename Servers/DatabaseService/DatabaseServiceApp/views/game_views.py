@@ -35,7 +35,7 @@ __correct_game_json = {
                                 "game_progress": 20,
                                 "score": 10
                             },
-                        "game_rounds":
+                        "game_round":
                             [
                                 {
                                     "time_spent": 20.0,
@@ -50,11 +50,11 @@ __correct_game_json = {
                     {
                         "game_player":
                             {
-                                "player": 2,
+                                "player_id": 2,
                                 "game_progress": 20,
                                 "score": 10
                             },
-                        "game_rounds":
+                        "game_round":
                             [
                                 {
                                     "time_spent": 20.0,
