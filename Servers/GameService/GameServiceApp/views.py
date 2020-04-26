@@ -223,11 +223,11 @@ def invites(request):
 
 
 ###Hent alle invites til en spiller.
-@api_view(['GET'])
-def get_invites_for_player(request):
-    req_json = get_json_data_object(request, "There is an error in your body json format. It should be ex {'user_token':'your_user_token'")
-    if type(req_json) == Response:
-        return Response(req_json)
+##@api_view(['GET'])
+#def get_invites_for_player(request):
+#    req_json = get_json_data_object(request, "There is an error in your body json format. It should be ex {'user_token':'your_user_token'")
+#    if type(req_json) == Response:
+#        return Response(req_json)
 
 
 ###Accept invitation
