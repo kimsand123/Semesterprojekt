@@ -74,7 +74,7 @@ export default {
   box-shadow: 5px 5px 10px 0px rgba(0,0,0,0.75);
 }
 
-h1, h2 {
+h1, h2, p {
   font-weight: lighter;
 }
 </style>
