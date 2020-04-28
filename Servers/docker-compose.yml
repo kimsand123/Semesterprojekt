@@ -1,0 +1,60 @@
+version: '3'
+services:
+  gq-database-service:
+    build:
+      context: ./DatabaseService/
+      dockerfile: docker/python/Dockerfile
+    volumes:
+      - ./DatabaseService/:/DatabaseService
+    ports:
+      - "9600:9600"
+    networks:
+      dev-net:
+          ipv4_address: 172.28.1.3
+    command: python manage.py runserver 0.0.0.0:9600
+
+  gq-auth-service:
+    build:
+      context: ./AuthService/
+      dockerfile: docker/python/Dockerfile
+    volumes:
+      - ./AuthService/:/AuthService
+    ports:
+      - "9800:9800"
+    links:
+      - gq-game-service
+    networks:
+      dev-net:
+        ipv4_address: 172.28.1.1
+    depends_on:
+      - gq-game-service
+    environment:
+      - DC_GS=172.28.1.2
+    command: python manage.py runserver 0.0.0.0:9800
+
+  gq-game-service:
+    build:
+      context: ./GameService/
+      dockerfile: docker/python/Dockerfile
+    volumes:
+      - ./GameService/:/GameService
+    ports:
+      - "9700:9700"
+    links:
+      - gq-database-service
+    networks:
+      dev-net:
+        ipv4_address: 172.28.1.2
+    depends_on:
+      - gq-database-service
+    environment:
+      - DC_DS=172.28.1.3
+    command: python manage.py runserver 0.0.0.0:9700
+
+networks: 
+  dev-net:
+    ipam:
+      driver: default
+      config:
+          - subnet: 172.28.0.0/16
+    

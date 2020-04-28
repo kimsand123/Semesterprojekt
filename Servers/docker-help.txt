@@ -1,0 +1,39 @@
+## How to run the docker container
+## Remember to have docker installed
+## Remember to have docker-compose installed
+
+Run the following, from a terminal within this folder:
+
+BE AWARE THAT THIS STARTS ALL SERVICES ON THIS MACHINE, LOCALLY
+
+# Start with build
+
+	## Inside the container
+	- docker-compose up --build
+
+	## Outside the container
+	- docker-compose up --build -d
+
+
+# Start without build
+
+	## Inside the container
+	- docker-compose up
+
+	## Outside the container
+	- docker-compose up -d
+
+# Build
+
+	## Inside the buildprocess
+	- docker-compose build
+
+	## Outside the buildprocess
+	- docker-compose build -d
+
+# Stop
+	- docker-compose stop
+
+# Remove
+	- docker-compose down
+
