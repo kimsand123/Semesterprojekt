@@ -24,7 +24,7 @@ def check_or_add_user(user):
 
 # A general request method that is called everytime there is a request.
 def connection_service(endpoint_url, body_data, method):
-    build_URL = "https://" + DATABASE_SERVICE_IP + ":" + DATABASE_SERVICE_PORT + endpoint_url
+    build_URL = "http://" + DATABASE_SERVICE_IP + ":" + DATABASE_SERVICE_PORT + endpoint_url
     print("METHOD: " + method)
     print("BODY_DATA: " + str(body_data))
     print("URL: " + build_URL)

@@ -34,8 +34,15 @@ def games(request):
             response = connection_service("/games/", json_body, "POST")
             return Response(data=response, status=status.HTTP_201_CREATED)
         elif request.method == 'GET':
-            response = connection_service("/games/", None, "GET")
-            return Response(data=response, status=status.HTTP_200_OK)
+            if 'player_id' in json_request:
+                json_body = {
+                    "player_id": json_request['player_id']
+                }
+                response = connection_service("/games/", json_body, "GET")
+                return Response(data=response, status=status.HTTP_200_OK)
+            else:
+                response = connection_service("/games/", None, "GET")
+                return Response(data=response, status=status.HTTP_200_OK)
     else:
         error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
