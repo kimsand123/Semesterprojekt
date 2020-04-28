@@ -1,8 +1,9 @@
 from GameServiceApp.active_player_list import *
 import datetime
 
+
 def run_token_test():
-    test_token = {"user_token":"TESTTOKEN", "player_id":1000, "time_stamp":datetime.now()}
+    test_token = {"user_token": "TESTTOKEN", "player_id": 1000, "time_stamp": datetime.now()}
 
     add_token("TESTTOKEN", 1000)
 
@@ -22,7 +23,7 @@ def run_token_test():
         print("Token didn't exist")
     else:
         ts1 = time_stamp
-        print ("timestamp before refresh: " + str(time_stamp))
+        print("timestamp before refresh: " + str(time_stamp))
 
     refresh_token("TESTTOKEN")
 
@@ -30,10 +31,9 @@ def run_token_test():
         print("Token didn't exist")
     else:
         ts2 = time_stamp
-        print ("timestamp before refresh: " + str(time_stamp))
+        print("timestamp before refresh: " + str(time_stamp))
 
     if ts1 != ts2:
         print("refresh worked. Timestamp 1: " + str(ts1) + " vs Timestamp 2: " + str(ts2))
-
 
     print("Test done")

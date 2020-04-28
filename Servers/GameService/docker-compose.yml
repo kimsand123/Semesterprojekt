@@ -7,6 +7,5 @@ services:
     volumes:
       - ./:/GameService
     ports:
-      - "9700:8000"
-    command: python manage.py runserver [::]:8000
-    
+        - "9700:9700"
+    command: python manage.py runserver 0.0.0.0:9700

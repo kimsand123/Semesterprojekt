@@ -61,7 +61,7 @@ def get_json_data_object(request, error_message):
         decoded = request.body.decode('utf-8')
         request_json = json.loads(decoded)
 
-    except (JSONDecodeError) as e:
-        print("Json error " + e.__str__)
+    except JSONDecodeError as e:
+        print("Json error " + e.__str__())
         return Response(data=error_message, status=status.HTTP_400_BAD_REQUEST)
     return request_json

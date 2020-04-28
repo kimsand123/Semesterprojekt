@@ -6,7 +6,7 @@ urlpatterns = [
     path('', default_views.nothing),
 
     # Players
-    path('players/registeruser/', player_views.register_user),  # POST register a user from AUTH
+    path('players/register_user/', player_views.register_user),  # POST register a user from AUTH
     path('players/<str:player_id>/', player_views.get_player),  # GET a specific player
     path('players/', player_views.get_players),  # GET all players
 
