@@ -56,29 +56,69 @@ def register_user(request):
 
     try:
         # Is the access key right.
-        if req_json['service_key'] == AUTH_SERVICE_ACCESS_KEY:
+            if req_json['service_key'] == AUTH_SERVICE_ACCESS_KEY:
 
-            # check or add user
-            player_id = check_or_add_user(req_json['user_object'])
+                # check or add user
+                player_id = check_or_add_user(req_json['user_object'])
 
-            # If the player is not already logged in
-            if player_id not in token_user_list:
+                # If the player is not already logged in
+                if player_id not in token_player_list:
 
-                # Add token, timestamp and player_id to token_user_list
-                token = req_json['user_token']
-                user_list_object = {"user_token": token, "time_stamp": str(datetime.now()), "player_id": player_id}
-                user_list_object_json = json.dumps(user_list_object)
-                token_user_list.append(user_list_object_json)
-                gameservice_ip = "127.0.0.1"
-                gameservice_port = "9700"
-                response = {"gameservice_ip": gameservice_ip, "gameservice_port": gameservice_port,
-                            "player_id": player_id}
-                print("response before sending: " + str(response))
-                return Response(response, status=status.HTTP_200_OK)
+                    # Add token, timestamp and player_id to token_user_list
+                    token = req_json['user_token']
+                    add_token(token, player_id)
+                    run_token_test()
+                    gameservice_ip = "127.0.0.1"
+                    gameservice_port = "9700"
+                    response = {"gameservice_ip": gameservice_ip, "gameservice_port": gameservice_port,
+                                "player_id": player_id}
+                    print("response before sending: " + str(response))
+                    return Response(response, status=status.HTTP_200_OK)
+                else:
+                    return Response(data="You cannot log in twice at the same time",
+                                    status=status.HTTP_208_ALREADY_REPORTED)
             else:
-                return Response(data="You cannot log in twice at the same time",
-                                status=status.HTTP_208_ALREADY_REPORTED)
-        else:
-            return Response(status.HTTP_401_UNAUTHORIZED)
+                return Response(status.HTTP_401_UNAUTHORIZED)
     except:
         return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+from GameServiceApp.active_player_list import *
+
+def run_token_test():
+
+    add_token("TESTTOKEN", 1000)
+
+    user_token, player_id, time_stamp = get_token("TESTTOKEN")
+    if user_token != None:
+        print("add_token worked")
+    else:
+        print("add_token didn't worked")
+
+    if token_status("TESTTOKEN"):
+        print("token_status worked")
+    else:
+        print("token_status didn't work")
+
+    user_token, player_id, time_stamp = get_token("TESTTOKEN")
+    if user_token == None:
+        print("Token didn't exist")
+    else:
+        ts1 = time_stamp
+        print ("timestamp before refresh: " + str(time_stamp))
+
+    refresh_token("TESTTOKEN")
+
+
+    user_token, player_id, time_stamp = get_token("TESTTOKEN")
+    if user_token == None:
+        print("Token didn't exist")
+    else:
+        ts2 = time_stamp
+        print ("timestamp before refresh: " + str(time_stamp))
+
+    if ts1 != ts2:
+        print("refresh worked. Timestamp 1: " + str(ts1) + " vs Timestamp 2: " + str(ts2))
+
+
+    print("Test done")

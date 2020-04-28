@@ -19,7 +19,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-    token_test()
+
 
 """
 #TODO: Find solution
