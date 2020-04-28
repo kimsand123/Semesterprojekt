@@ -16,10 +16,10 @@ Run the following, from a terminal within this folder:
 # Start without build
 
 	## Inside the container
-	- docker-compose up --build
+	- docker-compose up
 
 	## Outside the container
-	- docker-compose up --build -d
+	- docker-compose up -d
 
 # Build
 
