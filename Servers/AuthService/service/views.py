@@ -9,6 +9,8 @@ from zeep import Client
 import requests
 from datetime import datetime
 
+from zeep.exceptions import Fault
+
 AUTH_SERVICE_ACCESS_KEY = "HBdjm4VDLxn8mU2Eh7EzwNdhAEYp7bm9HvgwEJVGeM6NaBFvFFS48qbSHUYKLkuZPRWKxvGJsu4RewuuR6SVEEbH5aUqjD7H8wMeEPBd5d4G8UfB7QxhuTPPF8KKZg53zvUdv63ravcBAzdgPRbxcVu7pb6NPRfVLf3fFznvCX5ey2by6kGe3HrZX6kBTsJxTS6cL4KwkQDaN5YTq5jzQrQ4wLaXBYzx9y4w5sXdfkhLWuCL5wdFMtgbd8cNTemR"
 
 
@@ -101,21 +103,19 @@ def login(request):
         return JsonResponse(data={"reason": "There was an internal server error",
                                   "helper": "Contact group 20"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # TODO: This is todo
-    """
-    except WebFault as detail:
+    except Fault as detail:
         if "Forkert brugernavn eller adgangskode" in str(detail):
             print("401 bad credentials " + str(time), file=logfile)
-            return Response(data={"reason": "Your credentials were not correct"}, status=status.HTTP_401_UNAUTHORIZED)
+            return JsonResponse(data={"reason": "Your credentials were not correct"}, status=status.HTTP_401_UNAUTHORIZED)
         logfile.close()
-    """
+
 
 
 def register_user_with_game_service(service_key, user_token, user_object):
     compose_env_url = os.getenv('DC_GS')
 
     if compose_env_url is None:
-        URL = "http://0.0.0.0:9700/players/register_user/"
+        URL = "http://127.0.0.1:9700/players/register_user/"
     else:
         URL = "http://" + str(compose_env_url) + ":9700/players/register_user/"
 

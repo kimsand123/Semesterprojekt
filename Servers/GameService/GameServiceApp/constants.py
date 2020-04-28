@@ -13,7 +13,7 @@ def database_service_url():
     db_prod_url = "https://api.dinodev.dk"
     db_prod_full_url = db_prod_url
 
-    db_test_url = "http://0.0.0.0"
+    db_test_url = "http://127.0.0.1"
     db_test_port = "9600"
     db_test_full_url = db_test_url + ":" + db_test_port
 
