@@ -23,6 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'zmatnp^g2sja-jtr$+bzc_f)$!#3%#75ra)noqu7tdfh5f8fx4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+CORS_ORIGIN_ALLOW_ALL = True
 DEBUG = True
 APPEND_SLASH = True
 ALLOWED_HOSTS = ["*"]
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

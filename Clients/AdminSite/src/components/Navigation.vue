@@ -80,11 +80,6 @@ img {
   color: #00BD81;
 }
 
-.welcome {
-  font-weight: 600;
-  color: #00BD81;
-}
-
 .slash {
   color: white;
 }

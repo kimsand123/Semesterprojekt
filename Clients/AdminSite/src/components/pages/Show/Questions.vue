@@ -1,10 +1,10 @@
 <template>
   <div class="site-wrapper">
-    <Navigation isInviActive="true"></Navigation>
+    <Navigation :isQuestionsActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>
         <VCol variant="['md-12','sm-12','xs-12']">
-
+          <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players" linkToPut="/players" linkToDelete="/players"></MethodList>
         </VCol>
       </VRow>
     </VGrid>
@@ -12,11 +12,14 @@
 </template>
 
 <script>
-import Navigation from '../Navigation'
+import Navigation from '../../Navigation'
+import MethodList from '../../MethodList'
+
 export default {
-  name: 'Invitations',
+  name: 'Questions',
   components: {
-    'Navigation': Navigation
+    'Navigation': Navigation,
+    'MethodList': MethodList
   }
 }
 </script>
