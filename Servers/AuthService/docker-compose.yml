@@ -1,0 +1,12 @@
+version: '3'
+services:
+  gq-auth-service:
+    build:
+      context: .
+      dockerfile: docker/python/Dockerfile
+    volumes:
+      - ./:/AuthService
+    ports:
+      - "9800:8000"
+    command: python manage.py runserver [::]:8000
+    

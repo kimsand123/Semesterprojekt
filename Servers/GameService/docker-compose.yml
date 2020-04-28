@@ -1,0 +1,12 @@
+version: '3'
+services:
+  gq-game-service:
+    build:
+      context: .
+      dockerfile: docker/python/Dockerfile
+    volumes:
+      - ./:/GameService
+    ports:
+      - "9700:8000"
+    command: python manage.py runserver [::]:8000
+    
