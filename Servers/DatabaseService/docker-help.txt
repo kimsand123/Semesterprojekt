@@ -32,3 +32,6 @@ Run the following, from a terminal within this folder:
 # Stop
 	- docker-compose stop
 
+# Remove
+	- docker-compose down
+
