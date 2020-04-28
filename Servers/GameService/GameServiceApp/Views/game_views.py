@@ -3,8 +3,7 @@ from GameServiceApp.check_token import token_status
 from GameServiceApp.helper_methods import *
 from ..correct_data import CORRECT_GAME_OBJ
 
-# TIL SEBASTIAN. Husk at update timestamp til now i token_user_list for
-# den token der foretager et "gamemove"
+
 @api_view(['POST', 'GET'])
 def games(request):
     if request.method == 'POST':
@@ -52,8 +51,8 @@ def games(request):
 def single_game(request, game_id):
     if request.method == "PUT":
         decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                               'Your body should probably look like the value in correct_data',
-                                               CORRECT_GAME_OBJ)
+                                                   'Your body should probably look like the value in correct_data',
+                                                   CORRECT_GAME_OBJ)
     else:
         decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
                                                    'Your body should probably look like the value in correct_data',
@@ -89,7 +88,7 @@ def single_game(request, game_id):
 
 
 def generate_error_json(status_code, reason, suggestion, correct_data):
-    if suggestion == None and correct_data == None:
+    if suggestion is None and correct_data is None:
         json_message = {
             'status': status_code,
             'reason': reason

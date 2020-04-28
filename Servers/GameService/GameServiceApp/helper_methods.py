@@ -24,29 +24,29 @@ def check_or_add_user(user):
 
 # A general request method that is called everytime there is a request.
 def connection_service(endpoint_url, body_data, method):
-    build_URL = "http://" + DATABASE_SERVICE_IP + ":" + DATABASE_SERVICE_PORT + endpoint_url
+    build_url = database_service_url() + endpoint_url
     print("METHOD: " + method)
     print("BODY_DATA: " + str(body_data))
-    print("URL: " + build_URL)
+    print("URL: " + build_url)
     headers = {"Authorization": "Bearer 5AF4813A4FCE13A2D5436A3E33BAA"}
     try:
         if method == "POST":
             if body_data != None:
-                r = requests.post(url=build_URL, json=body_data, headers=headers)
+                r = requests.post(url=build_url, json=body_data, headers=headers)
             else:
-                r = requests.post(url=build_URL, headers=headers)
+                r = requests.post(url=build_url, headers=headers)
         if method == "GET":
             if body_data != None:
-                r = requests.get(url=build_URL, json=body_data, headers=headers)
+                r = requests.get(url=build_url, json=body_data, headers=headers)
             else:
-                r = requests.get(url=build_URL, headers=headers)
+                r = requests.get(url=build_url, headers=headers)
         if method == "DELETE":
-            r = requests.delete(url=build_URL, headers=headers)
+            r = requests.delete(url=build_url, headers=headers)
         if method == "PUT":
             if body_data != None:
-                r = requests.put(url=build_URL, json=body_data, headers=headers)
+                r = requests.put(url=build_url, json=body_data, headers=headers)
             else:
-                r = requests.put(url=build_URL, headers=headers)
+                r = requests.put(url=build_url, headers=headers)
         data = r.json()
     except requests.exceptions as e:
         return e
