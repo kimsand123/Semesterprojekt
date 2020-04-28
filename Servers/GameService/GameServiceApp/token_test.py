@@ -1,4 +1,4 @@
-from GameServiceApp.AUX.active_player_list import *
+from GameServiceApp.active_player_list import *
 import datetime
 
 def run_token_test():

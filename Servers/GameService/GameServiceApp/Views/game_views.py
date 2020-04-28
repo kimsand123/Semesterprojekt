@@ -3,6 +3,8 @@ from GameServiceApp.check_token import token_status
 from GameServiceApp.helper_methods import *
 from ..correct_data import CORRECT_GAME_OBJ
 
+from GameServiceApp.active_player_list import token_status
+from GameServiceApp.helper_methods import *
 
 @api_view(['POST', 'GET'])
 def games(request):

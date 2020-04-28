@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from GameServiceApp.check_token import token_status
+from GameServiceApp.active_player_list import token_status
 from GameServiceApp.helper_methods import get_json_data_object, connection_service
 
 
