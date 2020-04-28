@@ -1,12 +1,10 @@
-import json
-from datetime import datetime
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from GameServiceApp.active_player_list import *
 from GameServiceApp.constants import AUTH_SERVICE_ACCESS_KEY
 from GameServiceApp.helper_methods import get_json_data_object, connection_service, check_or_add_user
+
 
 ### PLAYERS ###
 ###Get all players
