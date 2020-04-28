@@ -50,20 +50,10 @@ def invites(request):
         if request.method == 'GET':
             form_param = {"player_id": req_json['player_id']}
             invite_response = connection_service("/invites/", form_param, "GET")
-        return Response(data=invite_response, status=status.HTTP_200_OK)
+        return Response(data=invite_response, status =status.HTTP_200_OK)
     else:
-        return Response("Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data = "Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
 
-
-"""
-# Hent alle invites til en spiller.
-@api_view(['GET'])
-def get_invites_for_player(request):
-    req_json = get_json_data_object(request,
-                                    "There is an error in your body json format. It should be ex {'user_token':'your_user_token'")
-    if type(req_json) == Response:
-        return Response(req_json)
-"""
 
 
 # Accept invitation
@@ -71,18 +61,15 @@ def get_invites_for_player(request):
 def accept_invite(request, invite_id):
     # Check if the request body has the proper json format
     req_json = get_json_data_object(request,
-                                    "There is an error in your body json format. It should be ex {'user_token':'your_user_token'")
+                                    "There is an error in your body json format. It should be ex {'user_token':'your_user_token'}")
     if type(req_json) == Response:
         return Response(req_json)
 
     # If token is present in the list do the following
     if token_status(req_json['user_token']):
         # Create the json package for the request
-        invite_data = {"invite": {"sender_player_id": str(req_json['sender_player_id']),
-                                  "receiver_player_id": str(req_json['receiver_player_id']),
-                                  "match_name": req_json['match_name'],
-                                  "question_duration": req_json['question_duration'],
-                                  "accepted": True}}
+
+        invite_data = {"invite": {"accepted":True}}
         response = connection_service("/invites/" + invite_id + "/", invite_data, "PUT")
         return Response(data="Invitation Accepted", status=status.HTTP_200_OK)
     else:

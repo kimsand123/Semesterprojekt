@@ -1,4 +1,5 @@
-import json
+from json import *
+from rest_framework.utils import json
 
 import requests
 from rest_framework import status
@@ -56,9 +57,11 @@ def connection_service(endpoint_url, body_data, method):
 # Get the json data object from the request that is sent to an endpoint from user
 def get_json_data_object(request, error_message):
     try:
+        #request_json = request.body.decode('uft-8')
         decoded = request.body.decode('utf-8')
         request_json = json.loads(decoded)
-        print("json : " + str(request_json))
-    except:
+
+    except (JSONDecodeError) as e:
+        print("Json error " + e.__str__)
         return Response(data=error_message, status=status.HTTP_400_BAD_REQUEST)
     return request_json
