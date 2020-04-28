@@ -7,6 +7,5 @@ services:
     volumes:
       - ./:/AuthService
     ports:
-      - "9800:8000"
-    command: python manage.py runserver [::]:8000
-    
+      - "9800:9800"
+    command: python manage.py runserver 0.0.0.0:9800

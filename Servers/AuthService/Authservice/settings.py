@@ -24,11 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ee++8qks!)po!g-tfk)$nb2u7su9)=tcq*8dd4oc011(b1wpcu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 APPEND_SLASH = True
-
-#ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ["127.0.0.1", "87.61.85.141", "api-auth.dinodev.dk"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
