@@ -49,15 +49,14 @@ class _FriendsPageState extends BasePageState<FriendsPage> with BasicPage {
       children: <Widget>[
         //Notification bar
         Container(
-          child: Container(
-              child: Visibility(
-                visible: notificationShown,
-                child: NotificationButton(
-                  title: appLocale().friends__notification,
-                ),
-              ),
-            )
-        ),
+            child: Container(
+          child: Visibility(
+            visible: notificationShown,
+            child: NotificationButton(
+              title: appLocale().friends__notification,
+            ),
+          ),
+        )),
 
         // The visible card
         CardList(
@@ -110,8 +109,9 @@ class _FriendsPageState extends BasePageState<FriendsPage> with BasicPage {
                         showSelectButton: editMode,
                         selectButtonSelected: true,
                         rowStrings: <String>[
-                          friend.name,
-                          '${friend.handicap.toStringAsFixed(1)}',
+                          friend.username,
+                          friend.firstName,
+                          '${friend.highScore}',
                         ],
                         rowHeight: index == 0 ? 35 : 30,
                         rowWidth: cardWidth,
@@ -134,7 +134,7 @@ class _FriendsPageState extends BasePageState<FriendsPage> with BasicPage {
     showPopupDialog(
       context,
       appLocale().dialog__are_you_sure,
-      appLocale().dialog__delete(user.name),
+      appLocale().dialog__delete(user.firstName + user.lastName),
       {
         Text(
           appLocale().yes,

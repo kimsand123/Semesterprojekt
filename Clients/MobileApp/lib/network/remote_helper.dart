@@ -16,7 +16,7 @@ class RemoteHelper {
     List<User> searchList = [];
 
     userList.forEach((user) {
-      String name = user.name ?? '';
+      String name = user.username ?? '';
       if (name.contains(searchPattern)) {
         searchList.add(user);
       }

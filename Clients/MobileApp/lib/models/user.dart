@@ -1,56 +1,45 @@
+import 'dart:convert';
+
+User userFromJson(String str) => User.fromJson(json.decode(str));
+
+String userToJson(User data) => json.encode(data.toJson());
+
 class User {
   int id;
+  String username;
   String email;
-  String password;
-  String name;
-  String country;
-  String dguNumber;
-  double handicap;
-  List<int> bufferZone;
+  String firstName;
+  String lastName;
+  String studyProgramme;
+  int highScore;
 
-  User(
-      {int id,
-      String email,
-      String password,
-      String name,
-      String country,
-      String dguNumber,
-      double handicap,
-      List<int> bufferZone})
-      : this.id = id ?? -1,
-        this.email = email ?? '',
-        this.password = password ?? '',
-        this.name = name = '',
-        this.country = country ?? '',
-        this.dguNumber = dguNumber ?? '',
-        this.handicap = handicap ?? 0.0,
-        this.bufferZone = bufferZone ?? [0, 22];
+  User({
+    this.id,
+    this.username,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.studyProgramme,
+    this.highScore,
+  });
 
-  String bufferZoneString() {
-    String returnString = '';
+  factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
+        username: json["username"],
+        email: json["email"],
+        firstName: json["first_name"],
+        lastName: json["last_name"],
+        studyProgramme: json["study_programme"],
+        highScore: json["high_score"],
+      );
 
-    if (bufferZone == null) {
-      return 'null';
-    }
-
-    bufferZone.forEach((bufferZoneNumber) {
-      int numberInList = bufferZone.indexOf(bufferZoneNumber);
-
-      if (numberInList == bufferZone.length - 1) {
-        returnString += '$bufferZoneNumber';
-      } else {
-        returnString += '$bufferZoneNumber-';
-      }
-    });
-
-    return returnString;
-  }
-
-  User.publicUser(
-      {this.id, this.name, this.handicap, this.country, this.bufferZone});
-
-  @override
-  String toString() {
-    return "${this.id}: [name: ${this.name}, email: ${this.email}, country: ${this.country}, dguNumber: ${this.dguNumber}, handicap: ${this.handicap}, bufferzone: ${this.bufferZoneString()}]";
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "username": username,
+        "email": email,
+        "first_name": firstName,
+        "last_name": lastName,
+        "study_programme": studyProgramme,
+        "high_score": highScore,
+      };
 }

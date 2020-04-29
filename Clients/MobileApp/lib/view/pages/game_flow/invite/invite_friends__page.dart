@@ -111,8 +111,9 @@ class _InviteFriendsPageState extends BasePageState<InviteFriendsPage>
                     showSelectButton: showAddButton,
                     selectButtonSelected: isPlayerInList,
                     rowStrings: <String>[
-                      friend.name,
-                      '${friend.handicap.toStringAsFixed(1)}',
+                      friend.username,
+                      friend.firstName,
+                      '${friend.highScore}',
                     ],
                     rowHeight: index == 0 ? 35 : 30,
                     rowWidth: cardWidth,

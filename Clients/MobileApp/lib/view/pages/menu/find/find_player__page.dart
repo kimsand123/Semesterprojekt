@@ -114,8 +114,9 @@ class _FindPlayerPageState extends BasePageState<FindPlayerPage>
                               showSelectButton: !isInList,
                               selectButtonSelected: false,
                               rowStrings: <String>[
-                                userFromList.name,
-                                '${userFromList.handicap.toStringAsFixed(1)}',
+                                userFromList.username,
+                                userFromList.firstName,
+                                '${userFromList.highScore}',
                               ],
                               rowHeight: index == 0 ? 35 : 30,
                               rowWidth: cardWidth,
@@ -168,9 +169,9 @@ class _FindPlayerPageState extends BasePageState<FindPlayerPage>
 
     showPopupDialog(
       context,
-      appLocale().find_player__add_popup__title(selectedUser.name),
+      appLocale().find_player__add_popup__title(selectedUser.username),
       appLocale().find_player__add_popup__description(
-          selectedUser.name, descriptionAddText),
+          selectedUser.firstName, descriptionAddText),
       {
         Text(
           appLocale().yes,

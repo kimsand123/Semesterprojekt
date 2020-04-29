@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/network/auth_service.dart';
 import 'package:golfquiz/network/remote_helper.dart';
+import 'package:golfquiz/network/user_service.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
 import 'package:golfquiz/view/components/auth__components/auth_button__component.dart';
@@ -18,19 +20,19 @@ class LoginPage extends BasePage {
 class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _autoValidate;
-  FocusNode _emailFocus;
+  FocusNode _usernameFocus;
   FocusNode _passwordFocus;
-  TextEditingController _emailController;
+  TextEditingController _usernameController;
   TextEditingController _passwordController;
 
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController();
+    _usernameController = TextEditingController();
     _passwordController = TextEditingController();
-    _emailController.text = 'test@test.com';
-    _passwordController.text = 'test@test.com';
-    _emailFocus = FocusNode();
+    _usernameController.text = 's160198';
+    _passwordController.text = 'densikkrestekode';
+    _usernameFocus = FocusNode();
     _passwordFocus = FocusNode();
     _autoValidate = false;
   }
@@ -38,7 +40,7 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
   @override
   void dispose() {
     super.dispose();
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
   }
 
@@ -63,18 +65,18 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
             children: <Widget>[
               TextFieldComponent(
                 inputType: TextInputType.emailAddress,
-                controller: _emailController,
-                caption: appLocale().auth__email_caption,
+                controller: _usernameController,
+                caption: appLocale().auth__username_caption,
                 isInputHidden: false,
                 margin: EdgeInsets.only(bottom: 12.0, top: 8.0),
                 hintText: appLocale().auth__email_hint,
-                focusNode: this._emailFocus,
+                focusNode: this._usernameFocus,
                 fieldValidator: (arg) {
-                  return ValidationHelper.validateEmail(arg, context);
+                  return ValidationHelper.validateUsername(arg, context);
                 },
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (term) {
-                  fieldFocusChange(this._emailFocus, this._passwordFocus);
+                  fieldFocusChange(this._usernameFocus, this._passwordFocus);
                 },
               ),
               TextFieldComponent(
@@ -110,7 +112,7 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
                     .copyWith(fontWeight: FontWeight.bold)),
             onPressed: () {
               Navigator.pushNamed(context, forgotPasswordRoute,
-                  arguments: _emailController.text);
+                  arguments: _usernameController.text);
             },
           ),
         ),
@@ -145,22 +147,16 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
         enableProgressIndicator(appLocale().auth_login__progress_text);
       });
 
-      await Future.delayed(Duration(seconds: 1));
+      User _user = await AuthService.login(
+          _usernameController.text, _passwordController.text);
       setState(() {
         disableProgressIndicator();
       });
 
-      User _user = User(
-        //Load via recieved user
-        id: 0,
-        name: 'Test-user',
-        email: _emailController.text,
-        password: _passwordController.text,
-        country: 'Denmark',
-        handicap: 10,
-        bufferZone: [22, 40],
-        dguNumber: '00-000',
-      );
+      List<User> userlist = await UserService.fetchUsers();
+
+      print("user_list " + userlist.toString());
+
       RemoteHelper().fakeFillProviders(context, _user);
 
       Navigator.pushNamedAndRemoveUntil(

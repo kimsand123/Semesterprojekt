@@ -54,7 +54,7 @@ class _ProfilePageState extends BasePageState<ProfilePage> with BasicPage {
       children: <Widget>[
         AvatarComponent(
           canEditAvatar: false,
-          name: '${shownUser.name}',
+          name: '${shownUser.firstName} ${shownUser.lastName}',
         ),
         Visibility(
           visible: isCurrentPlayer,
@@ -73,10 +73,12 @@ class _ProfilePageState extends BasePageState<ProfilePage> with BasicPage {
                 rowStrings: [
                   appLocale().email,
                   '${shownUser.email}',
-                  appLocale().country,
-                  '${shownUser.country}',
-                  appLocale().club_number,
-                  '${shownUser.dguNumber}',
+                  "Username",
+                  '${shownUser.username}',
+                  appLocale().name,
+                  '${shownUser.firstName} + ${shownUser.lastName}',
+                  "Study_programme",
+                  '${shownUser.studyProgramme}',
                 ],
               ),
             ],
@@ -97,13 +99,8 @@ class _ProfilePageState extends BasePageState<ProfilePage> with BasicPage {
               ),
               StatusComponent(
                 rowStrings: [
-                  appLocale().handicap,
-                  '${shownUser.handicap}',
-                  appLocale().bufferzone,
-                  '${shownUser.bufferZoneString()}',
-                  appLocale().world_rank,
-                  //TODO: Logic for world rank
-                  '875',
+                  "Highscore",
+                  '${shownUser.highScore}',
                 ],
               ),
             ],

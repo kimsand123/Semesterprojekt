@@ -179,8 +179,8 @@ class AppLocalization {
     return '************';
   }
 
-  String get auth__email_caption {
-    return Intl.message('Email', name: 'auth__email_caption');
+  String get auth__username_caption {
+    return Intl.message('Username', name: 'auth__email_caption');
   }
 
   String get auth__password_caption {
@@ -514,9 +514,9 @@ class AppLocalization {
   ------------------------------ Input validation ---------------------------
   */
 
-  String get validation__enter_valid_email {
-    return Intl.message('Enter valid email',
-        name: 'validation__enter_valid_email');
+  String get validation__enter_valid_username {
+    return Intl.message("Enter valid username - ex. 's123456'",
+        name: 'validation__enter_valid_username');
   }
 
   String get validation__too_short_password {

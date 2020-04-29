@@ -391,13 +391,15 @@ class HardCodedData {
 
   static Question dummyQuestion(int id) {
     return Question(
-        rule: Rule(id: '1.3b', title: 'Rule title', description: 'Rule description'),
-        question: "During stroke play, your ball ends in a bunker. Before you play your ball, you feel the sand with your hand. What is the penalty. Question ${id+1}",
+        rule: Rule(
+            id: '1.3b', title: 'Rule title', description: 'Rule description'),
+        question:
+            "During stroke play, your ball ends in a bunker. Before you play your ball, you feel the sand with your hand. What is the penalty. Question ${id + 1}",
         answers: [
-            "No penalty",
-            "2-stroke penalty",
-            "1-stroke penalty",
-          ],
+          "No penalty",
+          "2-stroke penalty",
+          "1-stroke penalty",
+        ],
         correctAnswer: 2);
   }
 
@@ -413,193 +415,139 @@ class HardCodedData {
   static User dummyUser(int number) {
     switch (number) {
       case 0:
-        return User.publicUser(
-          id: 1,
-          name: 'Torben',
-          handicap: 10.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 101,
+          firstName: 'Torben',
         );
       case 1:
-        return User.publicUser(
-          id: 2,
-          name: 'Adam',
-          handicap: 10.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 102,
+          firstName: 'Adam',
         );
       case 2:
-        return User.publicUser(
-          id: 3,
-          name: 'Josefine',
-          handicap: 40.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 103,
+          firstName: 'Josefine',
         );
       case 3:
-        return User.publicUser(
-          id: 4,
-          name: 'Sofie',
-          handicap: 30.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 104,
+          firstName: 'Sofie',
         );
       case 4:
-        return User.publicUser(
-          id: 5,
-          name: 'Janus',
-          handicap: 20.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 105,
+          firstName: 'Janus',
         );
       case 5:
-        return User.publicUser(
-          id: 6,
-          name: 'Karsten',
-          handicap: 10.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 106,
+          firstName: 'Karsten',
         );
       case 6:
-        return User.publicUser(
-          id: 7,
-          name: 'Mads',
-          handicap: 40.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 107,
+          firstName: 'Mads',
         );
       case 7:
-        return User.publicUser(
-          id: 8,
-          name: 'Tim',
-          handicap: 30.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 108,
+          firstName: 'Tim',
         );
       case 8:
-        return User.publicUser(
-          id: 9,
-          name: 'Niels',
-          handicap: 20.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 109,
+          firstName: 'Niels',
         );
       case 9:
-        return User.publicUser(
-          id: 10,
-          name: 'Lena',
-          handicap: 50.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 110,
+          firstName: 'Lena',
         );
       case 10:
-        return User.publicUser(
-          id: 11,
-          name: 'Edith',
-          handicap: 70.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 111,
+          firstName: 'Edith',
         );
       case 11:
-        return User.publicUser(
-          id: 12,
-          name: 'Yvonne',
-          handicap: 12.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 112,
+          firstName: 'Yvonne',
         );
       case 12:
-        return User.publicUser(
-          id: 13,
-          name: 'Dorit',
-          handicap: 13.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 113,
+          firstName: 'Dorit',
         );
       case 13:
-        return User.publicUser(
-          id: 14,
-          name: 'Jon',
-          handicap: 7.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 114,
+          firstName: 'Jon',
         );
       case 14:
-        return User.publicUser(
-          id: 15,
-          name: 'Bendt',
-          handicap: 54.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 115,
+          firstName: 'Bendt',
         );
       case 15:
-        return User.publicUser(
-          id: 16,
-          name: 'Benny',
-          handicap: 10.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 116,
+          firstName: 'Benny',
         );
       case 16:
-        return User.publicUser(
-          id: 17,
-          name: 'Carl',
-          handicap: 40.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 117,
+          firstName: 'Carl',
         );
       case 17:
-        return User.publicUser(
-          id: 18,
-          name: 'Gunnar',
-          handicap: 30.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 118,
+          firstName: 'Gunnar',
         );
       case 18:
-        return User.publicUser(
-          id: 19,
-          name: 'Eskild',
-          handicap: 20.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 119,
+          firstName: 'Eskild',
         );
       case 19:
-        return User.publicUser(
-          id: 20,
-          name: 'Mie',
-          handicap: 10.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 120,
+          firstName: 'Mie',
         );
       case 20:
-        return User.publicUser(
-          id: 21,
-          name: 'Jytte',
-          handicap: 40.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 121,
+          firstName: 'Jytte',
         );
       case 21:
-        return User.publicUser(
-          id: 22,
-          name: 'Amalie',
-          handicap: 30.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 122,
+          firstName: 'Amalie',
         );
       case 22:
-        return User.publicUser(
-          id: 23,
-          name: 'Sara',
-          handicap: 20.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 123,
+          firstName: 'Sara',
         );
       case 23:
-        return User.publicUser(
-          id: 24,
-          name: 'Regitze',
-          handicap: 20.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 124,
+          firstName: 'Regitze',
         );
       case 24:
-        return User.publicUser(
-          id: 25,
-          name: 'Nikoline',
-          handicap: 20.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 125,
+          firstName: 'Nikoline',
         );
       case 25:
-        return User.publicUser(
-          id: 26,
-          name: 'Olivia',
-          handicap: 20.0,
-          bufferZone: [0, 22],
+        return User(
+          id: 126,
+          firstName: 'Olivia',
         );
       default:
-        return User.publicUser(
+        return User(
           id: 600,
-          name: 'Default-user',
-          handicap: 20.0,
-          bufferZone: [0, 22],
+          firstName: 'Default-user',
         );
     }
   }

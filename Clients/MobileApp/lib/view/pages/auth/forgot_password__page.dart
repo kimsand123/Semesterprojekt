@@ -74,7 +74,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage>
             hintText: appLocale().auth__email_hint,
             focusNode: this._emailFocus,
             fieldValidator: (arg) {
-              return ValidationHelper.validateEmail(arg, context);
+              return ValidationHelper.validateUsername(arg, context);
             },
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (term) {

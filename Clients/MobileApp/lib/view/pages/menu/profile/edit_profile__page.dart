@@ -58,17 +58,14 @@ class _EditProfilePageState extends BasePageState<EditProfilePage>
     _oldPasswordController = TextEditingController();
     _newPasswordController = TextEditingController();
     _newPasswordConfirmController = TextEditingController();
-    _dguNumberController = TextEditingController();
-    _dguNumberController.addListener(() => {autoCompleteDGU()});
 
     newDGUText = '';
 
     _userProvider = Provider.of<UserProvider>(context, listen: false);
     User user = _userProvider.getUser;
-    _nameController.text = '${user.name}';
-    _emailController.text = '${user.email}';
-    _countryController.text = '${user.country}';
-    _dguNumberController.text = '${user.dguNumber}';
+    _nameController.text = '${user.firstName}';
+    _emailController.text = '${user.lastName}';
+    _countryController.text = '${user.studyProgramme}';
 
     _autoValidate = false;
     _settingNewPassword = false;
@@ -168,7 +165,7 @@ class _EditProfilePageState extends BasePageState<EditProfilePage>
                 focusNode: _emailFocus,
                 textInputAction: TextInputAction.done,
                 fieldValidator: (arg) {
-                  return ValidationHelper.validateEmail(arg, context);
+                  return ValidationHelper.validateUsername(arg, context);
                 },
                 onFieldSubmitted: (term) {
                   _emailFocus.unfocus();
@@ -299,9 +296,9 @@ class _EditProfilePageState extends BasePageState<EditProfilePage>
       });
 
       User user = _userProvider.getUser;
-      user.name = this._nameController.text;
+      //user.name = this._nameController.text;
       user.email = this._emailController.text;
-      user.country = this._countryController.text;
+      //user.country = this._countryController.text;
 
       // Send password
       debugPrint(

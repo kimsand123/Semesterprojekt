@@ -469,3 +469,4 @@ android/.idea/runConfigurations.xml
 android/.idea/codeStyles/Project.xml
 android/app/google-services.json
 ios/Flutter/Flutter.podspec
+.flutter-plugins-dependencies

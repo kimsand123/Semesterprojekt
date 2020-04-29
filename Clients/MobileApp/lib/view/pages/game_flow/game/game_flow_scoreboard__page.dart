@@ -155,7 +155,8 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                         game.isActive = false;
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
-                        Navigator.pushNamedAndRemoveUntil(context, gameRoute, ModalRoute.withName(Navigator.defaultRouteName));
+                        Navigator.pushNamedAndRemoveUntil(context, gameRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
                       } else if (game.gameType == GameType.group_match ||
                           game.gameType == GameType.tournaments) {
                         for (var i = 0;
@@ -173,18 +174,21 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                           Provider.of<CurrentGameProvider>(context,
                                   listen: false)
                               .setGame(game);
-                          Navigator.pushNamedAndRemoveUntil(context, gameRoute, ModalRoute.withName(Navigator.defaultRouteName));
+                          Navigator.pushNamedAndRemoveUntil(context, gameRoute,
+                              ModalRoute.withName(Navigator.defaultRouteName));
                         } else {
                           Provider.of<CurrentGameProvider>(context,
                                   listen: false)
                               .setGame(game);
-                          Navigator.pushNamedAndRemoveUntil(context, gameRoute, ModalRoute.withName(Navigator.defaultRouteName));
+                          Navigator.pushNamedAndRemoveUntil(context, gameRoute,
+                              ModalRoute.withName(Navigator.defaultRouteName));
                         }
                       } else {
                         game.isActive = false;
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
-                        Navigator.pushNamedAndRemoveUntil(context, gameRoute, ModalRoute.withName(Navigator.defaultRouteName));
+                        Navigator.pushNamedAndRemoveUntil(context, gameRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
                       }
                     } else {
                       if (game.gameType == GameType.two_player_match) {
@@ -193,24 +197,31 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         if (game.isItFirstPlayer) {
-                           Navigator.pushNamedAndRemoveUntil(
-                            context, gameFlowQuestionRoute,ModalRoute.withName(Navigator.defaultRouteName));
+                          Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              gameFlowQuestionRoute,
+                              ModalRoute.withName(Navigator.defaultRouteName));
                         } else {
-                          Navigator.pushNamedAndRemoveUntil(context, gameRoute, ModalRoute.withName(Navigator.defaultRouteName));
+                          Navigator.pushNamedAndRemoveUntil(context, gameRoute,
+                              ModalRoute.withName(Navigator.defaultRouteName));
                         }
                       } else if (game.gameType == GameType.group_match ||
                           game.gameType == GameType.tournaments) {
                         provider.incrementPlayerProgress(player);
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
-                         Navigator.pushNamedAndRemoveUntil(
-                            context, gameFlowQuestionRoute,ModalRoute.withName(Navigator.defaultRouteName));
+                        Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            gameFlowQuestionRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
                       } else {
                         provider.incrementPlayerProgress(player);
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushNamedAndRemoveUntil(
-                            context, gameFlowQuestionRoute,ModalRoute.withName(Navigator.defaultRouteName));
+                            context,
+                            gameFlowQuestionRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
                       }
                     }
                   },
@@ -412,7 +423,7 @@ List<Widget> multiPlayerHistory(
       playerName = AppLocalization.of(context).you;
     } else {
       color = Colors.white;
-      playerName = '${status[i].name}';
+      playerName = '${status[i].firstName}';
     }
     gameHistory.add(
       Container(
@@ -440,7 +451,7 @@ List<Widget> multiPlayerHistory(
               Container(
                 width: ((screenWidth / 3)) - (10 * 2),
                 alignment: Alignment.center,
-                child: numberText(context, '${status[i].handicap}'),
+                child: numberText(context, '${status[i].highScore}'),
               ),
               Container(
                 width: ((screenWidth / 3)) - (10 * 2),
@@ -519,7 +530,7 @@ List<Widget> groupHistory(List<GameHistory> history, List<Widget> gameHistory,
       playerName = AppLocalization.of(context).you;
     } else {
       color = Colors.white;
-      playerName = '${status[i].name}';
+      playerName = '${status[i].firstName}';
     }
     gameHistory.add(
       Container(
@@ -547,7 +558,7 @@ List<Widget> groupHistory(List<GameHistory> history, List<Widget> gameHistory,
               Container(
                 width: (screenWidth / 4) - (10 * 2),
                 alignment: Alignment.center,
-                child: numberText(context, '${status[i].handicap}'),
+                child: numberText(context, '${status[i].highScore}'),
               ),
               Container(
                 width: (screenWidth / 4) - (10 * 2),

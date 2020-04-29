@@ -55,14 +55,14 @@ void addAllPlayersFromListToGame(List<User> users, BuildContext context) {
       // Max reached for a group, show popup and break for-each
       _showTwoPlayerMaxPopup(context, gameUsers);
       debugPrint(
-          'trying to add ${addPlayer.name}, and max two players is reached');
+          'trying to add ${addPlayer.firstName}, and max two players is reached');
 
       break;
     } else if (isGroupMatch && isMaxGroupReached) {
       // Max reached for a group, show popup and break for-each
       _showGroupMaxPopup(context, gameUsers);
       debugPrint(
-          'trying to add ${addPlayer.name}, and max group players is reached');
+          'trying to add ${addPlayer.firstName}, and max group players is reached');
 
       break;
     } else if (!chosenPlayerIsInList) {
@@ -114,7 +114,7 @@ String _playersToAStringList(List<User> players) {
   String returnString = '';
 
   players.forEach((player) {
-    returnString += '\n- ${player.name}';
+    returnString += '\n- ${player.firstName}';
   });
 
   return returnString;
