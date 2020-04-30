@@ -5,6 +5,7 @@
       <VRow>
         <VCol :variants="['md-12','sm-12','xs-12']">
           <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players/add" linkToPut="/players/edit" linkToDelete="/players/delete"></MethodList>
+          <Table :titles="titles" :entries='entries'></Table>
         </VCol>
       </VRow>
     </VGrid>
@@ -14,19 +15,28 @@
 <script>
 import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
+import Table from '../../Table'
 import { api_players, auth_header} from '../../../constants'
 
 export default {
   name: 'Players',
   components: {
     'Navigation': Navigation,
-    'MethodList': MethodList
+    'MethodList': MethodList,
+    'Table': Table
+  },
+  data: () => {
+    return {
+      titles: ['ID', 'First Name', 'Last Name', 'Study Programme', 'Username', 'Email', 'High Score'],
+      entries: []
+    }
   },
   mounted() {
-
     this.$http.get(api_players, auth_header)
       .then(res => {
-        console.log(res.data.players)
+        res.data.players.forEach(player => {
+          this.entries.push(player)
+        })
       })
       .catch(error => {
         console.log(error)

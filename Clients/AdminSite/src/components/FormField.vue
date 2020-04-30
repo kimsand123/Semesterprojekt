@@ -9,7 +9,7 @@ export default {
   name: 'FormField',
   props: {
     placeholder: String,
-    label_id: String,
+    label_id: [String, Number, Object],
     type: String
   }
 }
