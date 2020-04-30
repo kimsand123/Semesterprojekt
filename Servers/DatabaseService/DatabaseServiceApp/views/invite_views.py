@@ -1,10 +1,9 @@
-from json import JSONDecodeError
-
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import IntegrityError
+from django.http import JsonResponse
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.utils import json
-
 from DatabaseServiceApp.database_helpers.invite_database_helper import InviteDatabase
 from DatabaseServiceApp.helper_methods import *
 from DatabaseServiceApp.models import Invite
@@ -159,8 +158,6 @@ def __invites_get(request):
         json_dict = json.loads(request.body)
 
         return_data = InviteDatabase.get_all_return_serialized(json_dict)
-
-
 
         json_data = {
             'requested-url': '[' + request.method + '] ' + request.get_full_path(),

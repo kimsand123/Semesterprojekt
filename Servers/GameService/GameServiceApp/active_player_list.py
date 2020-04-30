@@ -13,6 +13,7 @@ def token_status(user_token):
             return True
 
     for json_object in token_player_list:
+        print(json_object.__str__() + ", " + user_token)
         if json_object["user_token"] == user_token:
             return True
     return False

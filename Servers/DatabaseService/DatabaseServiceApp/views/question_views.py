@@ -1,5 +1,3 @@
-from json import JSONDecodeError
-
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import IntegrityError
 from rest_framework.decorators import api_view

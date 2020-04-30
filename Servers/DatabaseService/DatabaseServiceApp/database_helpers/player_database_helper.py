@@ -1,6 +1,5 @@
 import json
 
-from DatabaseServiceApp.helper_methods import is_key_in_dict
 from DatabaseServiceApp.models import Player
 from DatabaseServiceApp.serializers import PlayerSerializer
 
@@ -50,24 +49,24 @@ class PlayerDatabase:
     @staticmethod
     def create(json_body):
         # Early exit on missing player in json
-        if not is_key_in_dict(json_body, 'player'):
+        if 'player' not in json_body:
             return 'player'
 
         json_player = json_body['player']
 
         # Check for required attributes in the player object
-        if not is_key_in_dict(json_player, 'username'):
+        if 'username' not in json_player:
             return 'username'
-        elif not is_key_in_dict(json_player, 'email'):
+        elif 'email' not in json_player:
             return 'email'
-        elif not is_key_in_dict(json_player, 'first_name'):
+        elif 'first_name' not in json_player:
             return 'first_name'
-        elif not is_key_in_dict(json_player, 'last_name'):
+        elif 'last_name' not in json_player:
             return 'last_name'
-        elif not is_key_in_dict(json_player, 'study_programme'):
+        elif 'study_programme' not in json_player:
             return 'study_programme'
 
-        if is_key_in_dict(json_player, 'high_score'):
+        if 'high_score' in json_player:
             # Save the object in database
             player = Player(username=json_player['username'], email=json_player['email'],
                             first_name=json_player['first_name'], last_name=json_player['last_name'],
@@ -103,7 +102,7 @@ class PlayerDatabase:
     @staticmethod
     def update(json_body, player_id):
         # Early exit on missing player in json
-        if not is_key_in_dict(json_body, 'player'):
+        if 'player' not in json_body:
             return 'player'
 
         json_player = json_body['player']
@@ -111,22 +110,22 @@ class PlayerDatabase:
         player = PlayerDatabase.get_one(player_id)
 
         # Change only the provided attributes
-        if is_key_in_dict(json_player, 'username'):
+        if 'username' in json_player:
             player.username = json_player['username']
 
-        if is_key_in_dict(json_player, 'email'):
+        if 'email' in json_player:
             player.email = json_player['email']
 
-        if is_key_in_dict(json_player, 'first_name'):
+        if 'first_name' in json_player:
             player.first_name = json_player['first_name']
 
-        if is_key_in_dict(json_player, 'last_name'):
+        if 'last_name' in json_player:
             player.last_name = json_player['last_name']
 
-        if is_key_in_dict(json_player, 'study_programme'):
+        if 'study_programme' in json_player:
             player.study_programme = json_player['study_programme']
 
-        if is_key_in_dict(json_player, 'high_score'):
+        if 'high_score' in json_player:
             player.high_score = json_player['high_score']
 
         player.save()

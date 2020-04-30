@@ -1,8 +1,7 @@
-from json import JSONDecodeError
-
-import django
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import IntegrityError
+from django.http import JsonResponse
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.utils import json
 

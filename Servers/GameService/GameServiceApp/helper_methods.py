@@ -12,52 +12,55 @@ from GameServiceApp.constants import *
 def check_or_add_user(user):
     player = user['player']
     dtu_username = player['username']
-    data = connection_service("/players/" + dtu_username + "/", None, "GET")
+    data = connection_service("/players/" + dtu_username + "/", None, None, "GET")
 
     # If the player doesnt exist
     if 'player' not in data:
-        data = connection_service("/players/", user, "POST")
+        data = connection_service("/players/", user, None, "POST")
 
     player = data['player']
-    player_id = player['id']
-    return player_id
+    return player
 
 
 # A general request method that is called everytime there is a request.
-def connection_service(endpoint_url, body_data, method):
+def connection_service(endpoint_url, body_data, query_params, method):
     build_url = database_service_url() + endpoint_url
     print("METHOD: " + method)
     print("BODY_DATA: " + str(body_data))
     print("URL: " + build_url)
     headers = {"Authorization": "Bearer 5AF4813A4FCE13A2D5436A3E33BAA"}
+
+    params = query_params
+    if params is None:
+        params = ""
+
     try:
+        r = ""
         if method == "POST":
-            if body_data != None:
-                r = requests.post(url=build_url, json=body_data, headers=headers)
+            if body_data is not None:
+                r = requests.post(url=build_url + str(params), json=body_data, headers=headers)
             else:
-                r = requests.post(url=build_url, headers=headers)
-        if method == "GET":
-            if body_data != None:
-                r = requests.get(url=build_url, json=body_data, headers=headers)
+                r = requests.post(url=build_url + str(params), headers=headers)
+        elif method == "GET":
+            r = requests.get(url=(build_url + params), headers=headers)
+        elif method == "DELETE":
+            r = requests.delete(url=build_url + str(params), headers=headers)
+        elif method == "PUT":
+            if body_data is not None:
+                r = requests.put(url=build_url + str(params), json=body_data, headers=headers)
             else:
-                r = requests.get(url=build_url, headers=headers)
-        if method == "DELETE":
-            r = requests.delete(url=build_url, headers=headers)
-        if method == "PUT":
-            if body_data != None:
-                r = requests.put(url=build_url, json=body_data, headers=headers)
-            else:
-                r = requests.put(url=build_url, headers=headers)
-        data = r.json()
+                r = requests.put(url=build_url + str(params), headers=headers)
+        data = json.loads(r.content.decode("UTF-8").__str__())
+        return data
+
     except requests.exceptions as e:
         return e
-    return data
 
 
 # Get the json data object from the request that is sent to an endpoint from user
 def get_json_data_object(request, error_message):
     try:
-        #request_json = request.body.decode('uft-8')
+        # request_json = request.body.decode('uft-8')
         decoded = request.body.decode('utf-8')
         request_json = json.loads(decoded)
 

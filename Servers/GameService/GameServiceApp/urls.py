@@ -8,7 +8,7 @@ urlpatterns = [
     # Players
     path('players/register_user/', player_views.register_user),  # POST register a user from AUTH
     path('players/<str:player_id>/', player_views.get_player),  # GET a specific player
-    path('players/', player_views.get_players),  # GET all players
+    path('players/', player_views.players),  # GET all players
 
     # Invites
     path('invites/', invite_views.invites),  # GET all invites, #POST invite a specific player

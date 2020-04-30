@@ -7,19 +7,22 @@ from GameServiceApp.helper_methods import get_json_data_object, connection_servi
 from GameServiceApp.active_player_list import *
 
 
-# PLAYERS
-# Get all players
+# -------------
+# [GET / POST] /games/
+# -------------
 @api_view(['GET'])
-def get_players(request):
+def players(request):
     # Check if request body is properly json formatted
     req_json = get_json_data_object(request,
                                     "There is an error in your body json format. It should be ex{'user_token':'Yourtoken'}")
     if type(req_json) == Response:
         return req_json
 
+    auth_in_headers = 'Authorization' in request.headers
+
     # If token is present in the list do the following
-    if token_status(req_json['user_token']):
-        response = connection_service("/players/", None, "GET")
+    if auth_in_headers and token_status(request.headers['Authorization']):
+        response = connection_service("/players/", None, None, "GET")
         return Response(data=response, status=status.HTTP_200_OK)
     else:
         return Response(data="Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
@@ -34,9 +37,11 @@ def get_player(request, player_id):
     if type(req_json) == Response:
         return Response(req_json)
 
+    auth_in_headers = 'Authorization' not in request.headers
+
     # If token is present in the list do the following
-    if token_status(req_json['user_token']):
-        response = connection_service("/players/" + player_id + "/", None, "GET")
+    if auth_in_headers and token_status(request.headers['Authorization']):
+        response = connection_service("/players/" + player_id + "/", None, None, "GET")
         return Response(data=response, status=status.HTTP_200_OK)
     else:
         return Response(data="Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
@@ -58,19 +63,20 @@ def register_user(request):
         if req_json['service_key'] == AUTH_SERVICE_ACCESS_KEY:
 
             # check or add user
-            player_id = check_or_add_user(req_json['user_object'])
+            player = check_or_add_user(req_json['user_object'])
+            player_id = player['id']
 
             # If the player is not already logged in
-            if player_id not in token_player_list:
+            if player['id'] not in token_player_list:
 
                 # Add token, timestamp and player_id to token_user_list
                 token = req_json['user_token']
                 add_token(token, player_id)
                 run_token_test()
-                gameservice_ip = "127.0.0.1"
-                gameservice_port = "9700"
-                response = {"gameservice_ip": gameservice_ip, "gameservice_port": gameservice_port,
-                            "player_id": player_id}
+                game_service_ip = "127.0.0.1"
+                game_service_port = "9700"
+                response = {"game_service_ip": game_service_ip, "game_service_port": game_service_port,
+                            "player": player}
                 print("response before sending: " + str(response))
                 return Response(response, status=status.HTTP_200_OK)
             else:
@@ -78,7 +84,7 @@ def register_user(request):
                                 status=status.HTTP_208_ALREADY_REPORTED)
         else:
             return Response(status.HTTP_401_UNAUTHORIZED)
-    except:
+    except IndexError:
         return Response(data="error", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -86,7 +92,7 @@ def run_token_test():
     add_token("TESTTOKEN", 1000)
 
     user_token, player_id, time_stamp = get_token("TESTTOKEN")
-    if user_token != None:
+    if user_token is not None:
         print("add_token worked")
     else:
         print("add_token didn't worked")
@@ -97,7 +103,7 @@ def run_token_test():
         print("token_status didn't work")
 
     user_token, player_id, time_stamp = get_token("TESTTOKEN")
-    if user_token == None:
+    if user_token is None:
         print("Token didn't exist")
     else:
         ts1 = time_stamp
@@ -106,7 +112,7 @@ def run_token_test():
     refresh_token("TESTTOKEN")
 
     user_token, player_id, time_stamp = get_token("TESTTOKEN")
-    if user_token == None:
+    if user_token is None:
         print("Token didn't exist")
     else:
         ts2 = time_stamp

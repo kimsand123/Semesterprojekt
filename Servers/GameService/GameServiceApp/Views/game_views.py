@@ -5,89 +5,140 @@ from GameServiceApp.active_player_list import token_status
 from GameServiceApp.helper_methods import *
 
 
+# -------------
+# [GET / POST] /games/
+# -------------
 @api_view(['POST', 'GET'])
 def games(request):
-    if request.method == 'POST':
-        decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                                   'Your body should probably look like the value in correct_data',
-                                                   CORRECT_GAME_OBJ)
+    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
+                                               'Your body should probably look like the value in correct_data',
+                                               {"user_token": "your_token"})
+
+    # Early exit on missing authorization / invalid token
+    auth_in_headers = 'Authorization' in request.headers
+    if not auth_in_headers:
+        if not token_status(request.headers['Authorization']):
+            error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
+            return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
+
+    # Goes to the different method calls
+    if request.method == 'GET':
+        return games_get(request)
+    elif request.method == 'POST':
+        return games_post(request)
     else:
-        decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                                   'Your body should probably look like the value in correct_data',
-                                                   {"user_token": "your_token"})
-
-    json_request = get_json_data_object(request, decode_error_message)
-    if type(json_request) is Response:
-        return json_request
-
-    if token_status(json_request['user_token']):
-        if request.method == 'POST':
-            game_req = json_request['game']
-            json_body = {
-                "game": {
-                    "match_name": game_req['match_name'],
-                    "question_duration": game_req['question_duration'],
-                    "questions": game_req['questions'],
-                    "player_status": game_req['player_status']
-                }
-            }
-            response = connection_service("/games/", json_body, "POST")
-            return Response(data=response, status=status.HTTP_201_CREATED)
-        elif request.method == 'GET':
-            if 'player_id' in json_request:
-                json_body = {
-                    "player_id": json_request['player_id']
-                }
-                response = connection_service("/games/", json_body, "GET")
-                return Response(data=response, status=status.HTTP_200_OK)
-            else:
-                response = connection_service("/games/", None, "GET")
-                return Response(data=response, status=status.HTTP_200_OK)
-    else:
-        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
-        return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
+        print("/games/ does not have a \'" + request.method + "\' handling")
 
 
+# -------------
+# [GET / PUT / DELETE] /games/game_id
+# -------------
 @api_view(['GET', 'PUT', 'DELETE'])
 def single_game(request, game_id):
-    if request.method == "PUT":
-        decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                                   'Your body should probably look like the value in correct_data',
-                                                   CORRECT_GAME_OBJ)
+    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
+                                               'Your body should probably look like the value in correct_data',
+                                               {"user_token": "your_token"})
+
+    # Early exit on missing authorization / invalid token
+    auth_in_headers = 'Authorization' in request.headers
+    if not auth_in_headers:
+        if not token_status(request.headers['Authorization']):
+            error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
+            return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
+
+    if request.method == 'GET':
+        return single_game_get(request, game_id)
+    elif request.method == 'PUT':
+        return single_game_put(request, game_id)
+    elif request.method == 'DELETE':
+        return single_game_delete(request, game_id)
     else:
-        decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                                   'Your body should probably look like the value in correct_data',
-                                                   {"user_token": "your_token"})
+        print("/games/game_id does not have a \'" + request.method + "\' handling")
+
+
+# -------------
+# [GET] /games/
+# -------------
+def games_get(request):
+    if 'player_id' in request.GET:
+        param_player_id = request.GET['player_id']
+        connection_params = "?player_id=" + param_player_id
+        response = connection_service("/games/", None, connection_params, "GET")
+        return Response(data=response, status=status.HTTP_200_OK)
+    else:
+        response = connection_service("/games/", None, None, "GET")
+        return Response(data=response, status=status.HTTP_200_OK)
+
+
+# -------------
+# [POST] /games/
+# -------------
+def games_post(request):
+    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
+                                               'Your body should probably look like the value in correct_data',
+                                               CORRECT_GAME_OBJ)
 
     json_request = get_json_data_object(request, decode_error_message)
     if type(json_request) is Response:
         return json_request
 
-    if token_status(json_request['user_token']):
-        if request.method == 'GET':
-            response = connection_service(f"/games/{game_id}/", None, "GET")
-            return Response(data=response, status=status.HTTP_200_OK)
-
-        elif request.method == 'PUT':
-            game_req = json_request['game']
-            json_body = {
-                "game": {
-                    "match_name": game_req['match_name'],
-                    "question_duration": game_req['question_duration'],
-                    "questions": game_req['questions'],
-                    "player_status": game_req['player_status']
-                }
-            }
-            response = connection_service(f"/games/{game_id}/", json_body, "PUT")
-            return Response(data=response, status=status.HTTP_200_OK)
-        elif request.method == 'DELETE':
-            response = connection_service(f"/games/{game_id}/", None, "DELETE")
-            return Response(data=response, status=status.HTTP_200_OK)
-    else:
-        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
-        return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
+    game_req = json_request['game']
+    json_body = {
+        "game": {
+            "match_name": game_req['match_name'],
+            "question_duration": game_req['question_duration'],
+            "questions": game_req['questions'],
+            "player_status": game_req['player_status']
+        }
+    }
+    response = connection_service("/games/", json_body, None, "POST")
+    return Response(data=response, status=status.HTTP_201_CREATED)
 
 
+# -------------
+# [GET] /games/game_id/
+# -------------
+def single_game_get(request, game_id):
+    response = connection_service(f"/games/{game_id}/", None, None, "GET")
+    return Response(data=response, status=status.HTTP_200_OK)
+
+
+# -------------
+# [PUT] /games/game_id/
+# -------------
+def single_game_put(request, game_id):
+    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
+                                               'Your body should probably look like the value in correct_data',
+                                               CORRECT_GAME_OBJ)
+
+    json_request = get_json_data_object(request, decode_error_message)
+    if type(json_request) is Response:
+        return json_request
+
+    game_req = json_request['game']
+    json_body = {
+        "game": {
+            "match_name": game_req['match_name'],
+            "question_duration": game_req['question_duration'],
+            "questions": game_req['questions'],
+            "player_status": game_req['player_status']
+        }
+    }
+    response = connection_service(f"/games/{game_id}/", json_body, None, "PUT")
+    return Response(data=response, status=status.HTTP_200_OK)
+
+
+# -------------
+# [DELETE] /games/game_id/
+# -------------
+def single_game_delete(request, game_id):
+    response = connection_service(f"/games/{game_id}/", None, None, "DELETE")
+    return Response(data=response, status=status.HTTP_200_OK)
+
+
+# -------------
+# Generate error json
+# -------------
 def generate_error_json(status_code, reason, suggestion, correct_data):
     if suggestion is None and correct_data is None:
         json_message = {

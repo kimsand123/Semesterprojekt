@@ -1,6 +1,5 @@
 import json
 
-from DatabaseServiceApp.helper_methods import is_key_in_dict
 from DatabaseServiceApp.models import Question
 from DatabaseServiceApp.serializers import QuestionSerializer
 
@@ -46,21 +45,21 @@ class QuestionDatabase:
     @staticmethod
     def create(json_body):
         # Early exit on missing question in json
-        if not is_key_in_dict(json_body, 'question'):
+        if 'question' not in json_body:
             return 'question'
 
         json_question = json_body['question']
 
         # Check for required attributes in the question object
-        if not is_key_in_dict(json_question, 'question_text'):
+        if 'question_text' not in json_question:
             return 'question_text'
-        elif not is_key_in_dict(json_question, 'correct_answer'):
+        elif 'correct_answer' not in json_question:
             return 'correct_answer'
-        elif not is_key_in_dict(json_question, 'answer_1'):
+        elif 'answer_1' not in json_question:
             return 'answer_1'
-        elif not is_key_in_dict(json_question, 'answer_2'):
+        elif 'answer_2' not in json_question:
             return 'answer_2'
-        elif not is_key_in_dict(json_question, 'answer_3'):
+        elif 'answer_3' not in json_question:
             return 'answer_3'
 
         # Save the object in database
@@ -96,7 +95,7 @@ class QuestionDatabase:
     @staticmethod
     def update(json_body, question_id):
         # Early exit on missing question in json
-        if not is_key_in_dict(json_body, 'question'):
+        if 'question' not in json_body:
             return 'question'
 
         json_question = json_body['question']
@@ -104,19 +103,19 @@ class QuestionDatabase:
         question = QuestionDatabase.get_one(question_id)
 
         # Change only the provided attributes
-        if is_key_in_dict(json_question, 'question_text'):
+        if 'question_text' in json_question:
             question.question_text = json_question['question_text']
 
-        if is_key_in_dict(json_question, 'correct_answer'):
+        if 'correct_answer' in json_question:
             question.correct_answer = json_question['correct_answer']
 
-        if is_key_in_dict(json_question, 'answer_1'):
+        if 'answer_1' in json_question:
             question.answer_1 = json_question['answer_1']
 
-        if is_key_in_dict(json_question, 'answer_2'):
+        if 'answer_2' in json_question:
             question.answer_2 = json_question['answer_2']
 
-        if is_key_in_dict(json_question, 'answer_3'):
+        if 'answer_3' in json_question:
             question.answer_3 = json_question['answer_3']
 
         question.save()
