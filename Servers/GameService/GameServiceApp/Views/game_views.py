@@ -8,15 +8,13 @@ from GameServiceApp.helper_methods import *
 # -------------
 # [GET / POST] /games/
 # -------------
-@api_view(['POST', 'GET'])
+@api_view(['GET', 'POST'])
 def games(request):
-    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                               'Your body should probably look like the value in correct_data',
-                                               {"user_token": "your_token"})
-
     # Early exit on missing authorization / invalid token
-    auth_in_headers = 'Authorization' in request.headers
-    if not auth_in_headers:
+    if 'Authorization' not in request.headers:
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
+    else:
         if not token_status(request.headers['Authorization']):
             error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
             return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
@@ -35,13 +33,11 @@ def games(request):
 # -------------
 @api_view(['GET', 'PUT', 'DELETE'])
 def single_game(request, game_id):
-    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
-                                               'Your body should probably look like the value in correct_data',
-                                               {"user_token": "your_token"})
-
     # Early exit on missing authorization / invalid token
-    auth_in_headers = 'Authorization' in request.headers
-    if not auth_in_headers:
+    if 'Authorization' not in request.headers:
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
+    else:
         if not token_status(request.headers['Authorization']):
             error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
             return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
@@ -54,6 +50,13 @@ def single_game(request, game_id):
         return single_game_delete(request, game_id)
     else:
         print("/games/game_id does not have a \'" + request.method + "\' handling")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# INDIVIDUAL METHODS BENEATH
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 # -------------
@@ -134,22 +137,3 @@ def single_game_put(request, game_id):
 def single_game_delete(request, game_id):
     response = connection_service(f"/games/{game_id}/", None, None, "DELETE")
     return Response(data=response, status=status.HTTP_200_OK)
-
-
-# -------------
-# Generate error json
-# -------------
-def generate_error_json(status_code, reason, suggestion, correct_data):
-    if suggestion is None and correct_data is None:
-        json_message = {
-            'status': status_code,
-            'reason': reason
-        }
-    else:
-        json_message = {
-            'status': status_code,
-            'reason': reason,
-            'suggestion': suggestion,
-            'correct_data': correct_data
-        }
-    return json_message

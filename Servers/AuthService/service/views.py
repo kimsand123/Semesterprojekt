@@ -115,9 +115,9 @@ def register_user_with_game_service(service_key, user_token, user_object):
     compose_env_url = os.getenv('DC_GS')
 
     if compose_env_url is None:
-        URL = "http://127.0.0.1:9700/players/register_user/"
+        URL = "http://127.0.0.1:9700/register_user/"
     else:
-        URL = "http://" + str(compose_env_url) + ":9700/players/register_user/"
+        URL = "http://" + str(compose_env_url) + ":9700/register_user/"
 
     body_data = {"service_key": service_key, "user_token": user_token, "user_object": user_object}
 

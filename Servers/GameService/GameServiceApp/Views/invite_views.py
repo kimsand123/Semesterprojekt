@@ -3,82 +3,141 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from GameServiceApp.active_player_list import token_status
-from GameServiceApp.helper_methods import get_json_data_object, connection_service
+from GameServiceApp.correct_data import CORRECT_INVITE_OBJ
+from GameServiceApp.helper_methods import get_json_data_object, connection_service, generate_error_json
 
 
-# INVITES #
-# POST = Invite player. GET = get all invites
-@api_view(['POST', 'GET'])
+# -------------
+# [GET / POST] /invites/
+# -------------
+@api_view(['GET', 'POST'])
 def invites(request):
-    invite_response = ""
-    # Check if the request body has the proper json format
-    req_json = get_json_data_object(request,
-                                    "There is an error in your body json format. It should be ex {'user_token':'your_user_token','sender_player_id':38,'reciever_player_id':39,'match_name':'TestMatch','question_duration':5}")
-    if type(req_json) == Response:
-        return req_json
-
-    auth_in_headers = 'Authorization' not in request.headers
-
-    # If token is present in the list do the following
-    if auth_in_headers and token_status(request.headers['Authorization']):
-        if request.method == 'POST':
-            # Getting relevant data from the request to use later
-            sender_player_id = req_json['sender_player_id']
-            receiver_player_id = req_json['receiver_player_id']
-            match_name = req_json['match_name']
-            question_duration = req_json['question_duration']
-
-            # Check if the invited player already exists in DB
-            try:
-                response = connection_service("/players/" + str(receiver_player_id) + "/", None, None, "GET")
-            except:
-                return Response("The player you want to invite does not exist anymore",
-                                status=status.HTTP_204_NO_CONTENT)
-            # End Check
-
-            # Setting parameters and getting the response
-            form_param = {
-                "invite": {"sender_player_id": str(sender_player_id), "receiver_player_id": str(receiver_player_id),
-                           "match_name": match_name, "question_duration": str(question_duration), "accepted": False}}
-            response = connection_service("/invites/", form_param, None, "POST")
-
-            # Getting data for  the invite_response var
-            invite_object = response['invite']
-            receiver_player = invite_object['receiver_player']
-
-            invite_response = "Player " + receiver_player['first_name'] + " " + receiver_player[
-                'last_name'] + " has been invited to play"
-
-        if request.method == 'GET':
-            if 'player_id' in request.GET:
-                param_player_id = request.GET['player_id']
-                form_param = {"player_id": int(param_player_id)}
-                invite_response = connection_service("/invites/", form_param, None, "GET")
-            else:
-                invite_response = connection_service("/invites/", None, None, "GET")
-        return Response(data=invite_response, status=status.HTTP_200_OK)
+    # Early exit on missing authorization / invalid token
+    if 'Authorization' not in request.headers:
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
     else:
-        return Response(data="Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
+        if not token_status(request.headers['Authorization']):
+            error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
+            return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
 
-
-# Accept invitation
-@api_view(['PUT'])
-def accept_invite(request, invite_id):
-    # Check if the request body has the proper json format
-    req_json = get_json_data_object(request,
-                                    "There is an error in your body json format. It should be ex {'user_token':'your_user_token'}")
-
-    auth_in_headers = 'Authorization' in request.headers
-
-    if type(req_json) == Response:
-        return Response(req_json)
-
-    # If token is present in the list do the following
-    if auth_in_headers and token_status(request.headers['Authorization']):
-        # Create the json package for the request
-
-        invite_data = {"invite": {"accepted": True}}
-        response = connection_service("/invites/" + invite_id + "/", invite_data, None, "PUT")
-        return Response(data="Invitation Accepted", status=status.HTTP_200_OK)
+    # Goes to the different method calls
+    if request.method == 'GET':
+        return invites_get(request)
+    elif request.method == 'POST':
+        return invites_post(request)
     else:
-        return Response("Token not valid. Please login again", status=status.HTTP_401_UNAUTHORIZED)
+        print("/invites/ does not have a \'" + request.method + "\' handling")
+
+
+# -------------
+# [GET / PUT / DELETE] /invites/invite_id
+# -------------
+@api_view(['GET', 'PUT', 'DELETE'])
+def single_invite(request, invite_id):
+    # Early exit on missing authorization / invalid token
+    if 'Authorization' not in request.headers:
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        if not token_status(request.headers['Authorization']):
+            error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Token was invalid", None, None)
+            return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
+
+    if request.method == 'GET':
+        return single_invite_get(request, invite_id)
+    elif request.method == 'PUT':
+        return single_invite_put(request, invite_id)
+    elif request.method == 'DELETE':
+        return single_invite_delete(request, invite_id)
+    else:
+        print("/invites/invite_id does not have a \'" + request.method + "\' handling")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# INDIVIDUAL METHODS BENEATH
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+# -------------
+# [GET] /invites/
+# -------------
+def invites_get(request):
+    if 'player_id' in request.GET:
+        param_player_id = request.GET['player_id']
+        connection_params = "?player_id=" + param_player_id
+        response = connection_service("/invites/", None, connection_params, "GET")
+        return Response(data=response, status=status.HTTP_200_OK)
+    else:
+        response = connection_service("/invites/", None, None, "GET")
+        return Response(data=response, status=status.HTTP_200_OK)
+
+
+# -------------
+# [POST] /invites/
+# -------------
+def invites_post(request):
+    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
+                                               'Your body should probably look like the value in correct_data',
+                                               CORRECT_INVITE_OBJ)
+
+    json_request = get_json_data_object(request, decode_error_message)
+    if type(json_request) is Response:
+        return json_request
+
+    invite = json_request['invite']
+    json_body = {
+        "invite": {
+            "sender_player_id": invite['sender_player_id'],
+            "receiver_player_id": invite['receiver_player_id'],
+            "match_name": invite['match_name'],
+            "question_duration": invite['question_duration'],
+            "accepted": invite['accepted']
+        }
+    }
+    response = connection_service("/invites/", json_body, None, "POST")
+    return Response(data=response, status=status.HTTP_201_CREATED)
+
+
+# -------------
+# [GET] /invites/invite_id/
+# -------------
+def single_invite_get(request, invite_id):
+    response = connection_service(f"/invites/{invite_id}/", None, None, "GET")
+    return Response(data=response, status=status.HTTP_200_OK)
+
+
+# -------------
+# [PUT] /invites/invite_id/
+# -------------
+def single_invite_put(request, invite_id):
+    decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
+                                               'Your body should probably look like the value in correct_data',
+                                               CORRECT_INVITE_OBJ)
+
+    json_request = get_json_data_object(request, decode_error_message)
+    if type(json_request) is Response:
+        return json_request
+
+    invite = json_request['invite']
+    json_body = {
+        "invite": {
+            "sender_player_id": invite['sender_player_id'],
+            "receiver_player_id": invite['receiver_player_id'],
+            "match_name": invite['match_name'],
+            "question_duration": invite['question_duration'],
+            "accepted": invite['accepted']
+        }
+    }
+    response = connection_service(f"/invites/{invite_id}/", json_body, None, "PUT")
+    return Response(data=response, status=status.HTTP_200_OK)
+
+
+# -------------
+# [DELETE] /invites/invite_id/
+# -------------
+def single_invite_delete(request, invite_id):
+    response = connection_service(f"/invites/{invite_id}/", None, None, "DELETE")
+    return Response(data=response, status=status.HTTP_200_OK)

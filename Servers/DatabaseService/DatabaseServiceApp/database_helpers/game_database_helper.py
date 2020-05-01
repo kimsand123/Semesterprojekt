@@ -10,7 +10,7 @@ class GameDatabase:
     #   Get all
     # -----------
     @staticmethod
-    def get_all_return_serialized(json_body):
+    def get_all_return_serialized(query_params):
 
         # Get all from games_table
         game_query = Game.objects.all()
@@ -20,7 +20,7 @@ class GameDatabase:
         return_list = []
 
         # If no player_id is in the json_body, build and return the full game list
-        if 'player_id' not in json_body:
+        if 'player_id' not in query_params:
             for game in game_query_dict:
                 received_game = GameDatabase.get_one_return_serialized(game['id'])
                 return_list.append(received_game)
@@ -28,7 +28,11 @@ class GameDatabase:
 
         # If a player_id is in the json_body, build and return the specific game list
         else:
-            player_id = json_body['player_id']
+            # Cast to int, if it is a digit
+            if str(query_params['player_id']).isdigit():
+                player_id = int(query_params['player_id'])
+            else:
+                player_id = query_params['player_id']
 
             for game in game_query_dict:
                 received_game = GameDatabase.get_one_return_serialized(game['id'])

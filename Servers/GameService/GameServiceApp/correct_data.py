@@ -1,5 +1,4 @@
 CORRECT_GAME_OBJ = {
-    "user_token": "your_token",
     "game": {
         "match_name": "MATCH_NAME",
         "question_duration": 20.0,
@@ -45,4 +44,28 @@ CORRECT_GAME_OBJ = {
             }
         ]
     }
+}
+
+CORRECT_PLAYER_OBJ = {
+    'player':
+        {
+            'username': 's123456',
+            'email': 's123456@student.dtu.dk',
+            'first_name': 'Søren',
+            'last_name': 'Træsko',
+            'study_programme': 'Software technology',
+            'high_score': 20.1,
+        }
+}
+
+
+CORRECT_INVITE_OBJ = {
+    "invite":
+        {
+            "sender_player_id": 1,
+            "receiver_player_id": 1,
+            "match_name": "Example match",
+            "question_duration": 15,
+            "accepted": False
+        }
 }

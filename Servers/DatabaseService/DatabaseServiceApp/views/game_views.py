@@ -200,22 +200,14 @@ def __bad_method(request, allowed_methods):
 def __games_get(request):
     print_origin(request, 'Games')
 
-    return_data = {}
+    return_data = GameDatabase.get_all_return_serialized(request.GET)
 
-    try:
-        json_dict = json.loads(request.body)
+    json_data = {
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+        'games': return_data,
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
-        return_data = GameDatabase.get_all_return_serialized(json_dict)
-
-    except JSONDecodeError:
-        return_data = GameDatabase.get_all_return_serialized({})
-
-    finally:
-        json_data = {
-            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
-            'games': return_data,
-        }
-        return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
 # -----------------------------

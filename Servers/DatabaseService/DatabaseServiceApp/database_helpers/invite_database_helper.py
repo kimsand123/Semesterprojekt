@@ -8,30 +8,35 @@ class InviteDatabase:
     #   Get all
     # -----------
     @staticmethod
-    def get_all(json_body):
+    def get_all(query_params):
         invite_query = {}
 
         # Early exit on missing invite in json
-        if 'player_id' not in json_body:
+        if 'player_id' not in query_params:
             invite_query = Invite.objects.all()
         else:
-            player_id = json_body['player_id']
+            # Cast to int, if it is a digit
+            if str(query_params['player_id']).isdigit():
+                player_id = int(query_params['player_id'])
+            else:
+                player_id = query_params['player_id']
 
-            if isinstance(player_id, str):
-                invite_receiver_query = Invite.objects.all().filter(receiver_player__username=player_id)
-                invite_sender_query = Invite.objects.all().filter(sender_player__username=player_id)
+            # Check if the player_id is int (then it is an id)
+            if isinstance(player_id, int):
+                invite_receiver_query = Invite.objects.all().filter(receiver_player_id=player_id)
+                invite_sender_query = Invite.objects.all().filter(sender_player_id=player_id)
 
                 invite_query = {
-
                     "invites_as_sender": invite_sender_query,
                     "invites_as_receiver": invite_receiver_query
                 }
 
             else:
-                invite_receiver_query = Invite.objects.all().filter(receiver_player_id=player_id)
-                invite_sender_query = Invite.objects.all().filter(sender_player_id=player_id)
+                invite_receiver_query = Invite.objects.all().filter(receiver_player__username=player_id)
+                invite_sender_query = Invite.objects.all().filter(sender_player__username=player_id)
 
                 invite_query = {
+
                     "invites_as_sender": invite_sender_query,
                     "invites_as_receiver": invite_receiver_query
                 }

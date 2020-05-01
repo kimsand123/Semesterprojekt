@@ -68,3 +68,22 @@ def get_json_data_object(request, error_message):
         print("Json error " + e.__str__())
         return Response(data=error_message, status=status.HTTP_400_BAD_REQUEST)
     return request_json
+
+
+# -------------
+# Generate error json
+# -------------
+def generate_error_json(status_code, reason, suggestion, correct_data):
+    if suggestion is None and correct_data is None:
+        json_message = {
+            'status': status_code,
+            'reason': reason
+        }
+    else:
+        json_message = {
+            'status': status_code,
+            'reason': reason,
+            'suggestion': suggestion,
+            'correct_data': correct_data
+        }
+    return json_message

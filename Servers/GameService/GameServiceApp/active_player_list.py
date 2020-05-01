@@ -1,6 +1,4 @@
-import json
 from datetime import datetime
-
 from GameService import settings
 
 token_player_list = []
@@ -8,9 +6,8 @@ token_player_list = []
 
 # Check if token is in the token_list and return true otherwise return false
 def token_status(user_token):
-    if settings.DEBUG:
-        if user_token == "test":
-            return True
+    if settings.DEBUG and user_token == "test":
+        return True
 
     for json_object in token_player_list:
         print(json_object.__str__() + ", " + user_token)
