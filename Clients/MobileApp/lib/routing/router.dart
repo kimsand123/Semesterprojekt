@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz/misc/constants.dart';
+import 'package:golfquiz/models/game.dart';
 import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/routing/route_constants.dart';
-import 'package:golfquiz/view/pages/auth/forgot_password__page.dart';
 import 'package:golfquiz/view/pages/auth/intro__page.dart';
 import 'package:golfquiz/view/pages/auth/login__page.dart';
 import 'package:golfquiz/view/pages/bottom_navigation/navigation__container.dart';
@@ -12,12 +12,10 @@ import 'package:golfquiz/view/pages/game_flow/game/game_flow_question__page.dart
 import 'package:golfquiz/view/pages/game_flow/game/game_flow_result__page.dart';
 import 'package:golfquiz/view/pages/game_flow/game/game_flow_scoreboard__page.dart';
 import 'package:golfquiz/view/pages/game_flow/invite/invite_friends__page.dart';
-import 'package:golfquiz/view/pages/menu/find/find_player__page.dart';
 import 'package:golfquiz/view/pages/menu/friends/friends__page.dart';
-import 'package:golfquiz/view/pages/menu/profile/edit_profile__page.dart';
 import 'package:golfquiz/view/pages/menu/profile/profile__page.dart';
-import 'package:golfquiz/view/pages/misc/privacy_policy__page.dart';
-import 'package:golfquiz/view/pages/misc/terms_and_conditions__page.dart';
+import 'package:golfquiz/view/pages/misc/game_list__page.dart';
+import 'package:golfquiz/view/pages/misc/single_game__page.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -32,12 +30,6 @@ class Router {
         return MaterialPageRoute(
             settings: RouteSettings(name: loginRoute),
             builder: (_) => LoginPage());
-
-      case forgotPasswordRoute:
-        var data = settings.arguments as String;
-        return MaterialPageRoute(
-            settings: RouteSettings(name: loginRoute),
-            builder: (_) => ForgotPasswordPage(enteredEmail: data));
 
       // Tabbar navigation
       case gameRoute:
@@ -62,11 +54,6 @@ class Router {
                   user: data,
                 ));
 
-      case editProfileRoute:
-        return MaterialPageRoute(
-            settings: RouteSettings(name: editProfileRoute),
-            builder: (_) => EditProfilePage());
-
       case friendsRoute:
         return MaterialPageRoute(
             settings: RouteSettings(name: friendsRoute),
@@ -76,25 +63,6 @@ class Router {
         return MaterialPageRoute(
             settings: RouteSettings(name: twoPlayerCreateRoute),
             builder: (_) => CreateMultiplayerMatchPage());
-
-      case findPlayerRoute:
-        PlayerRelationship data = settings.arguments;
-        return MaterialPageRoute(
-            settings: RouteSettings(name: findPlayerRoute),
-            builder: (_) => FindPlayerPage(
-                  relationship: data,
-                ));
-
-      // Terms and privacy
-      case termsRoute:
-        return MaterialPageRoute(
-            settings: RouteSettings(name: termsRoute),
-            builder: (_) => TermsAndConditionsPage());
-
-      case privacyPolicyRoute:
-        return MaterialPageRoute(
-            settings: RouteSettings(name: privacyPolicyRoute),
-            builder: (_) => PrivacyPolicyPage());
 
       // Game
       case gameFlowQuestionRoute:
@@ -112,6 +80,24 @@ class Router {
         return MaterialPageRoute(
             settings: RouteSettings(name: gameFlowAnswerRoute),
             builder: (_) => GameFlowScoreboardPage());
+
+      case singleGameRoute:
+        Game game = settings.arguments;
+        return MaterialPageRoute(
+            settings: RouteSettings(name: gameFlowQuestionRoute),
+            builder: (_) => SingleGamePage(
+                  gameItem: game,
+                ));
+
+      // Misc
+      case gameListRoute:
+        GameType gameType = settings.arguments;
+        return MaterialPageRoute(
+          settings: RouteSettings(name: gameFlowQuestionRoute),
+          builder: (_) => GameListPage(
+            gameListType: gameType,
+          ),
+        );
 
       // Invite
       case inviteFriends:

@@ -63,29 +63,25 @@ class CurrentGameProvider extends ChangeNotifier {
           gamePlayer: GamePlayer(player: player, gameProgress: 0, score: 0),
           gameRound: []));
     }
+
+    notifyListeners();
   }
 
   void removePlayer(Player player) {
     List<PlayerStatus> listOfPlayerStatus = this._game.playerStatus;
 
+    PlayerStatus playerStatusToRemove;
+
     for (PlayerStatus status in listOfPlayerStatus) {
       if (player.id == status.gamePlayer.player.id) {
-        this._game.playerStatus.remove(status);
+        playerStatusToRemove = status;
       }
     }
-  }
 
-  /*
-  Player _findPlayerinGameUserList(Player player, List<Player> userList) {
-    Player foundUser;
-
-    for (Player userInList in userList) {
-      if (player.id == userInList.id) {
-        foundUser = userInList;
-        break;
-      }
+    if (playerStatusToRemove != null) {
+      this._game.playerStatus.remove(playerStatusToRemove);
     }
-    return foundUser;
+
+    notifyListeners();
   }
-  */
 }

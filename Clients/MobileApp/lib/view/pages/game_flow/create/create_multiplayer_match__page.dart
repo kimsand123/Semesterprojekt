@@ -168,7 +168,7 @@ class _CreateMultiplayerMatchPageState
     Provider.of<CurrentGameProvider>(context, listen: false).setGame(game);
 
     Player currentUser =
-        Provider.of<UserProvider>(context, listen: false).getUser;
+        Provider.of<PlayerProvider>(context, listen: false).getPlayer;
     Player receiver;
 
     for (PlayerStatus status in providerGame.playerStatus) {

@@ -5,7 +5,7 @@ import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/network/auth_service.dart';
 import 'package:golfquiz/network/game_service.dart';
 import 'package:golfquiz/network/remote_helper.dart';
-import 'package:golfquiz/network/user_service.dart';
+import 'package:golfquiz/network/player_service.dart';
 import 'package:golfquiz/providers/friend__provider.dart';
 import 'package:golfquiz/providers/user__provider.dart';
 import 'package:golfquiz/routing/route_constants.dart';
@@ -105,22 +105,6 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
             ],
           ),
         ),
-        Container(
-          alignment: Alignment.centerRight,
-          child: BorderlessButtonComponent(
-            padding: EdgeInsets.only(right: 0, bottom: 8, left: 8, top: 8),
-            margin: EdgeInsets.only(right: 20),
-            text: Text(appLocale().auth_login__reset_password_button,
-                style: appTheme()
-                    .textTheme
-                    .button
-                    .copyWith(fontWeight: FontWeight.bold)),
-            onPressed: () {
-              Navigator.pushNamed(context, forgotPasswordRoute,
-                  arguments: _usernameController.text);
-            },
-          ),
-        ),
         AuthButtonComponent(
           margin:
               EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
@@ -128,15 +112,6 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
               style: appTheme().textTheme.button),
           onPressed: () async {
             await _validateAndSaveInputs();
-          },
-        ),
-        BorderlessButtonComponent(
-          margin:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-          text: Text(appLocale().auth__terms_button,
-              style: appTheme().textTheme.button),
-          onPressed: () {
-            Navigator.pushNamed(context, termsRoute);
           },
         ),
         SizedBox(
@@ -159,20 +134,7 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
         disableProgressIndicator();
       });
 
-      RemoteHelper().fakeFillProviders(context, _user);
-
-      //TODO: Should be moved to update GET USERS / FRIENDS
-      List<Player> userlist = await UserService.fetchUsers();
-      Provider.of<FriendProvider>(context, listen: false)
-          .setFriendList(userlist);
-
-      Player player = Provider.of<UserProvider>(context, listen: false).getUser;
-
-      List<Game> games = await GameService.fetchGames(player);
-
-      for (var game in games) {
-        print(game.toJson().toString());
-      }
+      await RemoteHelper().fillProviders(context, _user);
 
       Navigator.pushNamedAndRemoveUntil(
           context, gameRoute, ModalRoute.withName(Navigator.defaultRouteName));

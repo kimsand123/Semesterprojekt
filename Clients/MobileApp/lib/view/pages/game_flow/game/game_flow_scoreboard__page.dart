@@ -31,18 +31,18 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
       builder: (context, provider, child) {
         Game game = provider.getGame();
         var currentUserInfo = GameFlowHelper.determineUser(
-            Provider.of<UserProvider>(context),
+            Provider.of<PlayerProvider>(context),
             Provider.of<CurrentGameProvider>(context));
 
         return SliverAppBarComponent(
-          currentUserInfo: currentUserInfo,
+          currentPlayerStatus: currentUserInfo,
           game: game,
           middleWidget:
               Icon(Icons.account_circle, size: 65, color: Color(0xCCFFFFFF)),
           rowLeftTitle: appLocale().game_flow__scoreboard__q_duration,
           rowLeftContent: game.questionDuration.toStringAsFixed(0) + 's',
           rowRightTitle: appLocale().game_flow__scoreboard__your_score,
-          rowRightContent: currentUserInfo.gamePlayer.score,
+          rowRightContent: currentUserInfo.gamePlayer.score.toString(),
           showProgress: true,
         );
       },
@@ -55,7 +55,7 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
       builder: (context, provider, child) {
         Game game = provider.getGame();
         var player = GameFlowHelper.determineUser(
-            Provider.of<UserProvider>(context),
+            Provider.of<PlayerProvider>(context),
             Provider.of<CurrentGameProvider>(context));
         return Padding(
           padding: EdgeInsets.only(bottom: screenHeight() * 0.15),
@@ -94,7 +94,7 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
               builder: (context, provider, child) {
                 Game game = provider.getGame();
                 var playerStatus = GameFlowHelper.determineUser(
-                    Provider.of<UserProvider>(context),
+                    Provider.of<PlayerProvider>(context),
                     Provider.of<CurrentGameProvider>(context));
 
                 return StandardButtonComponent(
@@ -135,7 +135,7 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
               builder: (context, provider, child) {
                 Game game = provider.getGame();
                 var player = GameFlowHelper.determineUser(
-                    Provider.of<UserProvider>(context),
+                    Provider.of<PlayerProvider>(context),
                     Provider.of<CurrentGameProvider>(context));
 
                 return StandardButtonComponent(
@@ -208,125 +208,10 @@ generateList(PlayerStatus player, Game game, BuildContext context) {
   final history = player.gameRound;
   double screenWidth = MediaQuery.of(context).size.width;
 
-  switch (game.gameType) {
-    case GameType.solo_match:
-      {
-        gameHistory =
-            singlePlayerGameHistory(gameHistory, context, screenWidth);
-        gameHistory =
-            singlePlayerHistory(history, gameHistory, context, screenWidth);
-        break;
-      }
-    case GameType.two_player_match:
-      {
-        gameHistory = multiPlayerGameHistory(gameHistory, context, screenWidth);
-        gameHistory = multiPlayerHistory(
-            history, gameHistory, context, screenWidth, game);
-        break;
-      }
-    case GameType.group_match:
-      {
-        gameHistory = groupGameHistory(gameHistory, context, screenWidth);
-        gameHistory =
-            groupHistory(history, gameHistory, context, screenWidth, game);
-        break;
-      }
-    case GameType.tournaments:
-      {
-        gameHistory = groupGameHistory(gameHistory, context, screenWidth);
-        gameHistory =
-            groupHistory(history, gameHistory, context, screenWidth, game);
-        break;
-      }
-  }
+  gameHistory = multiPlayerGameHistory(gameHistory, context, screenWidth);
+  gameHistory =
+      multiPlayerHistory(history, gameHistory, context, screenWidth, game);
 
-  return gameHistory;
-}
-
-List<Widget> singlePlayerGameHistory(
-    List<Widget> gameHistory, BuildContext context, double screenWidth) {
-  gameHistory.add(
-    Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 1,
-            color: Color(0x502D2D2D),
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              width: ((screenWidth / 3)) - (10 * 2),
-              alignment: Alignment.centerLeft,
-              child: textTitle(context,
-                  AppLocalization.of(context).game_flow__scoreboard__hole),
-            ),
-            Container(
-              width: ((screenWidth / 3)) - (10 * 2),
-              alignment: Alignment.center,
-              child: textTitle(context,
-                  AppLocalization.of(context).game_flow__scoreboard__time),
-            ),
-            Container(
-              width: ((screenWidth / 3)) - (10 * 2),
-              alignment: Alignment.centerRight,
-              child: textTitle(context,
-                  AppLocalization.of(context).game_flow__scoreboard__points),
-            )
-          ],
-        ),
-      ),
-    ),
-  );
-  return gameHistory;
-}
-
-List<Widget> singlePlayerHistory(List<GameRound> history,
-    List<Widget> gameHistory, BuildContext context, double screenWidth) {
-  history.forEach(
-    (gameRound) => {
-      gameHistory.add(
-        Container(
-          width: MediaQuery.of(context).size.width,
-          height: 50,
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(width: 1, color: Color(0x502D2D2D)))),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: ((screenWidth / 3)) - (10 * 2),
-                  alignment: Alignment.centerLeft,
-                  child:
-                      bubbleContainer(context, '${history.indexOf(gameRound)}'),
-                ),
-                Container(
-                  width: ((screenWidth / 3)) - (10 * 2),
-                  alignment: Alignment.center,
-                  child: numberText(context, '${gameRound.timeSpent}s'),
-                ),
-                Container(
-                  width: ((screenWidth / 3)) - (10 * 2),
-                  alignment: Alignment.centerRight,
-                  child: numberText(context, '${gameRound.score}'),
-                )
-              ],
-            ),
-          ),
-        ),
-      )
-    },
-  );
   return gameHistory;
 }
 
@@ -385,7 +270,7 @@ List<Widget> multiPlayerHistory(
   for (var i = 0; i < status.length; i++) {
     Color color;
     String playerName;
-    if (Provider.of<UserProvider>(context).getUser.id ==
+    if (Provider.of<PlayerProvider>(context).getPlayer.id ==
         status[i].gamePlayer.player.id) {
       color = Color(0xFFBEFCD3);
       playerName = AppLocalization.of(context).you;
@@ -427,120 +312,6 @@ List<Widget> multiPlayerHistory(
                 child: numberText(
                     context, '${game.playerStatus[i].gamePlayer.score}'),
               )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-  return gameHistory;
-}
-
-List<Widget> groupGameHistory(
-    List<Widget> gameHistory, BuildContext context, double screenWidth) {
-  gameHistory.add(
-    Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 1,
-            color: Color(0x502D2D2D),
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              width: (screenWidth / 4) - (10 * 2),
-              alignment: Alignment.centerLeft,
-              child: textTitle(context,
-                  AppLocalization.of(context).game_flow__scoreboard__player),
-            ),
-            Container(
-              width: (screenWidth / 4) - (10 * 2),
-              alignment: Alignment.center,
-              child: textTitle(context,
-                  AppLocalization.of(context).game_flow__scoreboard__handicap),
-            ),
-            Container(
-              width: (screenWidth / 4) - (10 * 2),
-              alignment: Alignment.center,
-              child: textTitle(context,
-                  AppLocalization.of(context).game_flow__scoreboard__points),
-            ),
-            Container(
-              width: (screenWidth / 4) - (10 * 2),
-              alignment: Alignment.centerRight,
-              child: textTitle(context,
-                  AppLocalization.of(context).game_flow__scoreboard__hole),
-            )
-          ],
-        ),
-      ),
-    ),
-  );
-  return gameHistory;
-}
-
-List<Widget> groupHistory(List<GameRound> history, List<Widget> gameHistory,
-    BuildContext context, double screenWidth, Game game) {
-  List<PlayerStatus> status = game.playerStatus;
-  for (var i = 0; i < status.length; i++) {
-    Color color;
-    String playerName;
-    if (Provider.of<UserProvider>(context).getUser.id ==
-        status[i].gamePlayer.player.id) {
-      color = Color(0xFFBEFCD3);
-      playerName = AppLocalization.of(context).you;
-    } else {
-      color = Colors.white;
-      playerName = '${status[i].gamePlayer.player.firstName}';
-    }
-    gameHistory.add(
-      Container(
-        width: MediaQuery.of(context).size.width,
-        height: 50,
-        decoration: BoxDecoration(
-          color: color,
-          border: Border(
-            bottom: BorderSide(
-              width: 1,
-              color: Color(0x502D2D2D),
-            ),
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                width: (screenWidth / 4) - (10 * 2),
-                alignment: Alignment.centerLeft,
-                child: playerText(context, playerName),
-              ),
-              Container(
-                width: (screenWidth / 4) - (10 * 2),
-                alignment: Alignment.center,
-                child: numberText(context, '${status[i].gamePlayer.score}'),
-              ),
-              Container(
-                width: (screenWidth / 4) - (10 * 2),
-                alignment: Alignment.center,
-                child: numberText(
-                    context, '${game.playerStatus[i].gamePlayer.score}'),
-              ),
-              Container(
-                width: (screenWidth / 4) - (10 * 2),
-                alignment: Alignment.centerRight,
-                child: bubbleContainer(
-                    context, '${game.playerStatus[i].gamePlayer.gameProgress}'),
-              ),
             ],
           ),
         ),

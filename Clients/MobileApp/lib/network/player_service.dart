@@ -9,7 +9,7 @@ import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserService {
+class PlayerService {
   static Future<List<Player>> fetchUsers() async {
     const apiPath = "/players/";
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -31,8 +31,6 @@ class UserService {
                 .then((response) {
               var body = utf8.decode(response.bodyBytes);
               Map<String, dynamic> responseMap = jsonDecode(body);
-
-              print(responseMap.toString());
 
               if (responseMap.containsKey("players") &&
                   response.statusCode == 200) {

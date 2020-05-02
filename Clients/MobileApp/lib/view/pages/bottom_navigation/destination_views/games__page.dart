@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:golfquiz/misc/constants.dart';
 import 'package:golfquiz/models/game.dart';
 import 'package:golfquiz/models/game_player.dart';
 import 'package:golfquiz/models/player.dart';
@@ -8,10 +9,10 @@ import 'package:golfquiz/providers/user__provider.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/animations/fade_in_rtl__animation.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
+import 'package:golfquiz/view/components/active_games_card__component.dart';
 import 'package:golfquiz/view/components/standard_button__component.dart';
 import 'package:golfquiz/view/mixins/basic_page__mixin.dart';
 import 'package:golfquiz/view/pages/bottom_navigation/navigation__container.dart';
-import 'package:golfquiz/view/pages/misc/hard_coded_data.dart';
 import 'package:provider/provider.dart';
 
 class GamesPage extends BasePage {
@@ -52,22 +53,36 @@ class _GamesPageState extends BasePageState<GamesPage>
           ],
         )),
         SizedBox(height: BottomNavigationContainer.height + 20),
+        FadeInRTLAnimation(
+          child: ActiveGamesCardComponent(
+            gameMode: appLocale().games__your_matches__two_player_matches,
+            onPressed: () {
+              Navigator.pushNamed(context, gameListRoute,
+                  arguments: GameType.two_player_match);
+            },
+          ),
+          delay: 0.7,
+        ),
       ],
     );
   }
 
   void setCurrentGameProvider() {
     Player currentUser =
-        Provider.of<UserProvider>(context, listen: false).getUser;
+        Provider.of<PlayerProvider>(context, listen: false).getPlayer;
 
     Game game = Game.init();
 
-    game.playerStatus.add(
+    List<PlayerStatus> playerstatusList = [];
+
+    playerstatusList.add(
       PlayerStatus(
         gamePlayer: GamePlayer(player: currentUser, gameProgress: 0, score: 0),
         gameRound: [],
       ),
     );
+
+    game.playerStatus = playerstatusList;
 
     Provider.of<CurrentGameProvider>(context, listen: false).setGame(game);
   }

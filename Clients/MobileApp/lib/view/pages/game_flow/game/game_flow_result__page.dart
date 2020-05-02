@@ -40,7 +40,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
       builder: (context, provider, child) {
         Game game = provider.getGame();
         var currentUserInfo = GameFlowHelper.determineUser(
-            Provider.of<UserProvider>(context),
+            Provider.of<PlayerProvider>(context),
             Provider.of<CurrentGameProvider>(context));
 
         return Column(
@@ -71,7 +71,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                         .display1
                         .copyWith(color: Color(0xFF2D2D2D)),
                     text:
-                        '${game.questions[currentUserInfo.gamePlayer.gameProgress - 1]}'),
+                        '${game.questions[currentUserInfo.gamePlayer.gameProgress - 1].questionText}'),
               ),
             ),
           ],
@@ -117,7 +117,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                 Game game = gameProvider.getGame();
                 var currentPlayerStatus =
                     GameFlowHelper.determineCurrentPlayerStatus(
-                        Provider.of<UserProvider>(context).getUser, game);
+                        Provider.of<PlayerProvider>(context).getPlayer, game);
                 return RoundButtonComponent(
                   isPaused: true,
                   icon: 'assets/animations/pause_play.flr',
@@ -154,7 +154,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                 builder: (context, provider, child) {
                   Game game = provider.getGame();
                   var playerStatus = GameFlowHelper.determineUser(
-                      Provider.of<UserProvider>(context),
+                      Provider.of<PlayerProvider>(context),
                       Provider.of<CurrentGameProvider>(context));
 
                   return RoundButtonComponent(
@@ -233,12 +233,12 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
     return Consumer<CurrentGameProvider>(builder: (context, provider, child) {
       Game game = provider.getGame();
       var currentUserInfo = GameFlowHelper.determineUser(
-          Provider.of<UserProvider>(context),
+          Provider.of<PlayerProvider>(context),
           Provider.of<CurrentGameProvider>(context));
 
       return SliverAppBarComponent(
         fontSize: 30.0,
-        currentUserInfo: currentUserInfo,
+        currentPlayerStatus: currentUserInfo,
         game: game,
         middleWidget: Container(
             width: screenWidth() * 0.2,
@@ -321,7 +321,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                 builder: (context, provider, child) {
               Game game = provider.getGame();
               var currentUserInfo = GameFlowHelper.determineUser(
-                  Provider.of<UserProvider>(context),
+                  Provider.of<PlayerProvider>(context),
                   Provider.of<CurrentGameProvider>(context));
 
               return Container(

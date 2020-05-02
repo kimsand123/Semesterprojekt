@@ -27,7 +27,7 @@ class Game {
 
   bool get isActive {
     for (PlayerStatus status in this.playerStatus) {
-      if (status.gamePlayer.gameProgress != maxHoles) {
+      if (status.gamePlayer.gameProgress == maxHoles) {
         return false;
       }
     }
@@ -39,10 +39,20 @@ class Game {
       id: json["id"],
       matchName: json["match_name"],
       questionDuration: double.parse(json["question_duration"]),
-      questions: List<Question>.from(
-          json["questions"].map((x) => Question.fromJson(x))),
-      playerStatus: List<PlayerStatus>.from(
-          json["player_status"].map((x) => PlayerStatus.fromJson(x))),
+      questions: List<Question>.from(json["questions"].map((x) {
+        //TODO: Correct back when BAC-45 and BAC-42 is done
+        //return Question.fromJson(x);
+        return Question(
+            questionText: "What is the number three?",
+            answer1: "1",
+            answer2: "2",
+            answer3: "3",
+            correctAnswer: 3,
+            id: 0);
+      })),
+      playerStatus: List<PlayerStatus>.from(json["player_status"].map((x) {
+        return PlayerStatus.fromJson(x);
+      })),
     );
   }
 
@@ -54,4 +64,17 @@ class Game {
         "player_status":
             List<dynamic>.from(playerStatus.map((x) => x.toJson())),
       };
+
+  String toString() {
+    String returnToString;
+
+    returnToString += "Game: id : " + this.id.toString() + "\n";
+    returnToString += "match_name : " + this.matchName + "\n";
+    returnToString +=
+        "question_duration : " + this.questionDuration.toString() + "\n";
+    returnToString += "questions : " + this.questions.toString() + "\n";
+    returnToString += "player_status : " + this.playerStatus.toString() + "\n";
+
+    return returnToString;
+  }
 }

@@ -35,8 +35,6 @@ class GameService {
               var body = utf8.decode(response.bodyBytes);
               Map<String, dynamic> responseMap = jsonDecode(body);
 
-              print(responseMap.toString());
-
               if (responseMap.containsKey("games") &&
                   response.statusCode == 200) {
                 List<Game> games = List();

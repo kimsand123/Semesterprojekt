@@ -36,6 +36,7 @@ class _IntroPageState extends BasePageState<IntroPage> with BasicPage {
             },
           ),
         ]),
+        /*
         Column(children: [
           Padding(
             padding: EdgeInsets.only(top: screenHeight() * 0.05),
@@ -55,21 +56,7 @@ class _IntroPageState extends BasePageState<IntroPage> with BasicPage {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, bottom: 0.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, termsRoute);
-              },
-              child: Container(
-                color: Colors.transparent,
-                padding: EdgeInsets.all(8.0),
-                child: Text(appLocale().auth__terms_button,
-                    style: appTheme().textTheme.button),
-              ),
-            ),
-          )
-        ]),
+        ]),*/
       ],
     );
   }

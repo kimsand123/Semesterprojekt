@@ -27,7 +27,7 @@ void addPlayerToGame(Player addPlayer, BuildContext context) {
     Provider.of<CurrentGameProvider>(context, listen: false)
         .removePlayer(addPlayer);
   } else if (isTwoPlayerMatch && isMaxTwoPlayerReached) {
-    _showTwoPlayerMaxPopup(context, gamePlayerStatus);
+    _showTwoPlayerMaxPopup(context, gamePlayerStatus.last.gamePlayer.player);
   } else {
     // Add player
     Provider.of<CurrentGameProvider>(context, listen: false)
@@ -73,14 +73,14 @@ String _playersToAStringList(List<Player> players) {
   return returnString;
 }
 
-void _showTwoPlayerMaxPopup(BuildContext context, gameUsers) {
+void _showTwoPlayerMaxPopup(BuildContext context, Player player) {
   // Two-player max
   showPopupDialog(
     context,
     AppLocalization.of(context)
         .invite_helper__max_players(maxPlayersTwoPlayerMatch),
     AppLocalization.of(context)
-        .invite_helper__two_player__dialog_text(gameUsers[1].name),
+        .invite_helper__two_player__dialog_text(player.firstName),
     {
       Text(AppLocalization.of(context).ok,
           style: Theme.of(context)

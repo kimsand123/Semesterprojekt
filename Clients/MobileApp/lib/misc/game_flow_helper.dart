@@ -5,14 +5,14 @@ import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/providers/user__provider.dart';
 
 class GameFlowHelper {
-  static PlayerStatus determineUser(UserProvider userProvider, gameProvider) {
+  static PlayerStatus determineUser(PlayerProvider userProvider, gameProvider) {
     Game game = gameProvider.getGame();
     List<PlayerStatus> playerStatus = game.playerStatus ?? [];
 
     PlayerStatus targetPlayerStatus;
 
     playerStatus.forEach((pstatus) {
-      if (pstatus.gamePlayer.player.id == userProvider.getUser.id) {
+      if (pstatus.gamePlayer.player.id == userProvider.getPlayer.id) {
         targetPlayerStatus = pstatus;
       }
     });

@@ -1,47 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:golfquiz/models/game.dart';
+import 'package:golfquiz/models/player_status.dart';
 import 'package:golfquiz/view/components/progressbar__component.dart';
 
 class SliverAppBarComponent extends StatelessWidget {
   final Game game;
   final _fontSize;
-  final _rowLeftContent, _rowRightContent, currentUserInfo;
+  final String _rowLeftContent, _rowRightContent;
+  final PlayerStatus currentUserInfo;
   final Widget middleWidget;
   final String _title, _rowLeftTitle, _rowRightTitle;
   final bool showProgress;
 
   SliverAppBarComponent(
-      {this.game,
-      fontSize,
-      rowLeftContent,
-      rowRightContent,
-      rowLeftTitle,
-      rowRightTitle,
-      this.currentUserInfo,
-      this.middleWidget,
-      title,
-      this.showProgress}):
-      this._fontSize = fontSize ?? 18.0,
-      this._rowLeftContent = rowLeftContent ?? '',
-      this._rowRightContent = rowRightContent ?? '',
-      this._rowLeftTitle = rowLeftTitle ?? '',
-      this._rowRightTitle = rowRightTitle ?? '',
-      this._title = title ?? '';
+      {@required Game game,
+      double fontSize,
+      String rowLeftContent,
+      String rowRightContent,
+      String rowLeftTitle,
+      String rowRightTitle,
+      @required PlayerStatus currentPlayerStatus,
+      Widget middleWidget,
+      String title,
+      bool showProgress})
+      : this.game = game,
+        this._fontSize = fontSize ?? 18.0,
+        this._rowLeftContent = rowLeftContent ?? '',
+        this._rowRightContent = rowRightContent ?? '',
+        this._rowLeftTitle = rowLeftTitle ?? '',
+        this._rowRightTitle = rowRightTitle ?? '',
+        this.currentUserInfo = currentPlayerStatus,
+        this.middleWidget = middleWidget,
+        this._title = title ?? '',
+        this.showProgress = showProgress ?? false;
 
   @override
   Widget build(BuildContext context) {
     Widget progressbar = showProgress
-        ? ProgressbarComponent(step: currentUserInfo.gameProgress)
+        ? ProgressbarComponent(step: currentUserInfo.gamePlayer.gameProgress)
         : Container();
 
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Text(_title, style: Theme.of(context).textTheme.subhead.copyWith(fontSize: _fontSize)),
+          Text(_title,
+              style: Theme.of(context)
+                  .textTheme
+                  .subhead
+                  .copyWith(fontSize: _fontSize)),
           Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[

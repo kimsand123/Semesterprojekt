@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:golfquiz/providers/friend__provider.dart';
-import 'package:golfquiz/providers/rank__providers/friends_rank__provider.dart';
+import 'package:golfquiz/providers/game_list__provider.dart';
 import 'package:golfquiz/providers/current_game__provider.dart';
-import 'package:golfquiz/providers/global_player__provider.dart';
 import 'package:golfquiz/providers/user__provider.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/routing/router.dart';
@@ -19,19 +18,16 @@ void main() => runApp(
         MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => UserProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => FriendsRankProvider(),
+          create: (context) => PlayerProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => CurrentGameProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => GlobalPlayerProvider(),
+          create: (context) => FriendProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => FriendProvider(),
+          create: (context) => GameListProvider(),
         ),
       ],
       child: GolfQuiz(),

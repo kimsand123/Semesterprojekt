@@ -25,15 +25,14 @@ mixin SliverPageOverlay<Page extends BasePage> on BasePageState<Page> {
         background: Container(
           alignment: Alignment.bottomCenter,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: FractionalOffset.centerLeft,
-                end: FractionalOffset.centerRight,
-                colors: [
-              Theme.of(context).colorScheme.primary,
-              Theme.of(context).colorScheme.secondary
-            ]),
-            borderRadius: BorderRadius.all(Radius.circular(5.0))
-          ),
+              gradient: LinearGradient(
+                  begin: FractionalOffset.centerLeft,
+                  end: FractionalOffset.centerRight,
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.secondary
+                  ]),
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
           child: appBarContainer(),
         ),
       ),
@@ -45,21 +44,20 @@ mixin SliverPageOverlay<Page extends BasePage> on BasePageState<Page> {
       textTheme: Theme.of(context).textTheme,
     );
 
-    return Stack(
-      children: [ 
-        Scaffold(
-          backgroundColor: Colors.white,
-          body: CustomScrollView(slivers: [
-            appBar,
-            SliverToBoxAdapter(
-              child: Container(
-                width: screenWidth(),
-                constraints:
-                    BoxConstraints(minHeight: screenHeight() - appBarHeight()),
-                child: body(),
-              ),
+    return Stack(children: [
+      Scaffold(
+        backgroundColor: Colors.white,
+        body: CustomScrollView(slivers: [
+          appBar,
+          SliverToBoxAdapter(
+            child: Container(
+              width: screenWidth(),
+              constraints:
+                  BoxConstraints(minHeight: screenHeight() - appBarHeight()),
+              child: body(),
             ),
-          ]),
+          ),
+        ]),
       ),
       bottomBar(),
       backdrop(),

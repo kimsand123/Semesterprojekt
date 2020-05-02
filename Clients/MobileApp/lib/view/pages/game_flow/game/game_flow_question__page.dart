@@ -24,7 +24,7 @@ class GameFlowQuestionPage extends BasePage {
 class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
     with SliverPage {
   Timer _timer;
-  var _totalTime;
+  double _totalTime;
 
   @override
   Widget action() {
@@ -60,7 +60,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
       builder: (context, provider, child) {
         Game game = provider.getGame();
         var currentUserInfo = GameFlowHelper.determineUser(
-            Provider.of<UserProvider>(context),
+            Provider.of<PlayerProvider>(context),
             Provider.of<CurrentGameProvider>(context));
 
         return Column(
@@ -90,10 +90,10 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                         .display1
                         .copyWith(color: Color(0xFF2D2D2D)),
                     text:
-                        '${game.questions[currentUserInfo.gamePlayer.gameProgress - 1]}'),
+                        '${game.questions[currentUserInfo.gamePlayer.gameProgress - 1].questionText}'),
               ),
             ),
-            buildAnswerButtons(currentUserInfo.gamePlayer.gameProgress - 1)
+            buildAnswerButtons(currentUserInfo.gamePlayer.gameProgress)
           ],
         );
       },
@@ -105,14 +105,14 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
     return Consumer<CurrentGameProvider>(builder: (context, provider, child) {
       Game game = provider.getGame();
       var currentUserInfo = GameFlowHelper.determineUser(
-          Provider.of<UserProvider>(context),
+          Provider.of<PlayerProvider>(context),
           Provider.of<CurrentGameProvider>(context));
 
       _totalTime = game.questionDuration;
 
       _timer = _timer ??
           Timer.periodic(Duration(seconds: 1), (timer) {
-            if (timer.tick == _totalTime) {
+            if (timer.tick == _totalTime.round()) {
               timer.cancel();
               Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                   arguments: false);
@@ -120,7 +120,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                   .addGameRound(
                       currentUserInfo,
                       currentUserInfo.gamePlayer.gameProgress,
-                      _totalTime.round(),
+                      _totalTime + 0.0,
                       currentUserInfo.gamePlayer.score);
             }
             setState(() {
@@ -128,14 +128,14 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
             });
           });
       return SliverAppBarComponent(
-        currentUserInfo: currentUserInfo,
+        currentPlayerStatus: currentUserInfo,
         game: game,
         middleWidget:
             GameDurationTimer(timer: _timer, totalSeconds: _totalTime),
         rowLeftTitle: appLocale().game_flow__question__q_duration,
         rowRightTitle: appLocale().game_flow__question__your_score,
         rowLeftContent: '${_totalTime.toStringAsFixed(0)}s',
-        rowRightContent: currentUserInfo.gamePlayer.score,
+        rowRightContent: currentUserInfo.gamePlayer.score.toString(),
         showProgress: true,
         title: game.matchName,
       );
@@ -148,24 +148,25 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
   Widget buildAnswerButtons(int questionNumber) {
     Game game = Provider.of<CurrentGameProvider>(context).getGame();
     var question = game.questions[questionNumber];
+    print("questions - " + game.questions[questionNumber].toJson().toString());
 
-    List<String> availableAnswers;
+    List<String> availableAnswers = [];
     availableAnswers.add(question.answer1);
     availableAnswers.add(question.answer2);
     availableAnswers.add(question.answer3);
 
     var status = GameFlowHelper.determineUser(
-        Provider.of<UserProvider>(context),
+        Provider.of<PlayerProvider>(context),
         Provider.of<CurrentGameProvider>(context));
 
-    List<Widget> answerButtons = List();
+    List<Widget> answerButtons = [];
 
     for (var i = 0; i < availableAnswers.length; i++) {
       answerButtons.add(FadeInBTTAnimation(
         child: AnswerButton(
           text: availableAnswers[i],
           onPressed: () {
-            if (i == question.correctAnswer - 1) {
+            if (i == (question.correctAnswer - 1)) {
               debugPrint('Pressed correct answer');
               _timer.cancel();
               final timeSpent = _timer.tick;

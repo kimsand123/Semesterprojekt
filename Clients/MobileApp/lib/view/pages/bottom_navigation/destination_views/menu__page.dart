@@ -24,11 +24,12 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
             height: 30,
             alignment: Alignment.bottomLeft,
             padding: const EdgeInsets.only(left: 8, bottom: 8),
-            child: Consumer<UserProvider>(builder: (context, provider, child) {
-              String email = provider.getUser.email;
-              if (provider.getUser == null ||
-                  provider.getUser.email == null ||
-                  provider.getUser.email.isEmpty) {
+            child:
+                Consumer<PlayerProvider>(builder: (context, provider, child) {
+              String email = provider.getPlayer.email;
+              if (provider.getPlayer == null ||
+                  provider.getPlayer.email == null ||
+                  provider.getPlayer.email.isEmpty) {
                 email = appLocale().menu__email_error;
               }
               return Text('$email', style: appTheme().textTheme.subhead);
@@ -41,10 +42,9 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
 
         // Friends
         Container(
-          child: settingsRow(appLocale().menu__friends_button, () {
-            Navigator.pushNamed(context, friendsRoute);
-          }, false)
-        ),
+            child: settingsRow(appLocale().menu__friends_button, () {
+          Navigator.pushNamed(context, friendsRoute);
+        }, false)),
 
         SizedBox(height: 40),
 
@@ -58,8 +58,7 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
     );
   }
 
-  Widget settingsRow(
-      String title, VoidCallback onTab, bool withTop) {
+  Widget settingsRow(String title, VoidCallback onTab, bool withTop) {
     var notification = Container(
         padding: EdgeInsets.fromLTRB(30, 3, 0, 0),
         alignment: Alignment.center,

@@ -7,9 +7,7 @@ import 'package:golfquiz/models/player_status.dart';
 import 'package:golfquiz/providers/friend__provider.dart';
 import 'package:golfquiz/providers/current_game__provider.dart';
 import 'package:golfquiz/providers/user__provider.dart';
-import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
-import 'package:golfquiz/view/components/add_all_button__component.dart';
 import 'package:golfquiz/view/components/card_list__component.dart';
 import 'package:golfquiz/view/components/card_list_row__component.dart';
 import 'package:golfquiz/view/components/card_list_title__component.dart';
@@ -42,22 +40,6 @@ class _InviteFriendsPageState extends BasePageState<InviteFriendsPage>
       cardHeight: cardHeight,
       child: Column(
         children: <Widget>[
-          // Add friends button
-          GestureDetector(
-            child: ListTile(
-              title: Text(
-                appLocale().friends__add_friends_button,
-                style: appTheme().textTheme.subhead.copyWith(
-                    color: appTheme().secondaryHeaderColor,
-                    fontWeight: FontWeight.w800),
-              ),
-            ),
-            onTap: () {
-              Navigator.pushNamed(context, findPlayerRoute,
-                  arguments: PlayerRelationship.friend);
-            },
-          ),
-
           // Title
           CardListTitleComponent(
             rowWidth: cardWidth,
@@ -71,7 +53,8 @@ class _InviteFriendsPageState extends BasePageState<InviteFriendsPage>
             thickness: 2,
           ),
           Consumer<FriendProvider>(builder: (context, provider, child) {
-            Player currentPlayer = Provider.of<UserProvider>(context).getUser;
+            Player currentPlayer =
+                Provider.of<PlayerProvider>(context).getPlayer;
             List<Player> friendlist = provider.getFriends();
 
             return Container(
