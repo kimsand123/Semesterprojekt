@@ -15,7 +15,7 @@ export default {
   position: absolute;
   left: 50%;
   top: 50%;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   transform: translate(-50%, -50%);

@@ -7,8 +7,6 @@
         <li v-else><router-link :to="linkToPost">Add</router-link></li>
         <li v-if="isPutActive"><router-link class="active" :to="linkToPut"><div class="bar edit"/>Edit</router-link></li>
         <li v-else><router-link :to="linkToPut">Edit</router-link></li>
-        <li v-if="isDeleteActive"><router-link class="active" :to="linkToDelete"><div class="bar delete"/>Delete</router-link></li>
-        <li v-else><router-link :to="linkToDelete">Delete</router-link></li>
     </nav>
   </div>
 </template>

@@ -1,11 +1,12 @@
 <template>
   <div class="site-wrapper">
+    <Modal ></Modal>
     <Navigation :isPlayersActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>
         <VCol :variants="['md-12','sm-12','xs-12']">
           <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players/add" linkToPut="/players/edit" linkToDelete="/players/delete"></MethodList>
-          <Table :titles="titles" :entries='entries'></Table>
+          <Table :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></Table>
         </VCol>
       </VRow>
     </VGrid>
@@ -16,14 +17,17 @@
 import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
 import Table from '../../Table'
+import Modal from '../../Modal'
 import { api_players, auth_header} from '../../../constants'
+import { showModal } from './../../../service-utils'
 
 export default {
   name: 'Players',
   components: {
     'Navigation': Navigation,
     'MethodList': MethodList,
-    'Table': Table
+    'Table': Table,
+    'Modal': Modal
   },
   data: () => {
     return {
@@ -32,6 +36,7 @@ export default {
     }
   },
   mounted() {
+
     this.$http.get(api_players, {
       headers: auth_header
     })
@@ -43,6 +48,29 @@ export default {
       .catch(error => {
         console.log(error)
       })
+  },
+  methods: {
+    handleDelete(e) {
+      const table = document.querySelector('table')
+      const rowPlayerId = e.target.parentElement.parentElement.parentElement.children[0].innerText
+      const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex
+
+      fetch(api_players+rowPlayerId+'/', {
+        method: 'DELETE',
+        headers: auth_header
+      })
+      .then(response => {
+        if(response.status === 202) {
+          table.deleteRow(rowIndex)
+          showModal('Player deleted!')
+        } else if(response.status !== 404) {
+          showModal('Something went wrong...')
+        }
+      })
+    },
+    handleEdit(e) {
+      console.log("Edit")
+    }
   }
 }
 </script>

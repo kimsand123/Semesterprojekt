@@ -11,6 +11,16 @@
       <td>{{entry.username}}</td>
       <td>{{entry.email}}</td>
       <td>{{entry.high_score}}</td>
+      <td>
+        <div @click="handleEdit" class="icon">
+          <img src="./../assets/edit-tools.svg"/>
+        </div>
+      </td>
+      <td>
+        <div @click="handleDelete" class="icon">
+          <img src="./../assets/send-to-trash.svg"/>
+        </div>
+      </td>
     </tr>
   </table>
 </template>
@@ -20,7 +30,9 @@ export default {
   name: 'Table',
   props: {
     titles: Array,
-    entries: Array
+    entries: Array,
+    handleDelete: Function,
+    handleEdit: Function
   }
 }
 </script>
@@ -32,10 +44,18 @@ table {
   width: 100%;
 }
 
-td, th {
+td:not(:last-child):not(:nth-last-child(2)), th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
+}
+
+td:nth-last-of-type(2) {
+  background: #FBF7FF;
+}
+
+td:last-of-type {
+  background: #FBF7FF;
 }
 
 tr:nth-child(even) {
@@ -46,4 +66,20 @@ img {
   width: 15px;
   float: right;
 }
+
+.icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0px;
+  left: 1rem;
+  width: 20px;
+  height: 20px;
+}
+
+img:hover {
+  cursor: pointer;
+}
+
 </style>

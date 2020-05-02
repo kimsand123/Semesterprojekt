@@ -17,12 +17,15 @@
   </div>
 </template>
 
+
+
 <script>
 import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
 import AddTable from '../../AddTable'
 import Modal from '../../Modal'
 import { api_players, auth_header, token} from '../../../constants'
+import { showModal } from './../../../service-utils'
 
 export default {
   name: 'PlayersAdd',
@@ -32,21 +35,7 @@ export default {
     'AddTable': AddTable,
     'Modal': Modal
   },
-  mounted() {
-    const modal = document.querySelector('.modal')
-    modal.style.display = 'none'
-    modal.style.opacity = 0
-  },
   methods: {
-    showModal(message) {
-      const modal = document.querySelector('.modal')
-      modal.style.display = 'flex'
-      document.querySelector('.modal-title').innerHTML = message
-      modal.style.opacity = 1
-      setTimeout(() => {
-        modal.style.opacity = 0
-      }, 1200)
-    },
     handleClick() {
       const fields = document.querySelectorAll('input')
       const input = []
@@ -73,12 +62,12 @@ export default {
       })
       .then(response => {
         if(response.status === 201) {
-          this.showModal('Player successfully added!')
+          showModal('Player successfully added!')
           fields.forEach(field => {
             field.value = ''
           })
         } else {
-          this.showModal('Something went wrong...')
+          showModal('Something went wrong...')
         }
       })
     }
@@ -91,6 +80,11 @@ export default {
   }
 }
 </script>
+
+
+
+
+
 
 <style scoped>
 .site-wrapper {
