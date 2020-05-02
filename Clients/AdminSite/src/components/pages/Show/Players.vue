@@ -32,7 +32,9 @@ export default {
     }
   },
   mounted() {
-    this.$http.get(api_players, auth_header)
+    this.$http.get(api_players, {
+      headers: auth_header
+    })
       .then(res => {
         res.data.players.forEach(player => {
           this.entries.push(player)

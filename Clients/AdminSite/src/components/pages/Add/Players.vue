@@ -1,5 +1,6 @@
 <template>
   <div class="site-wrapper">
+    <Modal></Modal>
     <Navigation :isPlayersActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>
@@ -20,16 +21,32 @@
 import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
 import AddTable from '../../AddTable'
-import { api_players, auth_header} from '../../../constants'
+import Modal from '../../Modal'
+import { api_players, auth_header, token} from '../../../constants'
 
 export default {
   name: 'PlayersAdd',
   components: {
     'Navigation': Navigation,
     'MethodList': MethodList,
-    'AddTable': AddTable
+    'AddTable': AddTable,
+    'Modal': Modal
+  },
+  mounted() {
+    const modal = document.querySelector('.modal')
+    modal.style.display = 'none'
+    modal.style.opacity = 0
   },
   methods: {
+    showModal(message) {
+      const modal = document.querySelector('.modal')
+      modal.style.display = 'flex'
+      document.querySelector('.modal-title').innerHTML = message
+      modal.style.opacity = 1
+      setTimeout(() => {
+        modal.style.opacity = 0
+      }, 1200)
+    },
     handleClick() {
       const fields = document.querySelectorAll('input')
       const input = []
@@ -38,25 +55,31 @@ export default {
         input.push(field.value)
       })
 
-     const payload = {
-          "player": {
-            "username": "e",
-            "email": "s123456@studen.le.dk",
-            "first_name": "Ll",
-            "last_name": "Lelsn",
-            "study_programme": "Software technology",
-            "high_score": 20.1
+      let payload = JSON.stringify({
+          player: {
+            username: input[3],
+            email: input[4],
+            first_name: input[0],
+            last_name: input[1],
+            study_programme: input[2],
+            high_score: input[5]
           }
-      }
-
-      console.log('RAW', payload)
-
-      this.$http.post(api_players, payload, auth_header)
-      .then(response => {
-        console.log(response.data)
       })
-      .catch(error => {
-        console.log(error)
+
+      fetch(api_players, {
+        method: 'POST',
+        body: payload,
+        headers: auth_header
+      })
+      .then(response => {
+        if(response.status === 201) {
+          this.showModal('Player successfully added!')
+          fields.forEach(field => {
+            field.value = ''
+          })
+        } else {
+          this.showModal('Something went wrong...')
+        }
       })
     }
   },
