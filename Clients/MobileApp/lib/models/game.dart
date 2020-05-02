@@ -1,51 +1,57 @@
 import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/game_user_status.dart';
+import 'package:golfquiz/models/player_status.dart';
 import 'package:golfquiz/models/question.dart';
-import 'package:golfquiz/models/user.dart';
 
 class Game {
-  String id;
-  List<Question> questions;
+  int id;
   String matchName;
-  int rounds;
-  int playerResponseTime;
   double questionDuration;
-  Map<User, GameUserStatus> gameUsers;
-  bool handicap;
-  bool isActive;
-  GameType gameType;
-  DateTime startDateTime;
-  DateTime endDateTime;
-  bool isItFirstPlayer;
+  List<Question> questions;
+  List<PlayerStatus> playerStatus;
+  GameType gameType = GameType.two_player_match;
 
   Game({
     this.id,
-    this.questions,
-    this.matchName = '',
-    this.rounds = 1,
-    this.playerResponseTime = 3,
+    this.matchName,
     this.questionDuration,
-    this.gameUsers,
-    this.handicap = true,
-    this.isActive,
-    this.gameType,
-    this.startDateTime,
-    this.endDateTime,
-    this.isItFirstPlayer = true,
+    this.questions,
+    this.playerStatus,
   });
 
-  @override
-  String toString() {
-    return "*** ${this.id}:'${this.matchName},' " +
-        "rounds: ${this.rounds}, " +
-        "playerResponseTime: ${this.playerResponseTime}, " +
-        "questionDuration: ${this.questionDuration}, " +
-        "users: ${this.gameUsers}, " +
-        "handicap: ${this.handicap}, " +
-        "isActive: ${this.isActive}, " +
-        "gameType: ${this.gameType}, " +
-        "questions: ${this.questions}" +
-        "startDateTime: ${this.startDateTime}" +
-        "endDateTime: ${this.endDateTime}";
+  Game.init({
+    this.matchName = "",
+    this.questionDuration = 0.0,
+    this.questions,
+    this.playerStatus,
+  });
+
+  bool get isActive {
+    for (PlayerStatus status in this.playerStatus) {
+      if (status.gamePlayer.gameProgress != maxHoles) {
+        return false;
+      }
+    }
+    return true;
   }
+
+  factory Game.fromJson(Map<String, dynamic> json) {
+    return Game(
+      id: json["id"],
+      matchName: json["match_name"],
+      questionDuration: double.parse(json["question_duration"]),
+      questions: List<Question>.from(
+          json["questions"].map((x) => Question.fromJson(x))),
+      playerStatus: List<PlayerStatus>.from(
+          json["player_status"].map((x) => PlayerStatus.fromJson(x))),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "match_name": matchName,
+        "question_duration": questionDuration,
+        "questions": List<dynamic>.from(questions.map((x) => x.toJson())),
+        "player_status":
+            List<dynamic>.from(playerStatus.map((x) => x.toJson())),
+      };
 }

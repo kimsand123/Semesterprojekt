@@ -3,12 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/network/service_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:retry/retry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/user.dart';
 
 class AuthService {
   static Future login(String username, String password) async {
@@ -37,7 +36,7 @@ class AuthService {
 
                 debugPrint("Auth token $token");
 
-                return User.fromJson(responseMap['player']);
+                return Player.fromJson(responseMap['player']);
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");
               } else {

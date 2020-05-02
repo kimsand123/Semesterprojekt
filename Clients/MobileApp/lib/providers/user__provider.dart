@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
 
 class UserProvider extends ChangeNotifier {
-  User _user = User();
+  Player _user = Player();
 
-  User get getUser => _user;
+  Player get getUser => _user;
 
-  void setUser(User newUser) {
+  void setUser(Player newUser) {
     _user = newUser;
     notifyListeners();
   }

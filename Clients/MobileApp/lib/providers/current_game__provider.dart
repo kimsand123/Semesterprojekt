@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/game_user_status.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/game_player.dart';
+import 'package:golfquiz/models/game_round.dart';
+import 'package:golfquiz/models/player_status.dart';
+import 'package:golfquiz/models/player.dart';
 
 class CurrentGameProvider extends ChangeNotifier {
   Game _game = Game();
@@ -13,52 +15,71 @@ class CurrentGameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setGameHistory(
-      GameUserStatus userStatus, int progress, int timeSpent, int score) {
-    userStatus.setGameHistory(progress, timeSpent, score);
+  void addGameRound(
+      PlayerStatus playerStatus, int progress, double timeSpent, int score) {
+    List<PlayerStatus> playerStatusList = this._game.playerStatus;
+
+    for (var status in playerStatusList) {
+      if (status.gamePlayer.player.id == playerStatus.gamePlayer.player.id) {
+        status.gameRound.add(GameRound(score: score, timeSpent: timeSpent));
+      }
+    }
     notifyListeners();
   }
 
-  void incrementPlayerProgress(GameUserStatus userStatus) {
-    userStatus.gameProgress += 1;
+  void incrementPlayerProgress(Player player) {
+    List<PlayerStatus> playerStatusList = this._game.playerStatus;
+
+    for (var status in playerStatusList) {
+      if (status.gamePlayer.player.id == player.id) {
+        status.gamePlayer.gameProgress += 1;
+      }
+    }
     notifyListeners();
   }
 
-  void addPlayer(User user) {
-    Map gameUsersMap = _game.gameUsers ?? {};
-
-    gameUsersMap.putIfAbsent(user, () => GameUserStatus.init());
-
-    notifyListeners();
+  int getPlayerProgress(Player player) {
+    for (PlayerStatus status in this._game.playerStatus) {
+      if (player.id == status.gamePlayer.player.id) {
+        return status.gamePlayer.gameProgress;
+      }
+    }
+    return -1;
   }
 
-  void removePlayer(User user) {
-    Map gameUsersMap = _game.gameUsers ?? {};
+  void addPlayer(Player player) {
+    List<PlayerStatus> listOfPlayerStatus = this._game.playerStatus;
 
-    User removeUser =
-        _findPlayerinGameUserList(user, gameUsersMap.keys.toList());
+    bool wasInList = false;
 
-    gameUsersMap.remove(removeUser);
+    for (PlayerStatus status in listOfPlayerStatus) {
+      if (player.id == status.gamePlayer.player.id) {
+        wasInList = true;
+      }
+    }
 
-    notifyListeners();
+    if (!wasInList) {
+      this._game.playerStatus.add(PlayerStatus(
+          gamePlayer: GamePlayer(player: player, gameProgress: 0, score: 0),
+          gameRound: []));
+    }
   }
 
-  void addMultiplePlayers(List<User> users) {
-    Map gameUsersMap = _game.gameUsers ?? {};
+  void removePlayer(Player player) {
+    List<PlayerStatus> listOfPlayerStatus = this._game.playerStatus;
 
-    users.forEach((user) {
-      gameUsersMap.putIfAbsent(user, () => GameUserStatus.init());
-    });
-
-    notifyListeners();
+    for (PlayerStatus status in listOfPlayerStatus) {
+      if (player.id == status.gamePlayer.player.id) {
+        this._game.playerStatus.remove(status);
+      }
+    }
   }
 
-  int getPlayerProgress(GameUserStatus userStatus) => userStatus.gameProgress;
+  /*
+  Player _findPlayerinGameUserList(Player player, List<Player> userList) {
+    Player foundUser;
 
-  User _findPlayerinGameUserList(User player, List<User> userList) {
-    User foundUser;
-
-    for (User userInList in userList) {
+    for (Player userInList in userList) {
       if (player.id == userInList.id) {
         foundUser = userInList;
         break;
@@ -66,4 +87,5 @@ class CurrentGameProvider extends ChangeNotifier {
     }
     return foundUser;
   }
+  */
 }

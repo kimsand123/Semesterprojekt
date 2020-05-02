@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/network/remote_helper.dart';
 import 'package:golfquiz/providers/user__provider.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
@@ -62,7 +62,7 @@ class _EditProfilePageState extends BasePageState<EditProfilePage>
     newDGUText = '';
 
     _userProvider = Provider.of<UserProvider>(context, listen: false);
-    User user = _userProvider.getUser;
+    Player user = _userProvider.getUser;
     _nameController.text = '${user.firstName}';
     _emailController.text = '${user.lastName}';
     _countryController.text = '${user.studyProgramme}';
@@ -295,7 +295,7 @@ class _EditProfilePageState extends BasePageState<EditProfilePage>
         disableProgressIndicator();
       });
 
-      User user = _userProvider.getUser;
+      Player user = _userProvider.getUser;
       //user.name = this._nameController.text;
       user.email = this._emailController.text;
       //user.country = this._countryController.text;

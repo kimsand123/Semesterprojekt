@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/providers/friend__provider.dart';
 import 'package:golfquiz/providers/global_player__provider.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
@@ -95,7 +95,7 @@ class _FindPlayerPageState extends BasePageState<FindPlayerPage>
                   ),
                   Consumer<GlobalPlayerProvider>(
                     builder: (context, provider, child) {
-                      List<User> userList = provider.getSearchedGlobalPlayers;
+                      List<Player> userList = provider.getSearchedGlobalPlayers;
 
                       return Container(
                         height: listHeight - 105,
@@ -156,7 +156,7 @@ class _FindPlayerPageState extends BasePageState<FindPlayerPage>
     }
   }
 
-  void doYouWantToAdd(User selectedUser) {
+  void doYouWantToAdd(Player selectedUser) {
     String descriptionAddText = '';
 
     if (widget.relationship == PlayerRelationship.friend) {
@@ -202,7 +202,7 @@ class _FindPlayerPageState extends BasePageState<FindPlayerPage>
     });
   }
 
-  bool isFoundUserAlreadyInList(User foundUser) {
+  bool isFoundUserAlreadyInList(Player foundUser) {
     PlayerRelationship relationship = widget.relationship;
 
     if (relationship == PlayerRelationship.friend) {
@@ -212,7 +212,7 @@ class _FindPlayerPageState extends BasePageState<FindPlayerPage>
     }
   }
 
-  void addNewPlayer(User foundUser) {
+  void addNewPlayer(Player foundUser) {
     switch (widget.relationship) {
       // Friend case
       case PlayerRelationship.friend:

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/providers/user__provider.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
@@ -11,9 +11,9 @@ import 'package:golfquiz/view/mixins/basic_page__mixin.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends BasePage {
-  final User _user;
+  final Player _user;
 
-  ProfilePage({@required User user}) : this._user = user;
+  ProfilePage({@required Player user}) : this._user = user;
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -39,7 +39,7 @@ class _ProfilePageState extends BasePageState<ProfilePage> with BasicPage {
 
   @override
   Widget body() {
-    User shownUser;
+    Player shownUser;
     bool isCurrentPlayer;
 
     if (widget._user == null) {

@@ -3,32 +3,31 @@ import 'package:flutter/widgets.dart';
 import 'package:golfquiz/localization/appLocalizations.dart';
 import 'package:golfquiz/misc/constants.dart';
 import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
+import 'package:golfquiz/models/player_status.dart';
 import 'package:golfquiz/providers/current_game__provider.dart';
 import 'package:golfquiz/view/components/popup__component.dart';
 import 'package:provider/provider.dart';
 
-void addPlayerToGame(User addPlayer, BuildContext context) {
+void addPlayerToGame(Player addPlayer, BuildContext context) {
   Game game =
       Provider.of<CurrentGameProvider>(context, listen: false).getGame();
 
-  List<User> gameUsers = game.gameUsers.keys.toList();
+  List<PlayerStatus> gamePlayerStatus = game.playerStatus;
 
-  bool chosenPlayerIsInList = isPlayerinGameUserList(addPlayer, gameUsers);
+  bool chosenPlayerIsInList =
+      isPlayerinGamePlayerStatusList(addPlayer, gamePlayerStatus);
 
   bool isTwoPlayerMatch = game.gameType == GameType.two_player_match;
-  bool isMaxTwoPlayerReached = gameUsers.length == maxPlayersTwoPlayerMatch;
-  bool isGroupMatch = game.gameType == GameType.group_match;
-  bool isMaxGroupReached = gameUsers.length == maxPlayersGroupMatch;
+  bool isMaxTwoPlayerReached =
+      gamePlayerStatus.length == maxPlayersTwoPlayerMatch;
 
   if (chosenPlayerIsInList) {
     // Player already in match
     Provider.of<CurrentGameProvider>(context, listen: false)
         .removePlayer(addPlayer);
   } else if (isTwoPlayerMatch && isMaxTwoPlayerReached) {
-    _showTwoPlayerMaxPopup(context, gameUsers);
-  } else if (isGroupMatch && isMaxGroupReached) {
-    _showGroupMaxPopup(context, gameUsers);
+    _showTwoPlayerMaxPopup(context, gamePlayerStatus);
   } else {
     // Add player
     Provider.of<CurrentGameProvider>(context, listen: false)
@@ -36,55 +35,8 @@ void addPlayerToGame(User addPlayer, BuildContext context) {
   }
 }
 
-void addAllPlayersFromListToGame(List<User> users, BuildContext context) {
-  Game game =
-      Provider.of<CurrentGameProvider>(context, listen: false).getGame();
-
-  List<User> gameUsers = game.gameUsers.keys.toList();
-
-  bool isTwoPlayerMatch = game.gameType == GameType.two_player_match;
-  bool isGroupMatch = game.gameType == GameType.group_match;
-
-  for (User addPlayer in users) {
-    bool isMaxTwoPlayerReached = gameUsers.length == maxPlayersTwoPlayerMatch;
-    bool isMaxGroupReached = gameUsers.length == maxPlayersGroupMatch;
-
-    bool chosenPlayerIsInList = isPlayerinGameUserList(addPlayer, gameUsers);
-
-    if (isTwoPlayerMatch && isMaxTwoPlayerReached) {
-      // Max reached for a group, show popup and break for-each
-      _showTwoPlayerMaxPopup(context, gameUsers);
-      debugPrint(
-          'trying to add ${addPlayer.firstName}, and max two players is reached');
-
-      break;
-    } else if (isGroupMatch && isMaxGroupReached) {
-      // Max reached for a group, show popup and break for-each
-      _showGroupMaxPopup(context, gameUsers);
-      debugPrint(
-          'trying to add ${addPlayer.firstName}, and max group players is reached');
-
-      break;
-    } else if (!chosenPlayerIsInList) {
-      // Player not already in match
-      // Add player
-      gameUsers.add(addPlayer);
-    } else {}
-  }
-
-  // Add all players
-  Provider.of<CurrentGameProvider>(context, listen: false)
-      .addMultiplePlayers(gameUsers);
-}
-
-bool isMaxPlayersInvited(Game game, List<User> gamePlayers) {
-  if (game.gameType == GameType.two_player_match) {
-    // Do not show icon if gametype is two-player match, and list length is maxPlayersTwoPlayerMatch
-    return (gamePlayers.length == maxPlayersTwoPlayerMatch);
-  } else {
-    // Do not show icon if gametype is group-player match, and list length is maxPlayersGroupMatch
-    return (gamePlayers.length == maxPlayersGroupMatch);
-  }
+bool isMaxPlayersInvited(Game game, List<PlayerStatus> gamePlayerStatus) {
+  return (gamePlayerStatus.length == maxPlayersTwoPlayerMatch);
 }
 
 bool shouldShowInviteButton(
@@ -98,11 +50,12 @@ bool shouldShowInviteButton(
   }
 }
 
-bool isPlayerinGameUserList(User player, List<User> userList) {
+bool isPlayerinGamePlayerStatusList(
+    Player player, List<PlayerStatus> playerStatusList) {
   bool isInTheList = false;
 
-  for (User userInList in userList) {
-    if (player.id == userInList.id) {
+  for (PlayerStatus status in playerStatusList) {
+    if (player.id == status.gamePlayer.player.id) {
       isInTheList = true;
       break;
     }
@@ -110,7 +63,7 @@ bool isPlayerinGameUserList(User player, List<User> userList) {
   return isInTheList;
 }
 
-String _playersToAStringList(List<User> players) {
+String _playersToAStringList(List<Player> players) {
   String returnString = '';
 
   players.forEach((player) {
@@ -138,7 +91,7 @@ void _showTwoPlayerMaxPopup(BuildContext context, gameUsers) {
   );
 }
 
-void _showGroupMaxPopup(BuildContext context, List<User> gameUsers) {
+void _showGroupMaxPopup(BuildContext context, List<Player> gameUsers) {
   // Group max
   showPopupDialog(
     context,

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/providers/friend__provider.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
@@ -92,7 +92,7 @@ class _FriendsPageState extends BasePageState<FriendsPage> with BasicPage {
                 thickness: 2,
               ),
               Consumer<FriendProvider>(builder: (context, provider, child) {
-                List<User> friendlist = provider.getFriends();
+                List<Player> friendlist = provider.getFriends();
 
                 return Container(
                   height: listHeight,
@@ -130,7 +130,7 @@ class _FriendsPageState extends BasePageState<FriendsPage> with BasicPage {
     );
   }
 
-  void deleteTapAction(User user) {
+  void deleteTapAction(Player user) {
     showPopupDialog(
       context,
       appLocale().dialog__are_you_sure,
@@ -154,7 +154,7 @@ class _FriendsPageState extends BasePageState<FriendsPage> with BasicPage {
     );
   }
 
-  void onTapAction(User user) {
+  void onTapAction(Player user) {
     Navigator.pushNamed(context, profileRoute, arguments: user);
   }
 

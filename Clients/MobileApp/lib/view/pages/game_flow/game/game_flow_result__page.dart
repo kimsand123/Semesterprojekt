@@ -10,7 +10,6 @@ import 'package:golfquiz/view/base_pages/base_page.dart';
 import 'package:golfquiz/view/components/popup__component.dart';
 import 'package:golfquiz/view/components/round_button__component.dart';
 import 'package:golfquiz/view/components/sliver_app_bar__component.dart';
-import 'package:golfquiz/view/components/standard_button__component.dart';
 import 'package:golfquiz/view/mixins/sliver_page_overlay__mixin.dart';
 import 'package:provider/provider.dart';
 
@@ -41,10 +40,8 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
       builder: (context, provider, child) {
         Game game = provider.getGame();
         var currentUserInfo = GameFlowHelper.determineUser(
-                Provider.of<UserProvider>(context),
-                Provider.of<CurrentGameProvider>(context))
-            .values
-            .toList()[0];
+            Provider.of<UserProvider>(context),
+            Provider.of<CurrentGameProvider>(context));
 
         return Column(
           children: <Widget>[
@@ -52,8 +49,8 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
               padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
               alignment: Alignment.bottomLeft,
               child: Text(
-                  appLocale()
-                      .game_flow__result__hole(currentUserInfo.gameProgress),
+                  appLocale().game_flow__result__hole(
+                      currentUserInfo.gamePlayer.gameProgress),
                   style: appTheme()
                       .textTheme
                       .subhead
@@ -74,7 +71,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                         .display1
                         .copyWith(color: Color(0xFF2D2D2D)),
                     text:
-                        '${game.questions[currentUserInfo.gameProgress - 1].question}'),
+                        '${game.questions[currentUserInfo.gamePlayer.gameProgress - 1]}'),
               ),
             ),
           ],
@@ -118,13 +115,9 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
               Consumer<CurrentGameProvider>(
                   builder: (context, gameProvider, child) {
                 Game game = gameProvider.getGame();
-                var player = GameFlowHelper.determineUserFromGameUsers(
-                        game.gameUsers.keys.toList(),
-                        Provider.of<UserProvider>(context).getUser,
-                        game)
-                    .values
-                    .toList()[0];
-
+                var currentPlayerStatus =
+                    GameFlowHelper.determineCurrentPlayerStatus(
+                        Provider.of<UserProvider>(context).getUser, game);
                 return RoundButtonComponent(
                   isPaused: true,
                   icon: 'assets/animations/pause_play.flr',
@@ -139,7 +132,8 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                               .button
                               .copyWith(color: color)): () {
                         Provider.of<CurrentGameProvider>(context, listen: false)
-                            .incrementPlayerProgress(player);
+                            .incrementPlayerProgress(
+                                currentPlayerStatus.gamePlayer.player);
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushNamedAndRemoveUntil(context, gameRoute,
@@ -159,11 +153,9 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
               Consumer<CurrentGameProvider>(
                 builder: (context, provider, child) {
                   Game game = provider.getGame();
-                  var player = GameFlowHelper.determineUser(
-                          Provider.of<UserProvider>(context),
-                          Provider.of<CurrentGameProvider>(context))
-                      .values
-                      .toList()[0];
+                  var playerStatus = GameFlowHelper.determineUser(
+                      Provider.of<UserProvider>(context),
+                      Provider.of<CurrentGameProvider>(context));
 
                   return RoundButtonComponent(
                     isPaused: _isContinuePressed,
@@ -176,43 +168,16 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                         _isContinuePressed = false;
                         animationStateContinue = 'continue';
                       });
-                      if (provider.getPlayerProgress(player) >= 18) {
+                      if (provider.getPlayerProgress(
+                              playerStatus.gamePlayer.player) >=
+                          18) {
                         var donePlayers = 0;
                         if (game.gameType == GameType.two_player_match) {
-                          game.endDateTime = DateTime.now();
-                          game.isActive = false;
                           Provider.of<CurrentGameProvider>(context,
                                   listen: false)
                               .setGame(game);
                           Navigator.pushReplacementNamed(context, gameRoute);
-                        } else if (game.gameType == GameType.group_match ||
-                            game.gameType == GameType.tournaments) {
-                          for (var i = 0;
-                              i < game.gameUsers.keys.toList().length;
-                              i++) {
-                            if (game.gameUsers.values
-                                    .toList()[i]
-                                    .gameProgress ==
-                                18) {
-                              donePlayers++;
-                            }
-                          }
-
-                          if (donePlayers == game.gameUsers.length) {
-                            game.endDateTime = DateTime.now();
-                            game.isActive = false;
-                            Provider.of<CurrentGameProvider>(context,
-                                    listen: false)
-                                .setGame(game);
-                            Navigator.pushReplacementNamed(context, gameRoute);
-                          } else {
-                            Provider.of<CurrentGameProvider>(context,
-                                    listen: false)
-                                .setGame(game);
-                            Navigator.pushReplacementNamed(context, gameRoute);
-                          }
                         } else {
-                          game.isActive = false;
                           Provider.of<CurrentGameProvider>(context,
                                   listen: false)
                               .setGame(game);
@@ -220,27 +185,25 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                         }
                       } else {
                         if (game.gameType == GameType.two_player_match) {
-                          game.isItFirstPlayer = !game.isItFirstPlayer;
-                          provider.incrementPlayerProgress(player);
+                          provider.incrementPlayerProgress(
+                              playerStatus.gamePlayer.player);
                           Provider.of<CurrentGameProvider>(context,
                                   listen: false)
                               .setGame(game);
-                          if (game.isItFirstPlayer) {
-                            Navigator.pushReplacementNamed(
-                                context, gameFlowQuestionRoute);
-                          } else {
-                            Navigator.pushReplacementNamed(context, gameRoute);
-                          }
+                          Navigator.pushReplacementNamed(
+                              context, gameFlowQuestionRoute);
                         } else if (game.gameType == GameType.group_match ||
                             game.gameType == GameType.tournaments) {
-                          provider.incrementPlayerProgress(player);
+                          provider.incrementPlayerProgress(
+                              playerStatus.gamePlayer.player);
                           Provider.of<CurrentGameProvider>(context,
                                   listen: false)
                               .setGame(game);
                           Navigator.pushReplacementNamed(
                               context, gameFlowQuestionRoute);
                         } else {
-                          provider.incrementPlayerProgress(player);
+                          provider.incrementPlayerProgress(
+                              playerStatus.gamePlayer.player);
                           Provider.of<CurrentGameProvider>(context,
                                   listen: false)
                               .setGame(game);
@@ -270,10 +233,8 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
     return Consumer<CurrentGameProvider>(builder: (context, provider, child) {
       Game game = provider.getGame();
       var currentUserInfo = GameFlowHelper.determineUser(
-              Provider.of<UserProvider>(context),
-              Provider.of<CurrentGameProvider>(context))
-          .values
-          .toList()[0];
+          Provider.of<UserProvider>(context),
+          Provider.of<CurrentGameProvider>(context));
 
       return SliverAppBarComponent(
         fontSize: 30.0,
@@ -357,57 +318,54 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
               });
             },
             child: Consumer<CurrentGameProvider>(
-              builder: (context, provider, child) {
-                Game game = provider.getGame();
-                var currentUserInfo = GameFlowHelper.determineUser(
+                builder: (context, provider, child) {
+              Game game = provider.getGame();
+              var currentUserInfo = GameFlowHelper.determineUser(
                   Provider.of<UserProvider>(context),
-                  Provider.of<CurrentGameProvider>(context))
-                  .values
-                  .toList()[0];
+                  Provider.of<CurrentGameProvider>(context));
 
-                return Container(
-                  margin: EdgeInsets.only(top: 10),
-                  height: screenHeight(),
-                  width: screenWidth(),
-                  alignment: Alignment.topCenter,
-                  child: ListView(
+              return Container(
+                margin: EdgeInsets.only(top: 10),
+                height: screenHeight(),
+                width: screenWidth(),
+                alignment: Alignment.topCenter,
+                child: ListView(
                     physics: NeverScrollableScrollPhysics(),
                     children: [
                       Column(children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 20.0),
-                        child: pill(),
-                      ),
-                      Text(appLocale().game_flow__result__rule(game.questions[currentUserInfo.gameProgress - 1].rule.id),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline
-                              .copyWith(color: Color(0xFF2D2D2D))),
-                      Container(
-                          padding: EdgeInsets.symmetric(vertical: 20.0),
-                          height: screenHeight(),
-                          child: Text(
-                              '${game.questions[currentUserInfo.gameProgress - 1].rule.description}',
-                              style: appTheme()
-                                  .textTheme
-                                  .subhead
-                                  .copyWith(color: Color(0xFF2D2D2D))))
-                    ]),
-                  ]),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.0),
-                          topRight: Radius.circular(20.0)),
-                      boxShadow: [
-                        BoxShadow(
-                            offset: Offset(0, -5),
-                            blurRadius: 3,
-                            color: Color(0x20000000))
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 20.0),
+                          child: pill(),
+                        ),
+                        Text(appLocale().game_flow__result__rule("0"),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline
+                                .copyWith(color: Color(0xFF2D2D2D))),
+                        Container(
+                            padding: EdgeInsets.symmetric(vertical: 20.0),
+                            height: screenHeight(),
+                            child: Text(
+                                '${"Cannot be gathered in this version"}',
+                                style: appTheme()
+                                    .textTheme
+                                    .subhead
+                                    .copyWith(color: Color(0xFF2D2D2D))))
                       ]),
-                );
-              }
-            ),
+                    ]),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0)),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(0, -5),
+                          blurRadius: 3,
+                          color: Color(0x20000000))
+                    ]),
+              );
+            }),
           ),
         ]),
       ),

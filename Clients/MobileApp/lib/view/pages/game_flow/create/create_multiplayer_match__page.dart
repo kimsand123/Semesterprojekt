@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:golfquiz/models/game.dart';
+import 'package:golfquiz/models/player.dart';
+import 'package:golfquiz/models/player_status.dart';
 import 'package:golfquiz/providers/current_game__provider.dart';
+import 'package:golfquiz/providers/user__provider.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
 import 'package:golfquiz/view/components/auth__components/auth_button__component.dart';
@@ -129,8 +132,8 @@ class _CreateMultiplayerMatchPageState
         Consumer<CurrentGameProvider>(
           builder: (context, provider, child) {
             Game game = provider.getGame();
-            Map gameUsersMap = game.gameUsers ?? {};
-            bool isEnoughUsersAdded = gameUsersMap.length >= 2;
+            List<PlayerStatus> gamePlayerStatusList = game.playerStatus;
+            bool isEnoughUsersAdded = gamePlayerStatusList.length >= 2;
 
             return AuthButtonComponent(
               text: Text(appLocale().create_match__start_button,
@@ -147,7 +150,7 @@ class _CreateMultiplayerMatchPageState
 
   _validateAndSaveInputs() async {
     if (_formKey.currentState.validate()) {
-      startGame();
+      invitePlayer();
     } else {
       setState(() {
         _autoValidate = true;
@@ -155,19 +158,26 @@ class _CreateMultiplayerMatchPageState
     }
   }
 
-  void startGame() {
-    var gameId = Uuid();
+  void invitePlayer() {
     Game providerGame =
         Provider.of<CurrentGameProvider>(context, listen: false).getGame();
-    providerGame.playerResponseTime = gamePlayerResponseTime;
-    providerGame.rounds = gameRounds;
+
     providerGame.questionDuration = questionDuration;
     providerGame.matchName = _nameController.text;
-    providerGame.handicap = true;
-    providerGame.isActive = true;
-    providerGame.isItFirstPlayer = true;
-    providerGame.id = gameId.v4();
+
     Provider.of<CurrentGameProvider>(context, listen: false).setGame(game);
+
+    Player currentUser =
+        Provider.of<UserProvider>(context, listen: false).getUser;
+    Player receiver;
+
+    for (PlayerStatus status in providerGame.playerStatus) {
+      if (status.gamePlayer.player.id != currentUser.id) {
+        receiver = status.gamePlayer.player;
+      }
+    }
+
+    //TODO: Create invite from game
 
     Navigator.pushNamedAndRemoveUntil(context, gameFlowQuestionRoute,
         ModalRoute.withName(Navigator.defaultRouteName));

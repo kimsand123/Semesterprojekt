@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz/misc/constants.dart';
 import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
+import 'package:golfquiz/models/player_status.dart';
 import 'package:golfquiz/providers/friend__provider.dart';
 import 'package:golfquiz/providers/current_game__provider.dart';
 import 'package:golfquiz/providers/user__provider.dart';
@@ -32,9 +33,9 @@ class _InviteFriendsPageState extends BasePageState<InviteFriendsPage>
 
     Game game =
         Provider.of<CurrentGameProvider>(context, listen: false).getGame();
-    List gamePlayers = game.gameUsers.keys.toList();
+    List<PlayerStatus> gamePlayerStatusList = game.playerStatus;
 
-    bool isMaxPlayersReached = isMaxPlayersInvited(game, gamePlayers);
+    bool isMaxPlayersReached = isMaxPlayersInvited(game, gamePlayerStatusList);
 
     // The visible card
     return CardList(
@@ -70,8 +71,8 @@ class _InviteFriendsPageState extends BasePageState<InviteFriendsPage>
             thickness: 2,
           ),
           Consumer<FriendProvider>(builder: (context, provider, child) {
-            User currentPlayer = Provider.of<UserProvider>(context).getUser;
-            List<User> friendlist = provider.getFriends();
+            Player currentPlayer = Provider.of<UserProvider>(context).getUser;
+            List<Player> friendlist = provider.getFriends();
 
             return Container(
               height: listHeight,
@@ -84,23 +85,14 @@ class _InviteFriendsPageState extends BasePageState<InviteFriendsPage>
                 itemBuilder: (context, index) {
                   // Add button at the button of the list
                   if (index == friendlist.length &&
-                      game.gameType != GameType.two_player_match) {
-                    return AddAllButtonComponent(
-                      onTab: () {
-                        setState(() {
-                          addAllPlayersFromListToGame(friendlist, context);
-                        });
-                      },
-                    );
-                  } else if (index == friendlist.length &&
                       game.gameType == GameType.two_player_match) {
                     return Container();
                   }
 
                   final friend = friendlist[index];
 
-                  bool isPlayerInList =
-                      isPlayerinGameUserList(friend, gamePlayers);
+                  bool isPlayerInList = isPlayerinGamePlayerStatusList(
+                      friend, gamePlayerStatusList);
 
                   bool isCurrentPlayer = currentPlayer.id == friend.id;
 
@@ -128,7 +120,7 @@ class _InviteFriendsPageState extends BasePageState<InviteFriendsPage>
     );
   }
 
-  void onTapAction(User friend) {
+  void onTapAction(Player friend) {
     setState(() {
       addPlayerToGame(friend, context);
     });

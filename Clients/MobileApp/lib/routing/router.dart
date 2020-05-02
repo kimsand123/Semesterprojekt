@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/pages/auth/forgot_password__page.dart';
 import 'package:golfquiz/view/pages/auth/intro__page.dart';
 import 'package:golfquiz/view/pages/auth/login__page.dart';
 import 'package:golfquiz/view/pages/bottom_navigation/navigation__container.dart';
 import 'package:golfquiz/view/pages/game_flow/create/create_multiplayer_match__page.dart';
-import 'package:golfquiz/view/pages/game_flow/create/create_solo_match__page.dart';
 import 'package:golfquiz/view/pages/game_flow/game/game_flow_question__page.dart';
 import 'package:golfquiz/view/pages/game_flow/game/game_flow_result__page.dart';
 import 'package:golfquiz/view/pages/game_flow/game/game_flow_scoreboard__page.dart';
@@ -56,7 +55,7 @@ class Router {
                 ));
 
       case profileRoute:
-        var data = settings.arguments as User;
+        var data = settings.arguments as Player;
         return MaterialPageRoute(
             settings: RouteSettings(name: profileRoute),
             builder: (_) => ProfilePage(
@@ -72,11 +71,6 @@ class Router {
         return MaterialPageRoute(
             settings: RouteSettings(name: friendsRoute),
             builder: (_) => FriendsPage());
-
-      case soloCreateRoute:
-        return MaterialPageRoute(
-            settings: RouteSettings(name: soloCreateRoute),
-            builder: (_) => CreateSoloMatchPage());
 
       case twoPlayerCreateRoute:
         return MaterialPageRoute(

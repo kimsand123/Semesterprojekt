@@ -1,15 +1,15 @@
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/player.dart';
 
 class FriendProvider extends ChangeNotifier {
-  List<User> _friendList = [];
+  List<Player> _friendList = [];
 
-  List<User> getFriends() => _friendList;
+  List<Player> getFriends() => _friendList;
 
   /// **setFriendList():**
   /// Sets a new club object, should not be used for other than first logon.
   ///
-  void setFriendList(List<User> friends) {
+  void setFriendList(List<Player> friends) {
     this._friendList = friends ?? [];
 
     notifyListeners();
@@ -27,7 +27,7 @@ class FriendProvider extends ChangeNotifier {
   /// **addFriend():**
   /// Add friend to friend-list
   ///
-  void addFriend(User userToAdd) {
+  void addFriend(Player userToAdd) {
     // Find if user already exists
     bool userAlreadyExists = isUserAFriend(userToAdd);
 
@@ -42,9 +42,9 @@ class FriendProvider extends ChangeNotifier {
   /// **removeFriend():**
   /// Remove a friend
   ///
-  void removeFriend(User userToDelete) {
+  void removeFriend(Player userToDelete) {
     // Update club members and admins
-    List<User> newFriendList =
+    List<Player> newFriendList =
         _removeUserFromList(userToDelete, this._friendList);
 
     // Override the members
@@ -56,8 +56,8 @@ class FriendProvider extends ChangeNotifier {
   /// **isUserAFriend():**
   /// Returns true if user is a friend.
   ///
-  bool isUserAFriend(User userToFind) {
-    for (User friend in this._friendList) {
+  bool isUserAFriend(Player userToFind) {
+    for (Player friend in this._friendList) {
       if (userToFind.id == friend.id) {
         return true;
       }
@@ -71,10 +71,10 @@ class FriendProvider extends ChangeNotifier {
   ///
   /// The userToRemove.id is used to find the user.
   ///
-  List<User> _removeUserFromList(User userToRemove, List<User> userList) {
-    List<User> returnList = [];
+  List<Player> _removeUserFromList(Player userToRemove, List<Player> userList) {
+    List<Player> returnList = [];
 
-    for (User user in userList) {
+    for (Player user in userList) {
       if (user.id != userToRemove.id) {
         returnList.add(user);
       }

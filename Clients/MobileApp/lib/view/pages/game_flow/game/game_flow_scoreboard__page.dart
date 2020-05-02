@@ -3,8 +3,8 @@ import 'package:golfquiz/localization/appLocalizations.dart';
 import 'package:golfquiz/misc/constants.dart';
 import 'package:golfquiz/misc/game_flow_helper.dart';
 import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/game_history.dart';
-import 'package:golfquiz/models/game_user_status.dart';
+import 'package:golfquiz/models/game_round.dart';
+import 'package:golfquiz/models/player_status.dart';
 import 'package:golfquiz/providers/current_game__provider.dart';
 import 'package:golfquiz/providers/user__provider.dart';
 import 'package:golfquiz/routing/route_constants.dart';
@@ -31,10 +31,8 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
       builder: (context, provider, child) {
         Game game = provider.getGame();
         var currentUserInfo = GameFlowHelper.determineUser(
-                Provider.of<UserProvider>(context),
-                Provider.of<CurrentGameProvider>(context))
-            .values
-            .toList()[0];
+            Provider.of<UserProvider>(context),
+            Provider.of<CurrentGameProvider>(context));
 
         return SliverAppBarComponent(
           currentUserInfo: currentUserInfo,
@@ -44,7 +42,7 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
           rowLeftTitle: appLocale().game_flow__scoreboard__q_duration,
           rowLeftContent: game.questionDuration.toStringAsFixed(0) + 's',
           rowRightTitle: appLocale().game_flow__scoreboard__your_score,
-          rowRightContent: currentUserInfo.score,
+          rowRightContent: currentUserInfo.gamePlayer.score,
           showProgress: true,
         );
       },
@@ -57,10 +55,8 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
       builder: (context, provider, child) {
         Game game = provider.getGame();
         var player = GameFlowHelper.determineUser(
-                Provider.of<UserProvider>(context),
-                Provider.of<CurrentGameProvider>(context))
-            .values
-            .toList()[0];
+            Provider.of<UserProvider>(context),
+            Provider.of<CurrentGameProvider>(context));
         return Padding(
           padding: EdgeInsets.only(bottom: screenHeight() * 0.15),
           child: Column(
@@ -97,11 +93,9 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
             Consumer<CurrentGameProvider>(
               builder: (context, provider, child) {
                 Game game = provider.getGame();
-                var player = GameFlowHelper.determineUser(
-                        Provider.of<UserProvider>(context),
-                        Provider.of<CurrentGameProvider>(context))
-                    .values
-                    .toList()[0];
+                var playerStatus = GameFlowHelper.determineUser(
+                    Provider.of<UserProvider>(context),
+                    Provider.of<CurrentGameProvider>(context));
 
                 return StandardButtonComponent(
                   text: appLocale().game_flow__scoreboard__end_game,
@@ -114,7 +108,8 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                               .button
                               .copyWith(color: color)): () {
                         Provider.of<CurrentGameProvider>(context, listen: false)
-                            .incrementPlayerProgress(player);
+                            .incrementPlayerProgress(
+                                playerStatus.gamePlayer.player);
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushNamedAndRemoveUntil(context, gameRoute,
@@ -140,37 +135,30 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
               builder: (context, provider, child) {
                 Game game = provider.getGame();
                 var player = GameFlowHelper.determineUser(
-                        Provider.of<UserProvider>(context),
-                        Provider.of<CurrentGameProvider>(context))
-                    .values
-                    .toList()[0];
+                    Provider.of<UserProvider>(context),
+                    Provider.of<CurrentGameProvider>(context));
 
                 return StandardButtonComponent(
                   text: appLocale().game_flow__scoreboard__resume,
                   onPressed: () {
-                    if (provider.getPlayerProgress(player) >= 18) {
+                    if (provider.getPlayerProgress(player.gamePlayer.player) >=
+                        18) {
                       var donePlayers = 0;
                       if (game.gameType == GameType.two_player_match) {
-                        game.endDateTime = DateTime.now();
-                        game.isActive = false;
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushNamedAndRemoveUntil(context, gameRoute,
                             ModalRoute.withName(Navigator.defaultRouteName));
                       } else if (game.gameType == GameType.group_match ||
                           game.gameType == GameType.tournaments) {
-                        for (var i = 0;
-                            i < game.gameUsers.keys.toList().length;
-                            i++) {
-                          if (game.gameUsers.values.toList()[i].gameProgress ==
+                        for (var i = 0; i < game.playerStatus.length; i++) {
+                          if (game.playerStatus[i].gamePlayer.gameProgress ==
                               18) {
                             donePlayers++;
                           }
                         }
 
-                        if (donePlayers == game.gameUsers.length) {
-                          game.endDateTime = DateTime.now();
-                          game.isActive = false;
+                        if (donePlayers == game.playerStatus.length) {
                           Provider.of<CurrentGameProvider>(context,
                                   listen: false)
                               .setGame(game);
@@ -184,7 +172,6 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                               ModalRoute.withName(Navigator.defaultRouteName));
                         }
                       } else {
-                        game.isActive = false;
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushNamedAndRemoveUntil(context, gameRoute,
@@ -192,32 +179,11 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                       }
                     } else {
                       if (game.gameType == GameType.two_player_match) {
-                        game.isItFirstPlayer = !game.isItFirstPlayer;
-                        provider.incrementPlayerProgress(player);
+                        provider
+                            .incrementPlayerProgress(player.gamePlayer.player);
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
-                        if (game.isItFirstPlayer) {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              gameFlowQuestionRoute,
-                              ModalRoute.withName(Navigator.defaultRouteName));
-                        } else {
-                          Navigator.pushNamedAndRemoveUntil(context, gameRoute,
-                              ModalRoute.withName(Navigator.defaultRouteName));
-                        }
-                      } else if (game.gameType == GameType.group_match ||
-                          game.gameType == GameType.tournaments) {
-                        provider.incrementPlayerProgress(player);
-                        Provider.of<CurrentGameProvider>(context, listen: false)
-                            .setGame(game);
-                        Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            gameFlowQuestionRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
-                      } else {
-                        provider.incrementPlayerProgress(player);
-                        Provider.of<CurrentGameProvider>(context, listen: false)
-                            .setGame(game);
+
                         Navigator.pushNamedAndRemoveUntil(
                             context,
                             gameFlowQuestionRoute,
@@ -237,9 +203,9 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
   }
 }
 
-generateList(GameUserStatus player, Game game, BuildContext context) {
+generateList(PlayerStatus player, Game game, BuildContext context) {
   List<Widget> gameHistory = List();
-  final history = player.gameHistory;
+  final history = player.gameRound;
   double screenWidth = MediaQuery.of(context).size.width;
 
   switch (game.gameType) {
@@ -322,10 +288,10 @@ List<Widget> singlePlayerGameHistory(
   return gameHistory;
 }
 
-List<Widget> singlePlayerHistory(List<GameHistory> history,
+List<Widget> singlePlayerHistory(List<GameRound> history,
     List<Widget> gameHistory, BuildContext context, double screenWidth) {
   history.forEach(
-    (game) => {
+    (gameRound) => {
       gameHistory.add(
         Container(
           width: MediaQuery.of(context).size.width,
@@ -341,17 +307,18 @@ List<Widget> singlePlayerHistory(List<GameHistory> history,
                 Container(
                   width: ((screenWidth / 3)) - (10 * 2),
                   alignment: Alignment.centerLeft,
-                  child: bubbleContainer(context, '${game.progress}'),
+                  child:
+                      bubbleContainer(context, '${history.indexOf(gameRound)}'),
                 ),
                 Container(
                   width: ((screenWidth / 3)) - (10 * 2),
                   alignment: Alignment.center,
-                  child: numberText(context, '${game.timeSpent}s'),
+                  child: numberText(context, '${gameRound.timeSpent}s'),
                 ),
                 Container(
                   width: ((screenWidth / 3)) - (10 * 2),
                   alignment: Alignment.centerRight,
-                  child: numberText(context, '${game.score}'),
+                  child: numberText(context, '${gameRound.score}'),
                 )
               ],
             ),
@@ -409,21 +376,22 @@ List<Widget> multiPlayerGameHistory(
 }
 
 List<Widget> multiPlayerHistory(
-    List<GameHistory> history,
+    List<GameRound> history,
     List<Widget> gameHistory,
     BuildContext context,
     double screenWidth,
     Game game) {
-  var status = game.gameUsers.keys.toList();
+  List<PlayerStatus> status = game.playerStatus;
   for (var i = 0; i < status.length; i++) {
     Color color;
     String playerName;
-    if (Provider.of<UserProvider>(context).getUser.email == status[i].email) {
+    if (Provider.of<UserProvider>(context).getUser.id ==
+        status[i].gamePlayer.player.id) {
       color = Color(0xFFBEFCD3);
       playerName = AppLocalization.of(context).you;
     } else {
       color = Colors.white;
-      playerName = '${status[i].firstName}';
+      playerName = '${status[i].gamePlayer.player.firstName}';
     }
     gameHistory.add(
       Container(
@@ -451,13 +419,13 @@ List<Widget> multiPlayerHistory(
               Container(
                 width: ((screenWidth / 3)) - (10 * 2),
                 alignment: Alignment.center,
-                child: numberText(context, '${status[i].highScore}'),
+                child: numberText(context, '${status[i].gamePlayer.score}'),
               ),
               Container(
                 width: ((screenWidth / 3)) - (10 * 2),
                 alignment: Alignment.centerRight,
                 child: numberText(
-                    context, '${game.gameUsers.values.toList()[i].score}'),
+                    context, '${game.playerStatus[i].gamePlayer.score}'),
               )
             ],
           ),
@@ -519,18 +487,19 @@ List<Widget> groupGameHistory(
   return gameHistory;
 }
 
-List<Widget> groupHistory(List<GameHistory> history, List<Widget> gameHistory,
+List<Widget> groupHistory(List<GameRound> history, List<Widget> gameHistory,
     BuildContext context, double screenWidth, Game game) {
-  var status = game.gameUsers.keys.toList();
+  List<PlayerStatus> status = game.playerStatus;
   for (var i = 0; i < status.length; i++) {
     Color color;
     String playerName;
-    if (Provider.of<UserProvider>(context).getUser.email == status[i].email) {
+    if (Provider.of<UserProvider>(context).getUser.id ==
+        status[i].gamePlayer.player.id) {
       color = Color(0xFFBEFCD3);
       playerName = AppLocalization.of(context).you;
     } else {
       color = Colors.white;
-      playerName = '${status[i].firstName}';
+      playerName = '${status[i].gamePlayer.player.firstName}';
     }
     gameHistory.add(
       Container(
@@ -558,19 +527,19 @@ List<Widget> groupHistory(List<GameHistory> history, List<Widget> gameHistory,
               Container(
                 width: (screenWidth / 4) - (10 * 2),
                 alignment: Alignment.center,
-                child: numberText(context, '${status[i].highScore}'),
+                child: numberText(context, '${status[i].gamePlayer.score}'),
               ),
               Container(
                 width: (screenWidth / 4) - (10 * 2),
                 alignment: Alignment.center,
                 child: numberText(
-                    context, '${game.gameUsers.values.toList()[i].score}'),
+                    context, '${game.playerStatus[i].gamePlayer.score}'),
               ),
               Container(
                 width: (screenWidth / 4) - (10 * 2),
                 alignment: Alignment.centerRight,
-                child: bubbleContainer(context,
-                    '${game.gameUsers.values.toList()[i].gameProgress}'),
+                child: bubbleContainer(
+                    context, '${game.playerStatus[i].gamePlayer.gameProgress}'),
               ),
             ],
           ),

@@ -60,17 +60,16 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
       builder: (context, provider, child) {
         Game game = provider.getGame();
         var currentUserInfo = GameFlowHelper.determineUser(
-                Provider.of<UserProvider>(context),
-                Provider.of<CurrentGameProvider>(context))
-            .values
-            .toList()[0];
+            Provider.of<UserProvider>(context),
+            Provider.of<CurrentGameProvider>(context));
 
         return Column(
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
               alignment: Alignment.bottomLeft,
-              child: Text('${appLocale().hole} ${currentUserInfo.gameProgress}',
+              child: Text(
+                  '${appLocale().hole} ${currentUserInfo.gamePlayer.gameProgress}',
                   style: appTheme()
                       .textTheme
                       .subhead
@@ -91,10 +90,10 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                         .display1
                         .copyWith(color: Color(0xFF2D2D2D)),
                     text:
-                        '${game.questions[currentUserInfo.gameProgress - 1].question}'),
+                        '${game.questions[currentUserInfo.gamePlayer.gameProgress - 1]}'),
               ),
             ),
-            buildAnswerButtons(currentUserInfo.gameProgress - 1)
+            buildAnswerButtons(currentUserInfo.gamePlayer.gameProgress - 1)
           ],
         );
       },
@@ -106,10 +105,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
     return Consumer<CurrentGameProvider>(builder: (context, provider, child) {
       Game game = provider.getGame();
       var currentUserInfo = GameFlowHelper.determineUser(
-              Provider.of<UserProvider>(context),
-              Provider.of<CurrentGameProvider>(context))
-          .values
-          .toList()[0];
+          Provider.of<UserProvider>(context),
+          Provider.of<CurrentGameProvider>(context));
 
       _totalTime = game.questionDuration;
 
@@ -120,8 +117,11 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                   arguments: false);
               Provider.of<CurrentGameProvider>(context, listen: false)
-                  .setGameHistory(currentUserInfo, currentUserInfo.gameProgress,
-                      _totalTime.round(), currentUserInfo.score);
+                  .addGameRound(
+                      currentUserInfo,
+                      currentUserInfo.gamePlayer.gameProgress,
+                      _totalTime.round(),
+                      currentUserInfo.gamePlayer.score);
             }
             setState(() {
               timer = timer;
@@ -135,7 +135,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
         rowLeftTitle: appLocale().game_flow__question__q_duration,
         rowRightTitle: appLocale().game_flow__question__your_score,
         rowLeftContent: '${_totalTime.toStringAsFixed(0)}s',
-        rowRightContent: currentUserInfo.score,
+        rowRightContent: currentUserInfo.gamePlayer.score,
         showProgress: true,
         title: game.matchName,
       );
@@ -148,12 +148,15 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
   Widget buildAnswerButtons(int questionNumber) {
     Game game = Provider.of<CurrentGameProvider>(context).getGame();
     var question = game.questions[questionNumber];
-    var availableAnswers = question.answers;
-    var player = GameFlowHelper.determineUser(
-            Provider.of<UserProvider>(context),
-            Provider.of<CurrentGameProvider>(context))
-        .values
-        .toList()[0];
+
+    List<String> availableAnswers;
+    availableAnswers.add(question.answer1);
+    availableAnswers.add(question.answer2);
+    availableAnswers.add(question.answer3);
+
+    var status = GameFlowHelper.determineUser(
+        Provider.of<UserProvider>(context),
+        Provider.of<CurrentGameProvider>(context));
 
     List<Widget> answerButtons = List();
 
@@ -167,8 +170,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               _timer.cancel();
               final timeSpent = _timer.tick;
               Provider.of<CurrentGameProvider>(context, listen: false)
-                  .setGameHistory(
-                      player, player.gameProgress, timeSpent, player.score);
+                  .addGameRound(status, status.gamePlayer.gameProgress,
+                      timeSpent + 0.0, status.gamePlayer.score);
               Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                   arguments: true);
             } else {
@@ -176,8 +179,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               _timer.cancel();
               final timeSpent = _timer.tick;
               Provider.of<CurrentGameProvider>(context, listen: false)
-                  .setGameHistory(
-                      player, player.gameProgress, timeSpent, player.score);
+                  .addGameRound(status, status.gamePlayer.gameProgress,
+                      timeSpent + 0.0, status.gamePlayer.score);
               Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                   arguments: false);
             }

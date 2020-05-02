@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:golfquiz/models/user.dart';
+import 'package:flutter/widgets.dart';
+import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/network/service_constants.dart';
 import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-  static Future<List<User>> fetchUsers() async {
+  static Future<List<Player>> fetchUsers() async {
     const apiPath = "/players/";
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
@@ -19,25 +20,27 @@ class UserService {
       "Authorization": token
     };
 
-    Map<String, String> json_map = {"user_token": token.toString()};
+    Uri uri = Uri.http(ServiceConstants.baseGameUrl, apiPath);
 
-    Uri uri = Uri.http(ServiceConstants.baseGameUrl, apiPath, json_map);
-
-    print("wat is dis" + uri.toString());
+    debugPrint("UserService - All users: " + uri.toString());
 
     return retry(
         () => http
                 .get(uri, headers: headers)
                 .timeout(Duration(seconds: 5))
                 .then((response) {
-              Map<String, dynamic> responseMap = jsonDecode(response.body);
+              var body = utf8.decode(response.bodyBytes);
+              Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("data") &&
+              print(responseMap.toString());
+
+              if (responseMap.containsKey("players") &&
                   response.statusCode == 200) {
-                List<User> users = List();
-                for (var user in responseMap['data']) {
-                  users.add(User.fromJson(user));
+                List<Player> users = List();
+                for (var user in responseMap['players']) {
+                  users.add(Player.fromJson(user));
                 }
+                return users;
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");
               } else {

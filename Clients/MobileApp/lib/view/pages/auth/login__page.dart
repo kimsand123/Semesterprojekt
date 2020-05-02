@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/user.dart';
+import 'package:golfquiz/models/game.dart';
+import 'package:golfquiz/models/player.dart';
 import 'package:golfquiz/network/auth_service.dart';
+import 'package:golfquiz/network/game_service.dart';
 import 'package:golfquiz/network/remote_helper.dart';
 import 'package:golfquiz/network/user_service.dart';
+import 'package:golfquiz/providers/friend__provider.dart';
+import 'package:golfquiz/providers/user__provider.dart';
 import 'package:golfquiz/routing/route_constants.dart';
 import 'package:golfquiz/view/base_pages/base_page.dart';
 import 'package:golfquiz/view/components/auth__components/auth_button__component.dart';
@@ -11,6 +15,7 @@ import 'package:golfquiz/view/components/auth__components/borderless_button__com
 import 'package:golfquiz/view/components/text_field__component.dart';
 import 'package:golfquiz/view/mixins/basic_page__mixin.dart';
 import 'package:golfquiz/view/pages/misc/validation__helper.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends BasePage {
   @override
@@ -64,7 +69,7 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
           child: Column(
             children: <Widget>[
               TextFieldComponent(
-                inputType: TextInputType.emailAddress,
+                inputType: TextInputType.text,
                 controller: _usernameController,
                 caption: appLocale().auth__username_caption,
                 isInputHidden: false,
@@ -121,8 +126,8 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
               EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
           text: Text(appLocale().auth_login__login_button,
               style: appTheme().textTheme.button),
-          onPressed: () {
-            _validateAndSaveInputs();
+          onPressed: () async {
+            await _validateAndSaveInputs();
           },
         ),
         BorderlessButtonComponent(
@@ -147,17 +152,27 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
         enableProgressIndicator(appLocale().auth_login__progress_text);
       });
 
-      User _user = await AuthService.login(
+      Player _user = await AuthService.login(
           _usernameController.text, _passwordController.text);
+
       setState(() {
         disableProgressIndicator();
       });
 
-      List<User> userlist = await UserService.fetchUsers();
-
-      print("user_list " + userlist.toString());
-
       RemoteHelper().fakeFillProviders(context, _user);
+
+      //TODO: Should be moved to update GET USERS / FRIENDS
+      List<Player> userlist = await UserService.fetchUsers();
+      Provider.of<FriendProvider>(context, listen: false)
+          .setFriendList(userlist);
+
+      Player player = Provider.of<UserProvider>(context, listen: false).getUser;
+
+      List<Game> games = await GameService.fetchGames(player);
+
+      for (var game in games) {
+        print(game.toJson().toString());
+      }
 
       Navigator.pushNamedAndRemoveUntil(
           context, gameRoute, ModalRoute.withName(Navigator.defaultRouteName));
