@@ -34,7 +34,7 @@ def register_user(request):
                 # Add token, timestamp and player_id to token_user_list
                 token = req_json['user_token']
                 add_token(token, player_id)
-                run_token_test()
+                #run_token_test()
                 game_service_ip = "127.0.0.1"
                 game_service_port = "9700"
                 response = {"game_service_ip": game_service_ip, "game_service_port": game_service_port,
