@@ -1,6 +1,8 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from random import seed
+from random import randint
 
 from GameServiceApp.active_player_list import token_status
 from GameServiceApp.correct_data import CORRECT_INVITE_OBJ
@@ -111,6 +113,8 @@ def single_invite_get(request, invite_id):
 
 # -------------
 # [PUT] /invites/invite_id/
+# For now used to accept an invitation.
+# It also creates an actual game in the database
 # -------------
 def single_invite_put(request, invite_id):
     decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
@@ -118,6 +122,8 @@ def single_invite_put(request, invite_id):
                                                CORRECT_INVITE_OBJ)
 
     json_request = get_json_data_object(request, decode_error_message)
+    #If the type of the return from get_json_data_object is a Response,
+    #and not a json, there was an error
     if type(json_request) is Response:
         return json_request
 
@@ -132,6 +138,9 @@ def single_invite_put(request, invite_id):
         }
     }
     response = connection_service(f"/invites/{invite_id}/", json_body, None, "PUT")
+
+    create_game(json_body);
+
     return Response(data=response, status=status.HTTP_200_OK)
 
 
@@ -141,3 +150,140 @@ def single_invite_put(request, invite_id):
 def single_invite_delete(request, invite_id):
     response = connection_service(f"/invites/{invite_id}/", None, None, "DELETE")
     return Response(data=response, status=status.HTTP_200_OK)
+
+
+def create_game(invite_data):
+
+    invite = invite_data['invite']
+    sender_player_id = invite['sender_player_id']
+    receiver_player_id = invite['receiver_player_id']
+    player1 = {}
+    player2 = {}
+    player1['game_player']={"player_id":sender_player_id, "game_progress":0, "score": 0}
+    player2['game_player']={"player_id":receiver_player_id, "game_progress":0, "score": 0}
+
+    player1['game_round']= create_game_round_object()
+    player2['game_round']= create_game_round_object()
+
+    #Get the invite to get a hold of
+    #match_name: string
+    #question_duration: double
+
+    player_status=[]
+    player_status.append(player1)
+    player_status.append(player2)
+
+    game_object = {"game":{"match_name":invite['match_name'],
+                   "question_duration":invite['question_duration'],
+                   "questions":get_questions_list(),
+                    "player_status":player_status
+                   }}
+
+    connection_service("/games/", game_object, None, "POST")
+    return game_object
+
+def get_questions_list():
+    question_list = []
+    used_question_idx = []
+
+    questions = connection_service("/questions/", None, None, "GET")['questions']
+    number_of_questions = len(questions)
+
+    seed(3)
+
+    #If there are not more than 18 questions
+    if number_of_questions > 18:
+        question_range = 18
+    else:
+        question_range = number_of_questions
+
+    for counter in range (question_range):
+        while True:
+            rnd = randint(0,number_of_questions - 1)
+            if rnd not in used_question_idx:
+                used_question_idx.append(rnd)
+                break
+        question_list.append(questions[rnd]['id'])
+    return question_list
+
+
+def create_game_round_object():
+    game_round_object = [
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+        {
+            "time_spent": 0.0,
+            "score": 0
+        },
+    ]
+    return game_round_object
+
+
+
