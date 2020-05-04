@@ -110,9 +110,9 @@ export default {
       
 
       for(let i = 0; i < rowCells.length; i++) {
-        if(i === 3 || i === 4 || i === 5 && isEditMode) {
+        if(i >= 3 && i <= 5 && isEditMode) {
           rowCells[i].addEventListener('keypress', this.edit.bind(e, rowCells, originalTdData, rows, rowIndex))
-          if(i === 3 || i === 4 || i === 5) {
+          if(i >= 3 && i <= 5) {
             rowCells[i].innerHTML = "<input value='" + originalTdData[i] + "'>"
           }
         } else if(i < rowCells.length - 2) {
