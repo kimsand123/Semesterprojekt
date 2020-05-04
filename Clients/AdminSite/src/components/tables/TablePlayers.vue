@@ -13,12 +13,12 @@
       <td>{{entry.high_score}}</td>
       <td>
         <div @click="handleEdit" class="icon">
-          <img src="./../assets/edit-tools.svg" id="edit-icon"/>
+          <img src="./../../assets/edit-tools.svg" id="edit-icon"/>
         </div>
       </td>
       <td>
         <div @click="handleDelete" class="icon">
-          <img src="./../assets/send-to-trash.svg"/>
+          <img src="./../../assets/send-to-trash.svg"/>
         </div>
       </td>
     </tr>
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  name: 'Table',
+  name: 'TablePlayers',
   props: {
     titles: Array,
     entries: Array,

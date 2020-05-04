@@ -15,12 +15,14 @@
 <script>
 import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
+import Modal from './../../Modal'
 
 export default {
   name: 'Games',
   components: {
     'Navigation': Navigation,
-    'MethodList': MethodList
+    'MethodList': MethodList,
+    'Modal': Modal
   }
 }
 </script>

@@ -6,7 +6,7 @@
       <VRow>
         <VCol :variants="['md-12','sm-12','xs-12']">
           <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players/add" linkToPut="/players/edit" linkToDelete="/players/delete"></MethodList>
-          <Table :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></Table>
+          <TablePlayers :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></TablePlayers>
         </VCol>
       </VRow>
     </VGrid>
@@ -16,7 +16,7 @@
 <script>
 import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
-import Table from '../../Table'
+import TablePlayers from '../../tables/TablePlayers'
 import Modal from '../../Modal'
 import { api_players, auth_header} from '../../../constants'
 import { showModal } from './../../../service-utils'
@@ -29,7 +29,7 @@ export default {
   components: {
     'Navigation': Navigation,
     'MethodList': MethodList,
-    'Table': Table,
+    'TablePlayers': TablePlayers,
     'Modal': Modal
   },
   data: () => {
@@ -61,6 +61,7 @@ export default {
       const table = document.querySelector('table')
       const rowPlayerId = e.target.parentElement.parentElement.parentElement.children[0].innerText
       const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex
+      const rows = e.target.parentElement.parentElement.parentElement.parentElement
 
       fetch(api_players+rowPlayerId+'/', {
         method: 'DELETE',
@@ -82,30 +83,31 @@ export default {
       isEditMode = !isEditMode
       const rowPlayerId = e.target.parentElement.parentElement.parentElement.children[0].innerText
       const rowCells = e.target.parentElement.parentElement.parentElement.children
+      const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex
+      const rows = e.target.parentElement.parentElement.parentElement.parentElement.children
       const editIcon = document.querySelector('#edit-icon')
       const formField = document.createElement("input")
 
       if(isEditMode) {
-        editIcon.setAttribute('src', './../../../assets/save.svg')
         originalTdData = []
         for(const cell of rowCells) {
           originalTdData.push(cell.innerHTML)
         }
-      } else {
-        editIcon.setAttribute('src', './../../../assets/save.svg')
+        // for(let i = 0; i < rows.length; i++) {
+        //   if(rowIndex !== i) {        
+        //     for(let i = 0; i < rowCells.length; i++) {
+        //       if(i === rowCells.length - 2) {
+        //         rowCells[i].children[0].children[0].style.pointerEvents = "none"
+        //         rowCells[i].children[0].style.pointerEvents = "none"
+        //       }
+        //     }
+        //   }
+        // }
       }
 
       for(let i = 0; i < rowCells.length; i++) {
         if(i < rowCells.length - 2 && isEditMode) {
-          rowCells[i].addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-              this.edit()
-              for(let j = 0; j < rowCells.length; j++) {
-                rowCells[j].innerHTML = originalTdData[j]
-              }
-              isEditMode = !isEditMode
-            }
-          })
+          rowCells[i].addEventListener('keypress', this.edit.bind(e, rowCells, originalTdData))
           if(i === 0 || i === rowCells.length - 2) {
             rowCells[i].innerHTML = "<input size='3' value='" + originalTdData[i] + "'>"
           } else {
@@ -116,8 +118,44 @@ export default {
         }
       }
     },
-    edit() {
-      console.log('Done editting')
+    edit(rowCells, originalTdData, e) {
+      const newData = []
+      const inputFields = document.querySelectorAll('input')
+      
+      inputFields.forEach(field => {
+        newData.push(field.value)
+      })
+
+      const payload = JSON.stringify({
+        player: {
+          username: newData[4],
+          email: newData[5],
+          first_name: newData[1],
+          last_name: newData[2],
+          study_programme: newData[3],
+          high_score: newData[6]
+        }
+      })
+
+      if (e.key === 'Enter') {
+        for(let j = 0; j < rowCells.length; j++) {
+          if(j < rowCells.length - 2) {
+            fetch(api_players + originalTdData[0] + '/', {
+              method: 'PUT',
+              body: payload,
+              headers: auth_header
+            })
+            .then(response => {
+              if(response.status === 202) {
+                rowCells[j].innerHTML = newData[j]
+              } else (
+                showModal('Something went wrong...')
+              )
+            })
+          }
+        }
+        isEditMode = false
+      }
     }
   }
 }
