@@ -1,5 +1,6 @@
 <template>
   <div class="site-wrapper">
+    <Modal ></Modal>
     <Navigation :isInviActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>

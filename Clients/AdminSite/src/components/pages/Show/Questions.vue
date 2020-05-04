@@ -1,5 +1,6 @@
 <template>
   <div class="site-wrapper">
+    <Modal ></Modal>
     <Navigation :isQuestionsActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>

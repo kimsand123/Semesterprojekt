@@ -1,5 +1,6 @@
 <template>
   <div class="site-wrapper">
+    <Modal ></Modal>
     <Navigation :isGamesActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>
