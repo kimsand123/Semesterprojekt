@@ -13,7 +13,7 @@
       <td>{{entry.high_score}}</td>
       <td>
         <div @click="handleEdit" class="icon">
-          <img src="./../assets/edit-tools.svg"/>
+          <img src="./../assets/edit-tools.svg" id="edit-icon"/>
         </div>
       </td>
       <td>

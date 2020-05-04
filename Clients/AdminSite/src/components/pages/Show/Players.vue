@@ -21,6 +21,9 @@ import Modal from '../../Modal'
 import { api_players, auth_header} from '../../../constants'
 import { showModal } from './../../../service-utils'
 
+let isEditMode = false
+let originalTdData = []
+
 export default {
   name: 'Players',
   components: {
@@ -69,7 +72,33 @@ export default {
       })
     },
     handleEdit(e) {
-      console.log("Edit")
+      isEditMode = !isEditMode
+      const rowPlayerId = e.target.parentElement.parentElement.parentElement.children[0].innerText
+      const rowCells = e.target.parentElement.parentElement.parentElement.children
+      const editIcon = document.querySelector('#edit-icon')
+      const formField = document.createElement("input")
+
+      if(isEditMode) {
+        editIcon.setAttribute('src', './../../../assets/save.svg')
+        originalTdData = []
+        for(const cell of rowCells) {
+          originalTdData.push(cell.innerHTML)
+        }
+      } else {
+        editIcon.setAttribute('src', './../../../assets/save.svg')
+      }
+
+      for(let i = 0; i < rowCells.length; i++) {
+        if(i < rowCells.length - 2 && isEditMode) {
+          if(i === 0) {
+            rowCells[i].innerHTML = "<input size='1' value='" + originalTdData[i] + "'>"
+          } else {
+            rowCells[i].innerHTML = "<input size='7' value='" + originalTdData[i] + "'>"
+          }
+        } else if(i < rowCells.length - 2) {
+          rowCells[i].innerHTML = originalTdData[i]
+        }
+      }
     }
   }
 }
