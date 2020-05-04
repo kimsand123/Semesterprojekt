@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
-import 'package:golfquiz/view/base_pages/base_page.dart';
-import 'package:golfquiz/view/components/gradient_background__component.dart';
-import 'package:golfquiz/view/components/loading_dialog__component.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/view/components/gradient_background__component.dart';
+import 'package:golfquiz_dtu/view/components/loading_dialog__component.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 mixin BasicPage<Page extends BasePage> on BasePageState<Page> {

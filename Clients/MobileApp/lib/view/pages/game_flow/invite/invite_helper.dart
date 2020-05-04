@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
-import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/player.dart';
-import 'package:golfquiz/models/player_status.dart';
-import 'package:golfquiz/providers/current_game__provider.dart';
-import 'package:golfquiz/view/components/popup__component.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/misc/constants.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/providers/current_game__provider.dart';
+import 'package:golfquiz_dtu/view/components/popup__component.dart';
 import 'package:provider/provider.dart';
 
 void addPlayerToGame(Player addPlayer, BuildContext context) {

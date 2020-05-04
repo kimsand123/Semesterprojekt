@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/game_player.dart';
-import 'package:golfquiz/models/game_round.dart';
-import 'package:golfquiz/models/player_status.dart';
-import 'package:golfquiz/models/player.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/game_player.dart';
+import 'package:golfquiz_dtu/models/game_round.dart';
+import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/models/player.dart';
 
 class CurrentGameProvider extends ChangeNotifier {
   Game _game = Game();

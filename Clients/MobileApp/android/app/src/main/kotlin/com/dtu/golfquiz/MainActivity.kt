@@ -1,4 +1,4 @@
-package com.appicorn.golfquiz
+package com.dtu.golfquiz
 
 import android.os.Bundle
 

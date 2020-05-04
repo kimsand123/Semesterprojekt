@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class GameDurationTimer extends StatelessWidget {

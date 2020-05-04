@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/player.dart';
-import 'package:golfquiz/providers/user__provider.dart';
-import 'package:golfquiz/view/base_pages/base_page.dart';
-import 'package:golfquiz/view/components/avatar__component.dart';
-import 'package:golfquiz/view/components/status__component.dart';
-import 'package:golfquiz/view/mixins/basic_page__mixin.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/view/components/avatar__component.dart';
+import 'package:golfquiz_dtu/view/components/status__component.dart';
+import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends BasePage {
@@ -56,7 +56,7 @@ class _ProfilePageState extends BasePageState<ProfilePage> with BasicPage {
                 '${shownPlayer.username}',
                 appLocale().email,
                 '${shownPlayer.email}',
-                "Study_programme",
+                "Study Programme",
                 '${shownPlayer.studyProgramme}',
                 "Highscore",
                 '${shownPlayer.highScore}',

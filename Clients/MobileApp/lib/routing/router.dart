@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/player.dart';
-import 'package:golfquiz/routing/route_constants.dart';
-import 'package:golfquiz/view/pages/auth/intro__page.dart';
-import 'package:golfquiz/view/pages/auth/login__page.dart';
-import 'package:golfquiz/view/pages/bottom_navigation/navigation__container.dart';
-import 'package:golfquiz/view/pages/game_flow/create/create_multiplayer_match__page.dart';
-import 'package:golfquiz/view/pages/game_flow/game/game_flow_question__page.dart';
-import 'package:golfquiz/view/pages/game_flow/game/game_flow_result__page.dart';
-import 'package:golfquiz/view/pages/game_flow/game/game_flow_scoreboard__page.dart';
-import 'package:golfquiz/view/pages/game_flow/invite/invite_friends__page.dart';
-import 'package:golfquiz/view/pages/menu/friends/friends__page.dart';
-import 'package:golfquiz/view/pages/menu/profile/profile__page.dart';
-import 'package:golfquiz/view/pages/misc/game_list__page.dart';
-import 'package:golfquiz/view/pages/misc/single_game__page.dart';
+import 'package:golfquiz_dtu/misc/constants.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/routing/route_constants.dart';
+import 'package:golfquiz_dtu/view/pages/auth/intro__page.dart';
+import 'package:golfquiz_dtu/view/pages/auth/login__page.dart';
+import 'package:golfquiz_dtu/view/pages/bottom_navigation/navigation__container.dart';
+import 'package:golfquiz_dtu/view/pages/game_flow/create/create_multiplayer_match__page.dart';
+import 'package:golfquiz_dtu/view/pages/game_flow/game/game_flow_question__page.dart';
+import 'package:golfquiz_dtu/view/pages/game_flow/game/game_flow_result__page.dart';
+import 'package:golfquiz_dtu/view/pages/game_flow/game/game_flow_scoreboard__page.dart';
+import 'package:golfquiz_dtu/view/pages/game_flow/invite/invite_friends__page.dart';
+import 'package:golfquiz_dtu/view/pages/menu/friends/friends__page.dart';
+import 'package:golfquiz_dtu/view/pages/menu/profile/profile__page.dart';
+import 'package:golfquiz_dtu/view/pages/misc/game_list__page.dart';
+import 'package:golfquiz_dtu/view/pages/misc/single_game__page.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {

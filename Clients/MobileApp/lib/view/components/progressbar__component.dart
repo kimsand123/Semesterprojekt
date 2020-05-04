@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
 
 class ProgressbarComponent extends StatelessWidget {
   final int step;

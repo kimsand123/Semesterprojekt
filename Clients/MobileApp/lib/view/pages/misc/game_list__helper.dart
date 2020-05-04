@@ -1,5 +1,5 @@
-import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/game.dart';
+import 'package:golfquiz_dtu/misc/constants.dart';
+import 'package:golfquiz_dtu/models/game.dart';
 
 List<Game> gatherActiveGames(List<Game> gameList) {
   //Null safe

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
 
 class ValidationHelper {
   static String validateUsername(String value, BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
 
 class AddAllButtonComponent extends StatelessWidget {
   final VoidCallback _onTab;

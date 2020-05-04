@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
-import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/misc/game_flow_helper.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/game_round.dart';
-import 'package:golfquiz/models/player_status.dart';
-import 'package:golfquiz/providers/current_game__provider.dart';
-import 'package:golfquiz/providers/user__provider.dart';
-import 'package:golfquiz/routing/route_constants.dart';
-import 'package:golfquiz/view/base_pages/base_page.dart';
-import 'package:golfquiz/view/components/popup__component.dart';
-import 'package:golfquiz/view/components/sliver_app_bar__component.dart';
-import 'package:golfquiz/view/components/standard_button__component.dart';
-import 'package:golfquiz/view/mixins/sliver_page_overlay__mixin.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/misc/constants.dart';
+import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/game_round.dart';
+import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/providers/current_game__provider.dart';
+import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/routing/route_constants.dart';
+import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/view/components/popup__component.dart';
+import 'package:golfquiz_dtu/view/components/sliver_app_bar__component.dart';
+import 'package:golfquiz_dtu/view/components/standard_button__component.dart';
+import 'package:golfquiz_dtu/view/mixins/sliver_page_overlay__mixin.dart';
 import 'package:provider/provider.dart';
 
 class GameFlowScoreboardPage extends BasePage {

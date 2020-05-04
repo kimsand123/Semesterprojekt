@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/player_status.dart';
-import 'package:golfquiz/models/player.dart';
-import 'package:golfquiz/providers/user__provider.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/providers/user__provider.dart';
 
 class GameFlowHelper {
   static PlayerStatus determineUser(PlayerProvider userProvider, gameProvider) {

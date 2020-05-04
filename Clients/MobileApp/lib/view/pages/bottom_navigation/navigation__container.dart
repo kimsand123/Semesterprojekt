@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
 
 import 'destination_views/games__page.dart';
 import 'destination_views/menu__page.dart';

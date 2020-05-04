@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/player.dart';
-import 'package:golfquiz/network/game_service.dart';
-import 'package:golfquiz/network/player_service.dart';
-import 'package:golfquiz/providers/friend__provider.dart';
-import 'package:golfquiz/providers/game_list__provider.dart';
-import 'package:golfquiz/providers/user__provider.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/network/game_service.dart';
+import 'package:golfquiz_dtu/network/player_service.dart';
+import 'package:golfquiz_dtu/providers/friend__provider.dart';
+import 'package:golfquiz_dtu/providers/game_list__provider.dart';
+import 'package:golfquiz_dtu/providers/user__provider.dart';
 import 'package:provider/provider.dart';
 
 class RemoteHelper {

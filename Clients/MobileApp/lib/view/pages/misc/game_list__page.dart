@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/providers/game_list__provider.dart';
-import 'package:golfquiz/routing/route_constants.dart';
-import 'package:golfquiz/view/base_pages/base_page.dart';
-import 'package:golfquiz/view/components/game_card__component.dart';
-import 'package:golfquiz/view/mixins/basic_page__mixin.dart';
+import 'package:golfquiz_dtu/misc/constants.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/providers/game_list__provider.dart';
+import 'package:golfquiz_dtu/routing/route_constants.dart';
+import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/view/components/game_card__component.dart';
+import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:provider/provider.dart';
 
 import 'game_list__helper.dart';

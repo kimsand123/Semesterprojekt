@@ -1,6 +1,6 @@
-import 'package:golfquiz/misc/constants.dart';
-import 'package:golfquiz/models/player_status.dart';
-import 'package:golfquiz/models/question.dart';
+import 'package:golfquiz_dtu/misc/constants.dart';
+import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/models/question.dart';
 
 class Game {
   int id;

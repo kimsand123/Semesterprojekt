@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/game.dart';
+import 'package:golfquiz_dtu/models/game.dart';
 
 class GameListProvider extends ChangeNotifier {
   List<Game> _gameList = [];

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/player_status.dart';
-import 'package:golfquiz/view/components/progressbar__component.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/view/components/progressbar__component.dart';
 
 class SliverAppBarComponent extends StatelessWidget {
   final Game game;

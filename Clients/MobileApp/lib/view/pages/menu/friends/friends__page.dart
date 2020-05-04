@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/player.dart';
-import 'package:golfquiz/providers/friend__provider.dart';
-import 'package:golfquiz/routing/route_constants.dart';
-import 'package:golfquiz/view/base_pages/base_page.dart';
-import 'package:golfquiz/view/components/card_list__component.dart';
-import 'package:golfquiz/view/components/card_list_row__component.dart';
-import 'package:golfquiz/view/components/card_list_title__component.dart';
-import 'package:golfquiz/view/mixins/basic_page__mixin.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/providers/friend__provider.dart';
+import 'package:golfquiz_dtu/routing/route_constants.dart';
+import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/view/components/card_list__component.dart';
+import 'package:golfquiz_dtu/view/components/card_list_row__component.dart';
+import 'package:golfquiz_dtu/view/components/card_list_title__component.dart';
+import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:provider/provider.dart';
 
 class FriendsPage extends BasePage {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/view/base_pages/base_page.dart';
-import 'package:golfquiz/view/components/gradient_background__component.dart';
+import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/view/components/gradient_background__component.dart';
 
 mixin PageOverlay<Page extends BasePage> on BasePageState<Page> {
   screenWidth() => MediaQuery.of(context).size.width;
@@ -23,15 +23,14 @@ mixin PageOverlay<Page extends BasePage> on BasePageState<Page> {
         Scaffold(
           appBar: appbar,
           body: SingleChildScrollView(
-            child: Container(
-              width: screenWidth(),
-              constraints: BoxConstraints(
-              minHeight: screenHeight() -
+              child: Container(
+            width: screenWidth(),
+            constraints: BoxConstraints(
+                minHeight: screenHeight() -
                     appbar.preferredSize.height -
                     kToolbarHeight),
-              child: body(),
-            )
-          ),
+            child: body(),
+          )),
         ),
         backdrop(),
         overlay()

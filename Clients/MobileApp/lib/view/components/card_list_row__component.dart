@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/view/components/card_list_add_component.dart';
+import 'package:golfquiz_dtu/view/components/card_list_add_component.dart';
 
 class CardListRowComponent extends StatelessWidget {
   final List<String> _rowStrings;

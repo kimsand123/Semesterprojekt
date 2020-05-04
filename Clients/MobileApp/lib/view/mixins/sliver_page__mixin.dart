@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/localization/appLocalizations.dart';
-import 'package:golfquiz/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/localization/appLocalizations.dart';
+import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 
 mixin SliverPage<Page extends BasePage> on BasePageState<Page> {
   double screenWidth() => MediaQuery.of(context).size.width;
@@ -25,15 +25,14 @@ mixin SliverPage<Page extends BasePage> on BasePageState<Page> {
         background: Container(
           alignment: Alignment.bottomCenter,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: FractionalOffset.centerLeft,
-                end: FractionalOffset.centerRight,
-                colors: [
-              Theme.of(context).colorScheme.primary,
-              Theme.of(context).colorScheme.secondary
-            ]),
-            borderRadius: BorderRadius.all(Radius.circular(5.0))
-          ),
+              gradient: LinearGradient(
+                  begin: FractionalOffset.centerLeft,
+                  end: FractionalOffset.centerRight,
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.secondary
+                  ]),
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
           child: appBarContainer(),
         ),
       ),

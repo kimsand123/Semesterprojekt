@@ -1,4 +1,4 @@
-import 'package:golfquiz/models/player.dart';
+import 'package:golfquiz_dtu/models/player.dart';
 
 class GamePlayer {
   Player player;

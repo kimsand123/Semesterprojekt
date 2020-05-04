@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz/models/game.dart';
-import 'package:golfquiz/models/player.dart';
-import 'package:golfquiz/network/auth_service.dart';
-import 'package:golfquiz/network/game_service.dart';
-import 'package:golfquiz/network/remote_helper.dart';
-import 'package:golfquiz/network/player_service.dart';
-import 'package:golfquiz/providers/friend__provider.dart';
-import 'package:golfquiz/providers/user__provider.dart';
-import 'package:golfquiz/routing/route_constants.dart';
-import 'package:golfquiz/view/base_pages/base_page.dart';
-import 'package:golfquiz/view/components/auth__components/auth_button__component.dart';
-import 'package:golfquiz/view/components/auth__components/borderless_button__component.dart';
-import 'package:golfquiz/view/components/text_field__component.dart';
-import 'package:golfquiz/view/mixins/basic_page__mixin.dart';
-import 'package:golfquiz/view/pages/misc/validation__helper.dart';
+import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/network/auth_service.dart';
+import 'package:golfquiz_dtu/network/game_service.dart';
+import 'package:golfquiz_dtu/network/remote_helper.dart';
+import 'package:golfquiz_dtu/network/player_service.dart';
+import 'package:golfquiz_dtu/providers/friend__provider.dart';
+import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/routing/route_constants.dart';
+import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/view/components/auth__components/auth_button__component.dart';
+import 'package:golfquiz_dtu/view/components/auth__components/borderless_button__component.dart';
+import 'package:golfquiz_dtu/view/components/text_field__component.dart';
+import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
+import 'package:golfquiz_dtu/view/pages/misc/validation__helper.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends BasePage {
