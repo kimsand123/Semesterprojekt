@@ -39,18 +39,22 @@ export default {
     }
   },
   mounted() {
-
     this.$http.get(api_players, {
       headers: auth_header
     })
-      .then(res => {
+    .then(res => {
+      if(res.status === 200) {
         res.data.players.forEach(player => {
           this.entries.push(player)
         })
-      })
-      .catch(error => {
-        console.log(error)
-      })
+      } else {
+        console.log('test')
+        throw new Error('Something went wrong')
+      }
+    })
+    .catch(error => {
+      console.log(error)
+    })
   },
   methods: {
     handleDelete(e) {
@@ -69,6 +73,9 @@ export default {
         } else if(response.status !== 404) {
           showModal('Something went wrong...')
         }
+      })
+      .catch(error => {
+        console.log('Error is', error)
       })
     },
     handleEdit(e) {
@@ -90,15 +97,27 @@ export default {
 
       for(let i = 0; i < rowCells.length; i++) {
         if(i < rowCells.length - 2 && isEditMode) {
-          if(i === 0) {
-            rowCells[i].innerHTML = "<input size='1' value='" + originalTdData[i] + "'>"
+          rowCells[i].addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              this.edit()
+              for(let j = 0; j < rowCells.length; j++) {
+                rowCells[j].innerHTML = originalTdData[j]
+              }
+              isEditMode = !isEditMode
+            }
+          })
+          if(i === 0 || i === rowCells.length - 2) {
+            rowCells[i].innerHTML = "<input size='3' value='" + originalTdData[i] + "'>"
           } else {
-            rowCells[i].innerHTML = "<input size='7' value='" + originalTdData[i] + "'>"
+            rowCells[i].innerHTML = "<input value='" + originalTdData[i] + "'>"
           }
         } else if(i < rowCells.length - 2) {
           rowCells[i].innerHTML = originalTdData[i]
         }
       }
+    },
+    edit() {
+      console.log('Done editting')
     }
   }
 }

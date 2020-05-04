@@ -70,6 +70,9 @@ export default {
           showModal('Something went wrong...')
         }
       })
+      .catch(error => {
+        showModal('Something went wrong....')
+      })
     }
   },
   data: () => {

@@ -43,6 +43,12 @@ th {
   padding: 8px;
 }
 
+td {
+  padding-top: 8px;
+  padding-bottom: 0;
+  border: 1px solid #dddddd;
+}
+
 img {
   width: 20px;
 }

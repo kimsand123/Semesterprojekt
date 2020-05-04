@@ -65,9 +65,11 @@ tr:nth-child(even) {
 img {
   width: 15px;
   float: right;
+  pointer-events: all;
 }
 
 .icon {
+  pointer-events: none;
   position: relative;
   display: flex;
   align-items: center;
@@ -80,6 +82,10 @@ img {
 
 img:hover {
   cursor: pointer;
+}
+
+input {
+  width: 100%;
 }
 
 </style>
