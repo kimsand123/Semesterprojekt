@@ -85,8 +85,6 @@ export default {
       const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex
       const rows = e.target.parentElement.parentElement.parentElement.parentElement.children
       const editIcon = document.querySelector('#edit-icon')
-      const formField = document.createElement("input")
-
 
       if(isEditMode) {
         originalTdData = [rowQuestionId]
@@ -107,23 +105,33 @@ export default {
           }
         }
       }
-      
+
 
       for(let i = 0; i < rowCells.length; i++) {
         if(i < rowCells.length - 2 && i > 0 && isEditMode) {
           rowCells[i].addEventListener('keypress', this.edit.bind(e, rowCells, originalTdData, rows, rowIndex))
           if(i < rowCells.length - 2 && i > 0) {
-            rowCells[i].innerHTML = "<input value='" + originalTdData[i] + "'>"
+            rowCells[i].innerHTML = "<input class='input-field' value='" + originalTdData[i] + "'>"
           }
         } else if(i < rowCells.length - 2) {
           rowCells[i].innerHTML = originalTdData[i]
         }
       }
+
+      const inputFields = document.querySelectorAll('input')
+
+      inputFields.forEach(field => {
+        field.style.width = '80%'
+        field.style.padding = '10px 5px'
+        field.style.borderRadius = '5px'
+        field.style.border = '1px solid gray'
+      })
+
     },
     edit(rowCells, originalTdData, rows, rowIndex, e) {
       const newData = []
       const inputFields = document.querySelectorAll('input')
-      
+
       inputFields.forEach(field => {
         newData.push(field.value)
       })
@@ -181,4 +189,10 @@ export default {
   height: 100vh;
   background: #FBF7FF;
 }
+
+.input-field {
+  height: 200px;
+  width: 100%;
+}
+
 </style>

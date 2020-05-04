@@ -85,8 +85,6 @@ export default {
       const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex
       const rows = e.target.parentElement.parentElement.parentElement.parentElement.children
       const editIcon = document.querySelector('#edit-icon')
-      const formField = document.createElement("input")
-
 
       if(isEditMode) {
         originalTdData = [rowPlayerId]
@@ -107,7 +105,7 @@ export default {
           }
         }
       }
-      
+
 
       for(let i = 0; i < rowCells.length; i++) {
         if(i < rowCells.length - 2 && i > 0 && isEditMode) {
@@ -119,11 +117,20 @@ export default {
           rowCells[i].innerHTML = originalTdData[i]
         }
       }
+
+      const inputFields = document.querySelectorAll('input')
+
+      inputFields.forEach(field => {
+        field.style.width = '80%'
+        field.style.padding = '5px 5px'
+        field.style.borderRadius = '5px'
+        field.style.border = '1px solid gray'
+      })
     },
     edit(rowCells, originalTdData, rows, rowIndex, e) {
       const newData = []
       const inputFields = document.querySelectorAll('input')
-      
+
       inputFields.forEach(field => {
         newData.push(field.value)
       })

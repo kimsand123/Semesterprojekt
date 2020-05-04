@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="scrollable-table"> 
+  <div class="scrollable-table">
     <table id="table">
       <tr>
         <th v-for="title in titles" :key="title">{{title}}</th>
