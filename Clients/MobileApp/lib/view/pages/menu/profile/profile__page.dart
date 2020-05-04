@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/models/player.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/avatar__component.dart';
 import 'package:golfquiz_dtu/view/components/status__component.dart';
@@ -24,7 +24,8 @@ class _ProfilePageState extends BasePageState<ProfilePage> with BasicPage {
     Player shownPlayer;
 
     if (widget._player == null) {
-      shownPlayer = Provider.of<PlayerProvider>(context).getPlayer;
+      shownPlayer =
+          Provider.of<PlayerProvider>(context, listen: false).getPlayer;
     } else {
       shownPlayer = widget._player;
     }

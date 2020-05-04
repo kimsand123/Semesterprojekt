@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/invite.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/network/invite_service.dart';
+import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/auth__components/auth_button__component.dart';
@@ -14,7 +17,6 @@ import 'package:golfquiz_dtu/view/components/text_field__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:golfquiz_dtu/view/pages/misc/validation__helper.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class CreateMultiplayerMatchPage extends BasePage {
   @override
@@ -104,7 +106,6 @@ class _CreateMultiplayerMatchPageState
                 });
               },
             ),
-            SizedBox(height: screenHeight() * 0.05),
             Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.only(top: 20.0, left: 20.0, bottom: 8.0),
@@ -136,8 +137,7 @@ class _CreateMultiplayerMatchPageState
             bool isEnoughUsersAdded = gamePlayerStatusList.length >= 2;
 
             return AuthButtonComponent(
-              text: Text(appLocale().create_match__start_button,
-                  style: appTheme().textTheme.button),
+              text: Text("Invite", style: appTheme().textTheme.button),
               margin: EdgeInsets.symmetric(vertical: 40.0),
               onPressed:
                   isEnoughUsersAdded ? () => _validateAndSaveInputs() : null,
@@ -158,29 +158,39 @@ class _CreateMultiplayerMatchPageState
     }
   }
 
-  void invitePlayer() {
+  Future<void> invitePlayer() async {
     Game providerGame =
         Provider.of<CurrentGameProvider>(context, listen: false).getGame();
 
-    providerGame.questionDuration = questionDuration;
-    providerGame.matchName = _nameController.text;
-
-    Provider.of<CurrentGameProvider>(context, listen: false).setGame(game);
-
-    Player currentUser =
+    Player currentPlayer =
         Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+
     Player receiver;
 
     for (PlayerStatus status in providerGame.playerStatus) {
-      if (status.gamePlayer.player.id != currentUser.id) {
+      if (status.gamePlayer.player.id != currentPlayer.id) {
         receiver = status.gamePlayer.player;
       }
     }
 
-    //TODO: Create invite from game
+    Invite inviteToPost = Invite(
+        senderPlayer: currentPlayer,
+        receiverPlayer: receiver,
+        matchName: _nameController.text,
+        questionDuration: questionDuration,
+        accepted: false);
 
-    Navigator.pushNamedAndRemoveUntil(context, gameFlowQuestionRoute,
-        ModalRoute.withName(Navigator.defaultRouteName));
+    enableProgressIndicator("Inviting player...");
+    await InviteService.createInvite(inviteToPost).then((value) async {
+      await RemoteHelper().fillProviders(context, currentPlayer);
+
+      disableProgressIndicator();
+
+      Navigator.pop(context);
+      return Future.value(true);
+    }).catchError((error) {
+      Navigator.pop(context);
+    });
   }
 
   @override

@@ -7,7 +7,7 @@ import 'package:golfquiz_dtu/network/game_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/network/player_service.dart';
 import 'package:golfquiz_dtu/providers/friend__provider.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/auth__components/auth_button__component.dart';

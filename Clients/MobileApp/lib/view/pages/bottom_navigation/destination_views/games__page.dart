@@ -4,15 +4,18 @@ import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/game_player.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/network/game_service.dart';
+import 'package:golfquiz_dtu/network/invite_service.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/game_list__provider.dart';
+import 'package:golfquiz_dtu/providers/invite_list__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/animations/fade_in_rtl__animation.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/active_games_card__component.dart';
 import 'package:golfquiz_dtu/view/components/standard_button__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
-import 'package:golfquiz_dtu/view/pages/bottom_navigation/navigation__container.dart';
 import 'package:provider/provider.dart';
 
 class GamesPage extends BasePage {
@@ -30,7 +33,7 @@ class _GamesPageState extends BasePageState<GamesPage>
           padding:
               EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
           alignment: Alignment.centerLeft,
-          child: Text(appLocale().games__start_new_match,
+          child: Text("Invite to new match",
               style: Theme.of(context)
                   .textTheme
                   .headline
@@ -52,13 +55,71 @@ class _GamesPageState extends BasePageState<GamesPage>
             ),
           ],
         )),
-        SizedBox(height: BottomNavigationContainer.height + 20),
+        SizedBox(height: 20),
+        Container(
+          padding:
+              EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
+          alignment: Alignment.centerLeft,
+          child: Text("Your games",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline
+                  .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+        ),
         FadeInRTLAnimation(
           child: ActiveGamesCardComponent(
             gameMode: appLocale().games__your_matches__two_player_matches,
             onPressed: () {
-              Navigator.pushNamed(context, gameListRoute,
-                  arguments: GameType.two_player_match);
+              enableProgressIndicator("Gathering your games...");
+
+              Player currentPlayer =
+                  Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+
+              GameService.fetchGames(currentPlayer).then((value) async {
+                Provider.of<GameListProvider>(context, listen: false)
+                    .setGameList(value);
+
+                Navigator.popAndPushNamed(context, gameListRoute,
+                    arguments: GameType.two_player_match);
+                return Future.value(true);
+              }).catchError((error) {
+                Navigator.pop(context);
+              });
+            },
+          ),
+          delay: 0.7,
+        ),
+        SizedBox(height: 20),
+        Container(
+          padding:
+              EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
+          alignment: Alignment.centerLeft,
+          child: Text("Invites",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline
+                  .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+        ),
+        FadeInRTLAnimation(
+          child: ActiveGamesCardComponent(
+            gameMode: "Invites",
+            subTitle: "Show all invites",
+            onPressed: () {
+              enableProgressIndicator("Gathering invites...");
+
+              Player currentPlayer =
+                  Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+
+              InviteService.fetchInvites(currentPlayer).then((value) async {
+                Provider.of<InviteListProvider>(context, listen: false)
+                    .setInviteList(value);
+
+                Navigator.popAndPushNamed(context, inviteListRoute,
+                    arguments: GameType.two_player_match);
+                return Future.value(true);
+              }).catchError((error) {
+                Navigator.pop(context);
+              });
             },
           ),
           delay: 0.7,

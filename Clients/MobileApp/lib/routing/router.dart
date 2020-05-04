@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/misc/constants.dart';
 import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/invite.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/pages/auth/intro__page.dart';
@@ -15,7 +16,12 @@ import 'package:golfquiz_dtu/view/pages/game_flow/invite/invite_friends__page.da
 import 'package:golfquiz_dtu/view/pages/menu/friends/friends__page.dart';
 import 'package:golfquiz_dtu/view/pages/menu/profile/profile__page.dart';
 import 'package:golfquiz_dtu/view/pages/misc/game_list__page.dart';
+import 'package:golfquiz_dtu/view/pages/misc/invite_list__page.dart';
 import 'package:golfquiz_dtu/view/pages/misc/single_game__page.dart';
+import 'package:golfquiz_dtu/view/pages/misc/single_invite__page.dart';
+
+import 'route_constants.dart';
+import 'route_constants.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -78,13 +84,13 @@ class Router {
 
       case gameFlowScoreboard:
         return MaterialPageRoute(
-            settings: RouteSettings(name: gameFlowAnswerRoute),
+            settings: RouteSettings(name: gameFlowScoreboard),
             builder: (_) => GameFlowScoreboardPage());
 
       case singleGameRoute:
         Game game = settings.arguments;
         return MaterialPageRoute(
-            settings: RouteSettings(name: gameFlowQuestionRoute),
+            settings: RouteSettings(name: singleGameRoute),
             builder: (_) => SingleGamePage(
                   gameItem: game,
                 ));
@@ -93,10 +99,16 @@ class Router {
       case gameListRoute:
         GameType gameType = settings.arguments;
         return MaterialPageRoute(
-          settings: RouteSettings(name: gameFlowQuestionRoute),
+          settings: RouteSettings(name: gameListRoute),
           builder: (_) => GameListPage(
             gameListType: gameType,
           ),
+        );
+
+      case inviteListRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: inviteListRoute),
+          builder: (_) => InviteListPage(),
         );
 
       // Invite
@@ -105,6 +117,12 @@ class Router {
           settings: RouteSettings(name: inviteFriends),
           builder: (_) => InviteFriendsPage(),
         );
+
+      case singleInviteRoute:
+        var data = settings.arguments as Invite;
+        return MaterialPageRoute(
+            settings: RouteSettings(name: singleInviteRoute),
+            builder: (_) => InvitePage(invite: data));
 
       // Default (404)
       default:

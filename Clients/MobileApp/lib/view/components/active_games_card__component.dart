@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/localization/appLocalizations.dart';
 
 class ActiveGamesCardComponent extends StatelessWidget {
-  final String gameMode;
+  final String gameMode, subTitle;
   final Widget gameModeIcon;
   final onPressed;
 
-  ActiveGamesCardComponent({this.gameMode, this.gameModeIcon, this.onPressed});
+  ActiveGamesCardComponent(
+      {this.gameMode, this.subTitle, this.gameModeIcon, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,9 @@ class ActiveGamesCardComponent extends StatelessWidget {
                     .copyWith(color: Color(0xFF0000000))),
             SizedBox(height: 16.0),
             Text(
-                AppLocalization.of(context).active_games_card__show_all_matches,
+                subTitle ??
+                    AppLocalization.of(context)
+                        .active_games_card__show_all_matches,
                 style: Theme.of(context)
                     .textTheme
                     .body2

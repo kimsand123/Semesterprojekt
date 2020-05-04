@@ -44,3 +44,5 @@ const String gameFlowEndTournament = 'game-flow-end-tournament';
 // Misc
 const String gameListRoute = 'game-list';
 const String singleGameRoute = 'single-game';
+const String inviteListRoute = 'invite-list';
+const String singleInviteRoute = 'single-invite';

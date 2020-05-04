@@ -1,6 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/network/invite_service.dart';
+import 'package:golfquiz_dtu/network/player_service.dart';
+import 'package:golfquiz_dtu/network/remote_helper.dart';
+import 'package:golfquiz_dtu/providers/friend__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/notification_bubble__component.dart';
@@ -26,11 +32,13 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
             padding: const EdgeInsets.only(left: 8, bottom: 8),
             child:
                 Consumer<PlayerProvider>(builder: (context, provider, child) {
-              String email = provider.getPlayer.email;
+              String email;
               if (provider.getPlayer == null ||
                   provider.getPlayer.email == null ||
                   provider.getPlayer.email.isEmpty) {
                 email = appLocale().menu__email_error;
+              } else {
+                email = provider.getPlayer.email;
               }
               return Text('$email', style: appTheme().textTheme.subhead);
             })),
@@ -43,15 +51,30 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
         // Friends
         Container(
             child: settingsRow(appLocale().menu__friends_button, () {
-          Navigator.pushNamed(context, friendsRoute);
+          enableProgressIndicator("Gathering friends...");
+
+          Player currentPlayer =
+              Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+
+          PlayerService.fetchUsers(currentPlayer).then((value) async {
+            Provider.of<FriendProvider>(context, listen: false)
+                .setFriendList(value);
+
+            Navigator.popAndPushNamed(context, friendsRoute);
+            return Future.value(true);
+          }).catchError((error) {
+            Navigator.pop(context);
+          });
         }, false)),
 
         SizedBox(height: 40),
 
         // Log out
         settingsRow(appLocale().menu__log_out_button, () {
-          Navigator.pushNamedAndRemoveUntil(context, introRoute,
-              ModalRoute.withName(Navigator.defaultRouteName));
+          RemoteHelper().emptyProvider(context).then((v) {
+            Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                ModalRoute.withName(Navigator.defaultRouteName));
+          });
         }, false),
         SizedBox(height: BottomNavigationContainer.height + 20)
       ],

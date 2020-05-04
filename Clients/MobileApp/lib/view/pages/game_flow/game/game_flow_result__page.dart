@@ -4,7 +4,7 @@ import 'package:golfquiz_dtu/misc/constants.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/popup__component.dart';
@@ -117,7 +117,9 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                 Game game = gameProvider.getGame();
                 var currentPlayerStatus =
                     GameFlowHelper.determineCurrentPlayerStatus(
-                        Provider.of<PlayerProvider>(context).getPlayer, game);
+                        Provider.of<PlayerProvider>(context, listen: false)
+                            .getPlayer,
+                        game);
                 return RoundButtonComponent(
                   isPaused: true,
                   icon: 'assets/animations/pause_play.flr',

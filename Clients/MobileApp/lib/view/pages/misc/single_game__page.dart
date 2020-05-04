@@ -6,7 +6,7 @@ import 'package:golfquiz_dtu/models/game_round.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/sliver_app_bar__component.dart';
@@ -32,7 +32,8 @@ class _SingleGamePageState extends BasePageState<SingleGamePage>
   Widget appBarContainer() {
     return Consumer<CurrentGameProvider>(
       builder: (context, provider, child) {
-        Player currentPlayer = Provider.of<PlayerProvider>(context).getPlayer;
+        Player currentPlayer =
+            Provider.of<PlayerProvider>(context, listen: false).getPlayer;
         var currentPlayerStatus = GameFlowHelper.determineCurrentPlayerStatus(
             currentPlayer, provider.getGame());
 
@@ -79,7 +80,8 @@ class _SingleGamePageState extends BasePageState<SingleGamePage>
     Game game = widget.gameItem ?? Game();
     List<PlayerStatus> playerStatusList = game.playerStatus;
 
-    Player currentPlayer = Provider.of<PlayerProvider>(context).getPlayer;
+    Player currentPlayer =
+        Provider.of<PlayerProvider>(context, listen: false).getPlayer;
 
     PlayerStatus currentPlayerStatus =
         GameFlowHelper.determineCurrentPlayerStatus(currentPlayer, game);
@@ -210,7 +212,7 @@ class _SingleGamePageState extends BasePageState<SingleGamePage>
     for (var i = 0; i < status.length; i++) {
       Color color;
       String playerName;
-      if (Provider.of<PlayerProvider>(context).getPlayer.id ==
+      if (Provider.of<PlayerProvider>(context, listen: false).getPlayer.id ==
           status[i].gamePlayer.player.id) {
         color = Color(0xFFBEFCD3);
         playerName = appLocale().you;

@@ -5,7 +5,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:golfquiz_dtu/providers/friend__provider.dart';
 import 'package:golfquiz_dtu/providers/game_list__provider.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/invite_list__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/routing/router.dart';
 import 'package:golfquiz_dtu/view/themes/light_theme.dart';
@@ -28,6 +29,9 @@ void main() => runApp(
         ),
         ChangeNotifierProvider(
           create: (context) => GameListProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => InviteListProvider(),
         ),
       ],
       child: GolfQuiz(),

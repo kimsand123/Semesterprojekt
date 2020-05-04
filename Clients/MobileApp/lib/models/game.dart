@@ -40,15 +40,7 @@ class Game {
       matchName: json["match_name"],
       questionDuration: double.parse(json["question_duration"]),
       questions: List<Question>.from(json["questions"].map((x) {
-        //TODO: Correct back when BAC-45 and BAC-42 is done
-        //return Question.fromJson(x);
-        return Question(
-            questionText: "What is the number three?",
-            answer1: "1",
-            answer2: "2",
-            answer3: "3",
-            correctAnswer: 3,
-            id: 0);
+        return Question.fromJson(x);
       })),
       playerStatus: List<PlayerStatus>.from(json["player_status"].map((x) {
         return PlayerStatus.fromJson(x);

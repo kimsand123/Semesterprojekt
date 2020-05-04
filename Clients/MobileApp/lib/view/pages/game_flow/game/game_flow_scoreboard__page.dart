@@ -6,7 +6,7 @@ import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/game_round.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/popup__component.dart';
@@ -270,7 +270,7 @@ List<Widget> multiPlayerHistory(
   for (var i = 0; i < status.length; i++) {
     Color color;
     String playerName;
-    if (Provider.of<PlayerProvider>(context).getPlayer.id ==
+    if (Provider.of<PlayerProvider>(context, listen: false).getPlayer.id ==
         status[i].gamePlayer.player.id) {
       color = Color(0xFFBEFCD3);
       playerName = AppLocalization.of(context).you;

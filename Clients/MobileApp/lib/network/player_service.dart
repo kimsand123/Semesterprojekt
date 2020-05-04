@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PlayerService {
-  static Future<List<Player>> fetchUsers() async {
+  static Future<List<Player>> fetchUsers(Player currentPlayer) async {
     const apiPath = "/players/";
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
@@ -36,7 +36,9 @@ class PlayerService {
                   response.statusCode == 200) {
                 List<Player> users = List();
                 for (var user in responseMap['players']) {
-                  users.add(Player.fromJson(user));
+                  if (user['id'] != currentPlayer.id) {
+                    users.add(Player.fromJson(user));
+                  }
                 }
                 return users;
               } else if (response.statusCode == 403) {

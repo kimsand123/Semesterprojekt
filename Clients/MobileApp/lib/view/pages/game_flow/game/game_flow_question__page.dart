@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/user__provider.dart';
+import 'package:golfquiz_dtu/providers/player__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/animations/fade_in_btt__animation.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
@@ -146,9 +146,9 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
   String title() => appLocale().game_flow__question__title;
 
   Widget buildAnswerButtons(int questionNumber) {
-    Game game = Provider.of<CurrentGameProvider>(context).getGame();
+    Game game =
+        Provider.of<CurrentGameProvider>(context, listen: false).getGame();
     var question = game.questions[questionNumber];
-    print("questions - " + game.questions[questionNumber].toJson().toString());
 
     List<String> availableAnswers = [];
     availableAnswers.add(question.answer1);
