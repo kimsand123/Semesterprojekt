@@ -36,27 +36,6 @@ class _IntroPageState extends BasePageState<IntroPage> with BasicPage {
             },
           ),
         ]),
-        /*
-        Column(children: [
-          Padding(
-            padding: EdgeInsets.only(top: screenHeight() * 0.05),
-            child: LanguageButtonComponent(
-              language: Localizations.localeOf(context).languageCode,
-              onPressed: () {
-                String current = Localizations.localeOf(context).languageCode;
-                if (current == 'da') {
-                  GolfQuiz.setLocale(
-                      context, Locale.fromSubtags(languageCode: 'en'));
-                } else {
-                  GolfQuiz.setLocale(
-                      context, Locale.fromSubtags(languageCode: 'da'));
-                }
-                debugPrint(
-                    'change language to ${Localizations.localeOf(context).languageCode}');
-              },
-            ),
-          ),
-        ]),*/
       ],
     );
   }

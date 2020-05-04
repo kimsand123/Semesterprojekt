@@ -157,6 +157,48 @@ def single_game(request, game_id):
         return wrong_property_type(request, __correct_game_json)
 
 
+# path: /games/<int:game_id>/player-status/game-round/
+@api_view(all_methods)
+def single_game_player_status_game_round(request, game_id):
+    try:
+        if not is_access_key_valid(request):
+            return bad_or_missing_access_key(request)
+
+        elif request.method == 'PUT':
+            return __single_game_player_status_game_round_put(request, game_id)
+
+        else:
+            return __bad_method(request, 'PUT')
+
+    except IntegrityError as e:
+        print('IntegrityError occurred: ' + e.__str__())
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'error': e.__str__(),
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_409_CONFLICT, safe=False, encoder=DjangoJSONEncoder)
+
+    except (Game.DoesNotExist, IndexError) as e:
+        print('Game.DoesNotExist or IndexError occurred: ' + e.__str__())
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'error': 'The game with id:\'' + game_id + '\' is not in the database',
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_404_NOT_FOUND, safe=False, encoder=DjangoJSONEncoder)
+
+    except JSONDecodeError as e:
+        print('JSONDecodeError occurred: ' + e.__str__())
+        return bad_json(request, __correct_game_json)
+
+    except (AttributeError, KeyError) as e:
+        print('AttributeError or KeyError occurred: ' + e.__str__())
+        return bad_json(request, __correct_game_json)
+
+    except (ValueError, TypeError) as e:
+        print('ValueError or TypeError occurred: ' + e.__str__())
+        return wrong_property_type(request, __correct_game_json)
+
+
 # Bad games path
 @api_view(all_methods)
 def games_bad_path(request):
@@ -207,7 +249,6 @@ def __games_get(request):
         'games': return_data,
     }
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
-
 
 
 # -----------------------------
@@ -284,5 +325,29 @@ def __single_game_delete(request, game_id):
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
         'deleted_game': return_data
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)
+
+
+# -----------------------------
+# Single game player status game rounds PUT
+# -----------------------------
+def __single_game_player_status_game_round_put(request, game_id):
+    print_origin(request, 'Single game update game rounds')
+
+    json_body = json.loads(request.body)
+
+    # Update a database entry
+    return_data = GameDatabase.update_game_round_return_serialized(json_body, game_id, request.GET)
+
+    # if it returns a string, send a missing property json back
+    if isinstance(return_data, str):
+        return missing_property_in_json(request, return_data, __correct_game_json)
+
+    # Prepare jsonResponse data
+    json_data = {
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+        'message': 'You have changed the game rounds in game with id: \'' + game_id + '\'',
+        'game': return_data,
     }
     return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)

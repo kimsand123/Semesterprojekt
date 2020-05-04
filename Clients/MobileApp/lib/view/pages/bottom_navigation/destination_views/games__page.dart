@@ -29,42 +29,43 @@ class _GamesPageState extends BasePageState<GamesPage>
   Widget body() {
     return Column(
       children: <Widget>[
-        Container(
-          padding:
-              EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
-          alignment: Alignment.centerLeft,
-          child: Text("Invite to new match",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline
-                  .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+        FadeInRTLAnimation(
+          child: Container(
+            padding: EdgeInsets.only(
+                left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
+            alignment: Alignment.centerLeft,
+            child: Text("Start a new match",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline
+                    .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+          ),
+          delay: 0.3,
         ),
-        Container(
-            child: Column(
-          children: <Widget>[
-            FadeInRTLAnimation(
-              child: StandardButtonComponent(
-                text: appLocale().games__start_new_match__two_player_match,
-                width: screenWidth() - 35,
-                onPressed: () {
-                  setCurrentGameProvider();
-                  Navigator.pushNamed(context, twoPlayerCreateRoute);
-                },
-              ),
-              delay: 0.4,
-            ),
-          ],
-        )),
+        FadeInRTLAnimation(
+          child: StandardButtonComponent(
+            text: appLocale().games__start_new_match__two_player_match,
+            width: screenWidth() - 35,
+            onPressed: () {
+              setCurrentGameProvider();
+              Navigator.pushNamed(context, twoPlayerCreateRoute);
+            },
+          ),
+          delay: 0.4,
+        ),
         SizedBox(height: 20),
-        Container(
-          padding:
-              EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
-          alignment: Alignment.centerLeft,
-          child: Text("Your games",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline
-                  .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+        FadeInRTLAnimation(
+          child: Container(
+            padding: EdgeInsets.only(
+                left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
+            alignment: Alignment.centerLeft,
+            child: Text("Your games",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline
+                    .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+          ),
+          delay: 0.5,
         ),
         FadeInRTLAnimation(
           child: ActiveGamesCardComponent(
@@ -87,18 +88,21 @@ class _GamesPageState extends BasePageState<GamesPage>
               });
             },
           ),
-          delay: 0.7,
+          delay: 0.6,
         ),
         SizedBox(height: 20),
-        Container(
-          padding:
-              EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
-          alignment: Alignment.centerLeft,
-          child: Text("Invites",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline
-                  .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+        FadeInRTLAnimation(
+          child: Container(
+            padding: EdgeInsets.only(
+                left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
+            alignment: Alignment.centerLeft,
+            child: Text("Your invites",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline
+                    .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+          ),
+          delay: 0.7,
         ),
         FadeInRTLAnimation(
           child: ActiveGamesCardComponent(
@@ -122,7 +126,7 @@ class _GamesPageState extends BasePageState<GamesPage>
               });
             },
           ),
-          delay: 0.7,
+          delay: 0.8,
         ),
       ],
     );

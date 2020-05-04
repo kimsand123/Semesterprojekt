@@ -56,8 +56,9 @@ class _InviteListPageState extends BasePageState<InviteListPage>
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(left: 20),
-                        child: Text("Invites to you"),
+                        child: Text("To you"),
                       ),
+                      SizedBox(height: 4),
                       itemGenerator(inviteItem),
                     ],
                   );
@@ -67,8 +68,9 @@ class _InviteListPageState extends BasePageState<InviteListPage>
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(left: 20),
-                        child: Text("Invites from you"),
+                        child: Text("From you"),
                       ),
+                      SizedBox(height: 4),
                       itemGenerator(inviteItem),
                     ],
                   );

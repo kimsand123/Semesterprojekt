@@ -281,3 +281,46 @@ class GameDatabase:
         Game.objects.get(id=game_id).delete()
 
         return return_data
+
+    # -----------
+    #   Update game rounds on your own game player
+    # -----------
+    @staticmethod
+    def update_game_round_return_serialized(json_body, game_id, query_params):
+        # Early exit on missing game in json
+        if 'game_round' not in json_body:
+            return 'game_round'
+
+        # Get the game rounds from the json
+        json_game_round = json_body['game_round']
+
+        # Get the player_id from the query
+        if str(query_params['player_id']).isdigit():
+            player_id = int(query_params['player_id'])
+        else:
+            player_id = query_params['player_id']
+
+        if isinstance(player_id, int):
+            # Get the game_player from the database
+            game_player = GamePlayer.objects.get(game_id=game_id, player_id=player_id)
+        else:
+            # Get the game_player from the database
+            game_player = GamePlayer.objects.get(game_id=game_id, player__username=player_id)
+
+        # Delete existing game rounds
+        GameRound.objects.filter(game_player_id=game_player.id).delete()
+
+        game_progress_increment = 0
+
+        for gameRound in json_game_round:
+            GameRound(game_player=game_player, time_spent=gameRound['time_spent'], score=gameRound['score']).save()
+            game_progress_increment = game_progress_increment + 1
+
+        # Update the game_progress with a plus 1
+        game_player.game_progress = game_progress_increment
+        game_player.save()
+
+        # Gather all the again data to return it
+        return_data = GameDatabase.get_one_return_serialized(game_id)
+
+        return return_data

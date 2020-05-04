@@ -17,7 +17,7 @@ class RemoteHelper {
     Provider.of<PlayerProvider>(context, listen: false).setUser(player);
 
     // Set FriendProvider
-    List<Player> playerlist = await PlayerService.fetchUsers(player);
+    List<Player> playerlist = await PlayerService.fetchPlayers(player);
     Provider.of<FriendProvider>(context, listen: false)
         .setFriendList(playerlist);
 

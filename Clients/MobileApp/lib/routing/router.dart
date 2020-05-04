@@ -21,7 +21,6 @@ import 'package:golfquiz_dtu/view/pages/misc/single_game__page.dart';
 import 'package:golfquiz_dtu/view/pages/misc/single_invite__page.dart';
 
 import 'route_constants.dart';
-import 'route_constants.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {

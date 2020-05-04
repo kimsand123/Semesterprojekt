@@ -13,6 +13,7 @@ urlpatterns = [
 
     # Games
     path('games/', game_views.games),
+    path('games/<str:game_id>/player-status/game-round/', game_views.single_game_player_status_game_round),
     path('games/<str:game_id>/', game_views.single_game),
 
     # Questions

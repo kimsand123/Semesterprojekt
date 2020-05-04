@@ -54,7 +54,7 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
                   left: 20.0, right: 20.0, top: 20.0, bottom: 8.0),
               alignment: Alignment.centerLeft,
               child: Text(
-                  asReciever ? "You have been invited" : "You have invited",
+                  asReciever ? "You have been invited" : "You are inviting",
                   style: Theme.of(context).textTheme.headline.copyWith(
                       color: Theme.of(context).colorScheme.onPrimary)),
             ),

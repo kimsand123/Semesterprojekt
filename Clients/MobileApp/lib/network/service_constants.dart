@@ -1,6 +1,6 @@
 class ServiceConstants {
   // Debug-mode
-  static bool testBackend = false;
+  static bool testBackend = true;
 
   //AuthService
   static String authPort = "9800";

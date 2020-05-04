@@ -56,7 +56,7 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
           Player currentPlayer =
               Provider.of<PlayerProvider>(context, listen: false).getPlayer;
 
-          PlayerService.fetchUsers(currentPlayer).then((value) async {
+          PlayerService.fetchPlayers(currentPlayer).then((value) async {
             Provider.of<FriendProvider>(context, listen: false)
                 .setFriendList(value);
 

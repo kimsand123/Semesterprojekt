@@ -55,7 +55,7 @@ class _ProfilePageState extends BasePageState<ProfilePage> with BasicPage {
                 '${shownPlayer.lastName}',
                 "Username",
                 '${shownPlayer.username}',
-                appLocale().email,
+                "Email",
                 '${shownPlayer.email}',
                 "Study Programme",
                 '${shownPlayer.studyProgramme}',

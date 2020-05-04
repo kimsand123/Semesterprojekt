@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/invite.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/network/service_constants.dart';
@@ -22,7 +21,7 @@ class InviteService {
       "Authorization": token
     };
 
-    Map<String, String> queryParams = {"player_id": player.username};
+    Map<String, String> queryParams = {"player_id": player.id.toString()};
 
     Uri uri = Uri.http(ServiceConstants.baseGameUrl, apiPath, queryParams);
 
@@ -54,6 +53,8 @@ class InviteService {
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");
               } else {
+                debugPrint("Server error - INVITESERVICE (get all invites): " +
+                    responseMap.toString());
                 return Future.error("Server_error");
               }
             }),
@@ -101,6 +102,8 @@ class InviteService {
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");
               } else {
+                debugPrint("Server error - INVITESERVICE (accept invites): " +
+                    responseMap.toString());
                 return Future.error("Server_error");
               }
             }),
@@ -144,6 +147,8 @@ class InviteService {
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");
               } else {
+                debugPrint("Server error - INVITESERVICE (delete invite): " +
+                    responseMap.toString());
                 return Future.error("Server_error");
               }
             }),
@@ -188,6 +193,8 @@ class InviteService {
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");
               } else {
+                debugPrint("Server error - INVITESERVICE (create invite): " +
+                    responseMap.toString());
                 return Future.error("Server_error");
               }
             }),

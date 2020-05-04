@@ -16,11 +16,13 @@ class AuthService {
       HttpHeaders.acceptEncodingHeader: "application/json",
     };
 
-    var json_map = {"username": username, "password": password};
+    var jsonMap = {"username": username, "password": password};
 
-    String json = jsonEncode(json_map);
+    String json = jsonEncode(jsonMap);
 
     Uri uri = Uri.http(ServiceConstants.baseAuthUrl, "/login/");
+
+    debugPrint("AuthService - Login: " + uri.toString());
 
     return retry(
         () => http
@@ -40,6 +42,8 @@ class AuthService {
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");
               } else {
+                debugPrint(
+                    "Server error - AUTHSERVICE: " + responseMap.toString());
                 return Future.error("Server_error");
               }
             }),
