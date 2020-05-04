@@ -88,26 +88,31 @@ export default {
       const editIcon = document.querySelector('#edit-icon')
       const formField = document.createElement("input")
 
+
       if(isEditMode) {
         originalTdData = []
         for(const cell of rowCells) {
           originalTdData.push(cell.innerHTML)
         }
-        // for(let i = 0; i < rows.length; i++) {
-        //   if(rowIndex !== i) {        
-        //     for(let i = 0; i < rowCells.length; i++) {
-        //       if(i === rowCells.length - 2) {
-        //         rowCells[i].children[0].children[0].style.pointerEvents = "none"
-        //         rowCells[i].children[0].style.pointerEvents = "none"
-        //       }
-        //     }
-        //   }
-        // }
+        for(let i = 0; i < rows.length; i++) {
+          if(rowIndex !== i && i !== 0) {
+            rows[i].children[rowCells.length - 2].children[0].style.pointerEvents = "none"
+            rows[i].children[rowCells.length - 2].children[0].children[0].style.pointerEvents = "none"
+          }
+        }
+      } else {
+        for(let i = 0; i < rows.length; i++) {
+          if(rowIndex !== i && i !== 0) {
+            rows[i].children[rowCells.length - 2].children[0].style.pointerEvents = "all"
+            rows[i].children[rowCells.length - 2].children[0].children[0].style.pointerEvents = "all"
+          }
+        }
       }
+      
 
       for(let i = 0; i < rowCells.length; i++) {
         if(i < rowCells.length - 2 && isEditMode) {
-          rowCells[i].addEventListener('keypress', this.edit.bind(e, rowCells, originalTdData))
+          rowCells[i].addEventListener('keypress', this.edit.bind(e, rowCells, originalTdData, rows, rowIndex))
           if(i === 0 || i === rowCells.length - 2) {
             rowCells[i].innerHTML = "<input size='3' value='" + originalTdData[i] + "'>"
           } else {
@@ -118,7 +123,7 @@ export default {
         }
       }
     },
-    edit(rowCells, originalTdData, e) {
+    edit(rowCells, originalTdData, rows, rowIndex, e) {
       const newData = []
       const inputFields = document.querySelectorAll('input')
       
@@ -148,6 +153,12 @@ export default {
             .then(response => {
               if(response.status === 202) {
                 rowCells[j].innerHTML = newData[j]
+                for(let i = 0; i < rows.length; i++) {
+                  if(rowIndex !== i && i !== 0) {
+                    rows[i].children[rowCells.length - 2].children[0].style.pointerEvents = "all"
+                    rows[i].children[rowCells.length - 2].children[0].children[0].style.pointerEvents = "all"
+                  }
+                }
               } else (
                 showModal('Something went wrong...')
               )

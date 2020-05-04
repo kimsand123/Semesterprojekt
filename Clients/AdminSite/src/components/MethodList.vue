@@ -5,8 +5,6 @@
         <li v-else><router-link :to="linkToGet">Show</router-link></li>
         <li v-if="isPostActive"><router-link class="active" :to="{path: ''+linkToPost}"><div class="bar add"/>Add</router-link></li>
         <li v-else><router-link :to="linkToPost">Add</router-link></li>
-        <li v-if="isPutActive"><router-link class="active" :to="linkToPut"><div class="bar edit"/>Edit</router-link></li>
-        <li v-else><router-link :to="linkToPut">Edit</router-link></li>
     </nav>
   </div>
 </template>
