@@ -5,7 +5,7 @@
     <VGrid variant="container">
       <VRow>
         <VCol :variants="['md-12','sm-12','xs-12']">
-          <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players/add" linkToPut="/players/edit" linkToDelete="/players/delete"></MethodList>
+          <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players/add"></MethodList>
           <TablePlayers :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></TablePlayers>
         </VCol>
       </VRow>
@@ -16,7 +16,7 @@
 <script>
 import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
-import TablePlayers from '../../tables/TablePlayers'
+import TablePlayers from '../../Tables/TablePlayers'
 import Modal from '../../Modal'
 import { api_players, auth_header} from '../../../constants'
 import { showModal } from './../../../service-utils'
@@ -48,7 +48,6 @@ export default {
           this.entries.push(player)
         })
       } else {
-        console.log('test')
         throw new Error('Something went wrong')
       }
     })
@@ -90,9 +89,9 @@ export default {
 
 
       if(isEditMode) {
-        originalTdData = []
-        for(const cell of rowCells) {
-          originalTdData.push(cell.innerHTML)
+        originalTdData = [rowPlayerId]
+        for(let i = 1; i < rowCells.length; i++) {
+          originalTdData.push(rowCells[i].innerHTML)
         }
         for(let i = 0; i < rows.length; i++) {
           if(rowIndex !== i && i !== 0) {
@@ -111,11 +110,9 @@ export default {
       
 
       for(let i = 0; i < rowCells.length; i++) {
-        if(i < rowCells.length - 2 && isEditMode) {
+        if(i < rowCells.length - 2 && i > 0 && isEditMode) {
           rowCells[i].addEventListener('keypress', this.edit.bind(e, rowCells, originalTdData, rows, rowIndex))
-          if(i === 0 || i === rowCells.length - 2) {
-            rowCells[i].innerHTML = "<input size='3' value='" + originalTdData[i] + "'>"
-          } else {
+          if(i < rowCells.length - 2 && i > 0) {
             rowCells[i].innerHTML = "<input value='" + originalTdData[i] + "'>"
           }
         } else if(i < rowCells.length - 2) {
@@ -133,38 +130,39 @@ export default {
 
       const payload = JSON.stringify({
         player: {
-          username: newData[4],
-          email: newData[5],
-          first_name: newData[1],
-          last_name: newData[2],
-          study_programme: newData[3],
-          high_score: newData[6]
+          username: newData[3],
+          email: newData[4],
+          first_name: newData[0],
+          last_name: newData[1],
+          study_programme: newData[2],
+          high_score: newData[5]
         }
       })
 
       if (e.key === 'Enter') {
-        for(let j = 0; j < rowCells.length; j++) {
-          if(j < rowCells.length - 2) {
-            fetch(api_players + originalTdData[0] + '/', {
-              method: 'PUT',
-              body: payload,
-              headers: auth_header
-            })
-            .then(response => {
-              if(response.status === 202) {
-                rowCells[j].innerHTML = newData[j]
-                for(let i = 0; i < rows.length; i++) {
-                  if(rowIndex !== i && i !== 0) {
-                    rows[i].children[rowCells.length - 2].children[0].style.pointerEvents = "all"
-                    rows[i].children[rowCells.length - 2].children[0].children[0].style.pointerEvents = "all"
-                  }
-                }
-              } else (
-                showModal('Something went wrong...')
-              )
-            })
-          }
-        }
+        let newDataIndex = 0
+        fetch(api_players + originalTdData[0] + '/', {
+          method: 'PUT',
+          body: payload,
+          headers: auth_header
+        })
+        .then(response => {
+          if(response.status === 202) {
+            for(let j = 1; j < rowCells.length - 2; j++) {
+              rowCells[j].innerHTML = newData[newDataIndex]
+              newDataIndex++
+            }
+            showModal('Player changed!')
+            for(let i = 0; i < rows.length; i++) {
+              if(rowIndex !== i && i !== 0) {
+                rows[i].children[rowCells.length - 2].children[0].style.pointerEvents = "all"
+                rows[i].children[rowCells.length - 2].children[0].children[0].style.pointerEvents = "all"
+              }
+            }
+          } else (
+            showModal('Something went wrong...')
+          )
+        })
         isEditMode = false
       }
     }

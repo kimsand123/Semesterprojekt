@@ -1,11 +1,11 @@
 <template>
   <div class="site-wrapper">
     <Modal></Modal>
-    <Navigation :isPlayersActive="true"></Navigation>
+    <Navigation :isQuestionsActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>
         <VCol :variants="['md-12','sm-12','xs-12']">
-          <MethodList :isPostActive="true" linkToGet="/players" linkToPost="/players/add"></MethodList>
+          <MethodList :isPostActive="true" linkToGet="/questions" linkToPost="/questions/add"></MethodList>
           <AddTable
             :titles="titles"
             :numOfEntries="numOfEntries"
@@ -24,11 +24,11 @@ import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
 import AddTable from '../../AddTable'
 import Modal from '../../Modal'
-import { api_players, auth_header, token} from '../../../constants'
+import { auth_header, api_questions} from '../../../constants'
 import { showModal } from './../../../service-utils'
 
 export default {
-  name: 'PlayersAdd',
+  name: 'QuestionsAdd',
   components: {
     'Navigation': Navigation,
     'MethodList': MethodList,
@@ -45,24 +45,23 @@ export default {
       })
 
       let payload = JSON.stringify({
-          player: {
-            username: input[3],
-            email: input[4],
-            first_name: input[0],
-            last_name: input[1],
-            study_programme: input[2],
-            high_score: input[5]
+          question: {
+            question_text: input[0],
+            correct_answer: input[1],
+            answer_1: input[2],
+            answer_2: input[3],
+            answer_3: input[4],
           }
       })
 
-      fetch(api_players, {
+      fetch(api_questions, {
         method: 'POST',
         body: payload,
         headers: auth_header
       })
       .then(response => {
         if(response.status === 201) {
-          showModal('Player successfully added!')
+          showModal('Question successfully added!')
           fields.forEach(field => {
             field.value = ''
           })
@@ -77,13 +76,12 @@ export default {
   },
   data: () => {
     return {
-      titles: ['First Name', 'Last Name', 'Study Programme', 'Username', 'Email', 'High Score'],
-      numOfEntries: 6
+      titles: ['Question', 'Correct Answer', 'Answer 1', 'Answer 2', 'Answer 3'],
+      numOfEntries: 5
     }
   }
 }
 </script>
-
 
 
 

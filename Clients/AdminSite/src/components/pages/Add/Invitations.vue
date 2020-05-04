@@ -1,11 +1,11 @@
 <template>
   <div class="site-wrapper">
     <Modal></Modal>
-    <Navigation :isPlayersActive="true"></Navigation>
+    <Navigation :isInviActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>
         <VCol :variants="['md-12','sm-12','xs-12']">
-          <MethodList :isPostActive="true" linkToGet="/players" linkToPost="/players/add"></MethodList>
+          <MethodList :isPostActive="true" linkToGet="/invitations" linkToPost="/invitations/add"></MethodList>
           <AddTable
             :titles="titles"
             :numOfEntries="numOfEntries"
@@ -24,11 +24,11 @@ import Navigation from '../../Navigation'
 import MethodList from '../../MethodList'
 import AddTable from '../../AddTable'
 import Modal from '../../Modal'
-import { api_players, auth_header, token} from '../../../constants'
+import { auth_header, api_invites} from '../../../constants'
 import { showModal } from './../../../service-utils'
 
 export default {
-  name: 'PlayersAdd',
+  name: 'InvitationsAdd',
   components: {
     'Navigation': Navigation,
     'MethodList': MethodList,
@@ -45,24 +45,23 @@ export default {
       })
 
       let payload = JSON.stringify({
-          player: {
-            username: input[3],
-            email: input[4],
-            first_name: input[0],
-            last_name: input[1],
-            study_programme: input[2],
-            high_score: input[5]
+          invite: {
+            sender_player_id: input[0],
+            receiver_player_id: input[1],
+            match_name: input[2],
+            question_duration: input[3],
+            accepted: false,
           }
       })
 
-      fetch(api_players, {
+      fetch(api_invites, {
         method: 'POST',
         body: payload,
         headers: auth_header
       })
       .then(response => {
         if(response.status === 201) {
-          showModal('Player successfully added!')
+          showModal('Invite successfully added!')
           fields.forEach(field => {
             field.value = ''
           })
@@ -77,13 +76,12 @@ export default {
   },
   data: () => {
     return {
-      titles: ['First Name', 'Last Name', 'Study Programme', 'Username', 'Email', 'High Score'],
-      numOfEntries: 6
+      titles: ['Sender Player ID', 'Receiver Player ID', 'Match Name', 'Question Duration'],
+      numOfEntries: 4
     }
   }
 }
 </script>
-
 
 
 

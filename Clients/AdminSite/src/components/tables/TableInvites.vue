@@ -7,12 +7,11 @@
       </tr>
       <tr v-for="entry in entries" :key="entry.id">
         <td>{{entry.id}}</td>
-        <td>{{entry.first_name}}</td>
-        <td>{{entry.last_name}}</td>
-        <td>{{entry.study_programme}}</td>
-        <td>{{entry.username}}</td>
-        <td>{{entry.email}}</td>
-        <td>{{entry.high_score}}</td>
+        <td>{{entry.sender_player.first_name}}</td>
+        <td>{{entry.receiver_player.first_name}}</td>
+        <td>{{entry.game.match_name}}</td>
+        <td>{{entry.game.question_duration}}</td>
+        <td>{{entry.accepted}}</td>
         <td>
           <div @click="handleEdit" class="icon">
             <img src="./../../assets/edit-tools.svg" id="edit-icon"/>
@@ -31,7 +30,7 @@
 
 <script>
 export default {
-  name: 'TableQuestions',
+  name: 'TableInvites',
   props: {
     titles: Array,
     entries: Array,

@@ -7,12 +7,18 @@
       </tr>
       <tr v-for="entry in entries" :key="entry.id">
         <td>{{entry.id}}</td>
-        <td>{{entry.first_name}}</td>
-        <td>{{entry.last_name}}</td>
-        <td>{{entry.study_programme}}</td>
-        <td>{{entry.username}}</td>
-        <td>{{entry.email}}</td>
-        <td>{{entry.high_score}}</td>
+        <td>{{entry.match_name}}</td>
+        <td>{{entry.question_duration}}</td>
+        <td>
+          <ul>
+            <li v-for="entryQ in entry.questions" :key="entryQ.id">{{entryQ.id}}</li>
+          </ul>
+        </td>
+        <td>
+          <ul> 
+            <li v-for="playerStat in entry.player_status" :key="playerStat.game_player.id">{{playerStat.game_player.id}}</li>
+          </ul>
+        </td>
         <td>
           <div @click="handleEdit" class="icon">
             <img src="./../../assets/edit-tools.svg" id="edit-icon"/>
@@ -31,7 +37,7 @@
 
 <script>
 export default {
-  name: 'TableQuestions',
+  name: 'TableGames',
   props: {
     titles: Array,
     entries: Array,
@@ -98,6 +104,18 @@ img:hover {
 
 input {
   width: 100%;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  display: inline;
+}
+
+li:not(:last-of-type)::after {
+  content: ', '
 }
 
 </style>

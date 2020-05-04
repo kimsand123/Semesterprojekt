@@ -7,12 +7,11 @@
       </tr>
       <tr v-for="entry in entries" :key="entry.id">
         <td>{{entry.id}}</td>
-        <td>{{entry.first_name}}</td>
-        <td>{{entry.last_name}}</td>
-        <td>{{entry.study_programme}}</td>
-        <td>{{entry.username}}</td>
-        <td>{{entry.email}}</td>
-        <td>{{entry.high_score}}</td>
+        <td>{{entry.question_text}}</td>
+        <td>{{entry.correct_answer}}</td>
+        <td>{{entry.answer_1}}</td>
+        <td>{{entry.answer_2}}</td>
+        <td>{{entry.answer_3}}</td>
         <td>
           <div @click="handleEdit" class="icon">
             <img src="./../../assets/edit-tools.svg" id="edit-icon"/>
@@ -86,9 +85,9 @@ img {
 
 .scrollable-table {
   margin-top: 50px;
-  height: 50rem;
+  height: 45rem;
   width: 100%;
-	padding: 0 15px;
+	padding: 15px 25px;
 	overflow: auto;
 }
 
