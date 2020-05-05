@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from GameServiceApp.constants import AUTH_SERVICE_ACCESS_KEY
-from GameServiceApp.helper_methods import get_json_data_object, check_or_add_user
+from GameServiceApp.helper_methods import get_json_data_object, check_or_add_user, os
 from GameServiceApp.active_player_list import *
 
 from GameServiceApp.tests import run_token_test
@@ -34,7 +34,7 @@ def register_user(request):
                 token = req_json['user_token']
                 add_token(token, player_id)
                 #run_token_test()
-                game_service_ip = "127.0.0.1"
+                game_service_ip = "94.130.183.32"
                 game_service_port = "9700"
                 response = {"game_service_ip": game_service_ip, "game_service_port": game_service_port,
                             "player": player}
