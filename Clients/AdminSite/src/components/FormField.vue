@@ -17,10 +17,12 @@ export default {
 
 <style scoped>
 input {
+  outline: none;
   position: relative;
   margin-bottom: 1rem;
   background: rgb(230, 230, 230);
   border: none;
+  border-radius: 5px;
   width: 70%;
   padding: 0.5rem 1rem;
 }

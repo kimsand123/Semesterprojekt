@@ -6,7 +6,7 @@
   <div class="site-wrapper">
     <VGrid variant="container">
       <VRow>
-        <VCol variant="['md-12','sm-12','xs-12']">
+        <VCol :variants="['md-12','sm-12','xs-12']">
           <div class="form-field-wrapper">
             <h1>GolfQuiz Admin Login</h1>
             <form method="post" @submit.prevent="login">
@@ -64,8 +64,7 @@ export default {
 
 <style scoped>
 .site-wrapper {
-  background: rgb(2,0,36);
-  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(105,247,99,1) 0%, rgba(52,138,52,1) 100%);
+  background:#00BD81;
   position: absolute;
   top: 0;
   left: 0;
@@ -73,6 +72,15 @@ export default {
   align-items: center;
   width: 100%;
   height: 100vh;
+}
+
+#login-button {
+  width: 60%;
+  height: 2rem;
+  border-radius: 8px;
+  background-color: #00BD81;
+  color: white;
+  border: none;
 }
 
 .form-field-wrapper {
