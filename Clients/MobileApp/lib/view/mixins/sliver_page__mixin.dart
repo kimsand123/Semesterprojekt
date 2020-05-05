@@ -3,6 +3,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/localization/appLocalizations.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
+import 'package:golfquiz_dtu/view/components/loading_dialog__component.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 mixin SliverPage<Page extends BasePage> on BasePageState<Page> {
   double screenWidth() => MediaQuery.of(context).size.width;
@@ -10,6 +12,7 @@ mixin SliverPage<Page extends BasePage> on BasePageState<Page> {
   ThemeData appTheme() => Theme.of(context);
   AppLocalization appLocale() => AppLocalization.of(context);
   SliverAppBar appBar;
+  ProgressDialog progressDialog;
 
   @override
   void initState() {
@@ -58,6 +61,15 @@ mixin SliverPage<Page extends BasePage> on BasePageState<Page> {
         ),
       ]),
     );
+  }
+
+  Future<void> enableProgressIndicator(String message) async {
+    progressDialog = standardDialog(context, message);
+    return progressDialog.show();
+  }
+
+  Future<void> disableProgressIndicator() async {
+    return progressDialog.hide();
   }
 
   double appBarHeight() => 80;

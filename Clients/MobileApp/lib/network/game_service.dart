@@ -106,7 +106,7 @@ class GameService {
   }
 
   static Future<Game> addGameRoundToGame(Game game, Player player) async {
-    String apiPath = "/games/${game.id}/player-status/game-round/";
+    String apiPath = "/games/${game.id}/player-status/";
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
 
@@ -124,12 +124,17 @@ class GameService {
 
     Map<String, String> queryParams = {"player_id": player.id.toString()};
 
-    var jsonMap = {"game_round": currentPlayerStatus.gameRound};
+    var jsonMap = {
+      "game_round": currentPlayerStatus.gameRound,
+      "game_player": currentPlayerStatus.gamePlayer.toJson()
+    };
     String json = jsonEncode(jsonMap);
+
+    print(json);
 
     Uri uri = Uri.http(ServiceConstants.baseGameUrl, apiPath, queryParams);
 
-    debugPrint("GameService - Add gameround: " + uri.toString());
+    debugPrint("GameService - update playerstatus: " + uri.toString());
 
     return retry(
         () => http

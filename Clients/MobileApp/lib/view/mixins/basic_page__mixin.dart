@@ -57,13 +57,13 @@ mixin BasicPage<Page extends BasePage> on BasePageState<Page> {
     );
   }
 
-  void enableProgressIndicator(String message) {
+  Future<void> enableProgressIndicator(String message) async {
     progressDialog = standardDialog(context, message);
-    progressDialog.show();
+    return progressDialog.show();
   }
 
-  void disableProgressIndicator() {
-    progressDialog.hide();
+  Future<void> disableProgressIndicator() async {
+    return progressDialog.hide();
   }
 
   double appBarHeight() => appBar.preferredSize.height;

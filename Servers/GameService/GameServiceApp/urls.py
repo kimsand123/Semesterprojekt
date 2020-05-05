@@ -15,7 +15,7 @@ urlpatterns = [
 
     # Game
     path('games/', game_views.games),  # GET get all games POST add game
-    path('games/<str:game_id>/player-status/game-round/', game_views.single_game_player_status_game_round),
+    path('games/<str:game_id>/player-status/', game_views.single_game_player_status),
     path('games/<int:game_id>/', game_views.single_game),  # GET single game PUT edit game DELETE game
 
     # Register user

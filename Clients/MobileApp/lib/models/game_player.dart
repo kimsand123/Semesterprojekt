@@ -18,7 +18,6 @@ class GamePlayer {
       );
 
   Map<String, dynamic> toJson() => {
-        "player": player.toJson(),
         "game_progress": gameProgress,
         "score": score,
       };

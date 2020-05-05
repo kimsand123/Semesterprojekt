@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view
-from ..correct_data import CORRECT_GAME_OBJ
+from ..correct_data import CORRECT_GAME_OBJ, CORRECT_PLAYER_STATUS_OBJ
 
 from GameServiceApp.active_player_list import token_status
 from GameServiceApp.helper_methods import *
@@ -12,7 +12,8 @@ from GameServiceApp.helper_methods import *
 def games(request):
     # Early exit on missing authorization / invalid token
     if 'Authorization' not in request.headers:
-        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers",
+                                            None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
     else:
         if not token_status(request.headers['Authorization']):
@@ -35,7 +36,8 @@ def games(request):
 def single_game(request, game_id):
     # Early exit on missing authorization / invalid token
     if 'Authorization' not in request.headers:
-        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers",
+                                            None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
     else:
         if not token_status(request.headers['Authorization']):
@@ -53,13 +55,14 @@ def single_game(request, game_id):
 
 
 # -------------
-# [PUT] /games/game_id/player-status/game-round/
+# [PUT] /games/game_id/player-status/
 # -------------
 @api_view(['PUT'])
-def single_game_player_status_game_round(request, game_id):
+def single_game_player_status(request, game_id):
     # Early exit on missing authorization / invalid token
     if 'Authorization' not in request.headers:
-        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers",
+                                            None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
     else:
         if not token_status(request.headers['Authorization']):
@@ -69,7 +72,8 @@ def single_game_player_status_game_round(request, game_id):
     if request.method == 'PUT':
         return single_game_game_round_put(request, game_id)
     else:
-        print("/games/game_id does not have a \'" + request.method + "\' handling")
+        print("/games/game_id/player-status/ \'" + request.method + "\' handling")
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,7 +168,7 @@ def single_game_delete(request, game_id):
 def single_game_game_round_put(request, game_id):
     decode_error_message = generate_error_json(status.HTTP_400_BAD_REQUEST, 'Json decode error',
                                                'Your body should probably look like the value in correct_data',
-                                               CORRECT_GAME_OBJ)
+                                               CORRECT_PLAYER_STATUS_OBJ)
 
     json_request = get_json_data_object(request, decode_error_message)
 
@@ -173,5 +177,6 @@ def single_game_game_round_put(request, game_id):
 
     player_id = request.GET["player_id"]
 
-    response = connection_service(f"/games/{game_id}/player-status/game-round/?player_id={player_id}", json_request, None, "PUT")
+    response = connection_service(f"/games/{game_id}/player-status/?player_id={player_id}", json_request,
+                                  None, "PUT")
     return Response(data=response, status=status.HTTP_200_OK)

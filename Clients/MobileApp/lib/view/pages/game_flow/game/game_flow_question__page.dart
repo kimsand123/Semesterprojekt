@@ -73,7 +73,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
               alignment: Alignment.bottomLeft,
               child: Text(
-                  '${appLocale().hole} ${currentUserInfo.gamePlayer.gameProgress}',
+                  '${appLocale().hole} ${currentUserInfo.gamePlayer.gameProgress + 1}',
                   style: appTheme()
                       .textTheme
                       .subhead
@@ -122,8 +122,9 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               updateWithNewGameRound(0, _totalTime + 0.0).then((v) {
                 Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                     arguments: false);
-              }).catchError((error) {
-                print("Update gameround" + error.toString());
+              }).catchError((error) async {
+                debugPrint("Updating gameround" + error.toString());
+                await disableProgressIndicator();
               });
 
               Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
@@ -176,8 +177,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               updateWithNewGameRound(2, timeSpent + 0.0).then((v) {
                 Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                     arguments: true);
-              }).catchError((error) {
-                print("Update gameround" + error.toString());
+              }).catchError((error) async {
+                debugPrint("Updating gameround" + error.toString());
               });
             } else {
               debugPrint('Pressed wrong answer');
@@ -187,8 +188,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               updateWithNewGameRound(0, timeSpent + 0.0).then((v) {
                 Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                     arguments: false);
-              }).catchError((error) {
-                print("Update gameround" + error.toString());
+              }).catchError((error) async {
+                debugPrint("Updating gameround" + error.toString());
               });
             }
           },
@@ -217,12 +218,17 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
     currentPlayerStatus.gameRound
         .add(GameRound(score: score, timeSpent: timeSpent));
 
+    currentPlayerStatus.gamePlayer.gameProgress =
+        currentPlayerStatus.gameRound.length;
+
+    currentPlayerStatus.gamePlayer.score += score;
+
     Game currentGame = currentGameProvider.getGame();
 
-    await RemoteHelper().updateGameRoundsInGameListProvider(
-        context, currentGame, currentPlayer);
+    await RemoteHelper()
+        .updateGameInGameListProvider(context, currentGame, currentPlayer);
 
-    Provider.of<CurrentGameProvider>(context, listen: false)
+    await Provider.of<CurrentGameProvider>(context, listen: false)
         .updateCurrentGameFromRemote(context);
   }
 }

@@ -70,8 +70,8 @@ class _GamesPageState extends BasePageState<GamesPage>
         FadeInRTLAnimation(
           child: ActiveGamesCardComponent(
             gameMode: appLocale().games__your_matches__two_player_matches,
-            onPressed: () {
-              enableProgressIndicator("Gathering your games...");
+            onPressed: () async {
+              await enableProgressIndicator("Gathering your games...");
 
               Player currentPlayer =
                   Provider.of<MeProvider>(context, listen: false).getPlayer;
@@ -80,11 +80,15 @@ class _GamesPageState extends BasePageState<GamesPage>
                 Provider.of<GameListProvider>(context, listen: false)
                     .setGameList(value);
 
-                Navigator.popAndPushNamed(context, gameListRoute,
+                await disableProgressIndicator();
+
+                Navigator.pushNamed(context, gameListRoute,
                     arguments: GameType.two_player_match);
+
                 return Future.value(true);
-              }).catchError((error) {
-                Navigator.pop(context);
+              }).catchError((error) async {
+                debugPrint("Fetching games error" + error.toString());
+                await disableProgressIndicator();
               });
             },
           ),
@@ -108,8 +112,8 @@ class _GamesPageState extends BasePageState<GamesPage>
           child: ActiveGamesCardComponent(
             gameMode: "Invites",
             subTitle: "Show all invites",
-            onPressed: () {
-              enableProgressIndicator("Gathering invites...");
+            onPressed: () async {
+              await enableProgressIndicator("Gathering invites...");
 
               Player currentPlayer =
                   Provider.of<MeProvider>(context, listen: false).getPlayer;
@@ -118,10 +122,13 @@ class _GamesPageState extends BasePageState<GamesPage>
                 Provider.of<InviteListProvider>(context, listen: false)
                     .setInviteList(value);
 
-                Navigator.popAndPushNamed(context, inviteListRoute);
+                await disableProgressIndicator();
+
+                Navigator.pushNamed(context, inviteListRoute);
                 return Future.value(true);
-              }).catchError((error) {
-                Navigator.pop(context);
+              }).catchError((error) async {
+                debugPrint("Fetching invites error" + error.toString());
+                await disableProgressIndicator();
               });
             },
           ),

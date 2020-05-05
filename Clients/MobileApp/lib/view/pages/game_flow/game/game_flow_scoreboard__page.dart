@@ -110,9 +110,6 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                               .button
                               .copyWith(color: color)): () {
                         Provider.of<CurrentGameProvider>(context, listen: false)
-                            .incrementPlayerProgress(
-                                playerStatus.gamePlayer.player);
-                        Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushNamedAndRemoveUntil(context, gameRoute,
                             ModalRoute.withName(Navigator.defaultRouteName));
@@ -183,8 +180,6 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                       }
                     } else {
                       if (game.gameType == GameType.two_player_match) {
-                        provider
-                            .incrementPlayerProgress(player.gamePlayer.player);
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
 

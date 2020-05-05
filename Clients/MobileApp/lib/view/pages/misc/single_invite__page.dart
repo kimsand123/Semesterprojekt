@@ -92,17 +92,18 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
           child: AuthButtonComponent(
             text: Text("Accept"),
             onPressed: () async {
-              enableProgressIndicator("Accepting invite...");
+              await enableProgressIndicator("Accepting invite...");
               await InviteService.acceptInvite(shownInvite)
                   .then((receivedData) async {
                 await RemoteHelper().fillProviders(context, player);
 
-                disableProgressIndicator();
+                await disableProgressIndicator();
 
                 Navigator.pop(context);
                 return Future.value(true);
-              }).catchError((error) {
-                Navigator.pop(context);
+              }).catchError((error) async {
+                debugPrint("Accepting invite error" + error.toString());
+                await disableProgressIndicator();
               });
             },
           ),
@@ -112,17 +113,18 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
           child: DeleteButtonComponent(
             buttonText: "Delete",
             onDeleteAction: () async {
-              enableProgressIndicator("Deleting invite...");
+              await enableProgressIndicator("Deleting invite...");
               await InviteService.deleteInvite(shownInvite)
                   .then((receivedData) async {
                 await RemoteHelper().fillProviders(context, player);
 
-                disableProgressIndicator();
+                await disableProgressIndicator();
 
                 Navigator.pop(context);
                 return Future.value(true);
-              }).catchError((error) {
-                Navigator.pop(context);
+              }).catchError((error) async {
+                debugPrint("Deleting invite error" + error.toString());
+                await disableProgressIndicator();
               });
             },
           ),

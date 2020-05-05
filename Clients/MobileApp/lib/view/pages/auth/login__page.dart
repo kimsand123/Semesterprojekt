@@ -123,12 +123,12 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
 
   _validateAndSaveInputs() async {
     if (_formKey.currentState.validate()) {
-      enableProgressIndicator(appLocale().auth_login__progress_text);
+      await enableProgressIndicator(appLocale().auth_login__progress_text);
 
       Player _user = await AuthService.login(
           _usernameController.text, _passwordController.text);
 
-      disableProgressIndicator();
+      await disableProgressIndicator();
 
       await RemoteHelper().fillProviders(context, _user);
 

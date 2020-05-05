@@ -69,3 +69,22 @@ CORRECT_INVITE_OBJ = {
             "accepted": False
         }
 }
+
+CORRECT_PLAYER_STATUS_OBJ = {
+    "game_player":
+        {
+            "game_progress": 20,
+            "score": 10
+        },
+    "game_round":
+        [
+            {
+                "time_spent": 20.0,
+                "score": 10
+            },
+            {
+                "time_spent": 34.0,
+                "score": 345
+            }
+        ]
+}

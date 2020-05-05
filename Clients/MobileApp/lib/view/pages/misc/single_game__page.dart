@@ -49,7 +49,7 @@ class _SingleGamePageState extends BasePageState<SingleGamePage>
           rowLeftContent:
               widget.gameItem.questionDuration.toStringAsFixed(0) + 's',
           rowRightTitle: appLocale().game_appbar__your_score,
-          rowRightContent: currentPlayerStatus.gamePlayer.score.toString(),
+          rowRightContent: currentPlayerStatus.gamePlayer.player.toString(),
           showProgress: true,
         );
       },

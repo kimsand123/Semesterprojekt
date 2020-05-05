@@ -71,6 +71,25 @@ __correct_game_json = {
         }
 }
 
+__correct_player_status_json = {
+    "game_player":
+        {
+            "game_progress": 20,
+            "score": 10
+        },
+    "game_round":
+        [
+            {
+                "time_spent": 20.0,
+                "score": 10
+            },
+            {
+                "time_spent": 34.0,
+                "score": 345
+            }
+        ]
+}
+
 
 # path: /games/
 @api_view(all_methods)
@@ -157,15 +176,15 @@ def single_game(request, game_id):
         return wrong_property_type(request, __correct_game_json)
 
 
-# path: /games/<int:game_id>/player-status/game-round/
+# path: /games/<int:game_id>/player-status/
 @api_view(all_methods)
-def single_game_player_status_game_round(request, game_id):
+def single_game_player_status(request, game_id):
     try:
         if not is_access_key_valid(request):
             return bad_or_missing_access_key(request)
 
         elif request.method == 'PUT':
-            return __single_game_player_status_game_round_put(request, game_id)
+            return __single_game_player_status_put(request, game_id)
 
         else:
             return __bad_method(request, 'PUT')
@@ -188,15 +207,15 @@ def single_game_player_status_game_round(request, game_id):
 
     except JSONDecodeError as e:
         print('JSONDecodeError occurred: ' + e.__str__())
-        return bad_json(request, __correct_game_json)
+        return bad_json(request, __correct_player_status_json)
 
     except (AttributeError, KeyError) as e:
         print('AttributeError or KeyError occurred: ' + e.__str__())
-        return bad_json(request, __correct_game_json)
+        return bad_json(request, __correct_player_status_json)
 
     except (ValueError, TypeError) as e:
         print('ValueError or TypeError occurred: ' + e.__str__())
-        return wrong_property_type(request, __correct_game_json)
+        return wrong_property_type(request, __correct_player_status_json)
 
 
 # Bad games path
@@ -332,22 +351,22 @@ def __single_game_delete(request, game_id):
 # -----------------------------
 # Single game player status game rounds PUT
 # -----------------------------
-def __single_game_player_status_game_round_put(request, game_id):
+def __single_game_player_status_put(request, game_id):
     print_origin(request, 'Single game update game rounds')
 
     json_body = json.loads(request.body)
 
     # Update a database entry
-    return_data = GameDatabase.update_game_round_return_serialized(json_body, game_id, request.GET)
+    return_data = GameDatabase.update_game_player_status_return_serialized(json_body, game_id, request.GET)
 
     # if it returns a string, send a missing property json back
     if isinstance(return_data, str):
-        return missing_property_in_json(request, return_data, __correct_game_json)
+        return missing_property_in_json(request, return_data, __correct_player_status_json)
 
     # Prepare jsonResponse data
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
-        'message': 'You have changed the game rounds in game with id: \'' + game_id + '\'',
+        'message': 'You have changed the player status in game with id: \'' + game_id + '\'',
         'game': return_data,
     }
     return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)

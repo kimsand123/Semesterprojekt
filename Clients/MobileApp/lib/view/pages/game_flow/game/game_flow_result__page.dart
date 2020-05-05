@@ -1,6 +1,5 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:golfquiz_dtu/misc/constants.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/question.dart';
@@ -45,7 +44,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
             provider.getGame());
 
         int gameProgress = currentUserInfo.gamePlayer.gameProgress;
-        Question currentQuestion = game.questions[gameProgress];
+        Question currentQuestion = game.questions[gameProgress - 1];
         String answerText = "";
 
         if (currentQuestion.correctAnswer == 1) {
@@ -155,19 +154,22 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                 isPaused: true,
                 animationState: '',
                 icon: 'assets/animations/scoreboard.flr',
-                onPressed: () {
-                  Navigator.pushNamed(context, gameFlowScoreboard);
+                onPressed: () async {
+                  await enableProgressIndicator("Updating scoreboard...");
+
+                  await Provider.of<CurrentGameProvider>(context, listen: false)
+                      .updateCurrentGameFromRemote(context)
+                      .then((v) async {
+                    await disableProgressIndicator();
+                    Navigator.pushNamed(context, gameFlowScoreboard);
+                  }).catchError((error) async {
+                    debugPrint("Update current game" + error.toString());
+                  });
                 },
                 text: appLocale().game_flow__result__scoreboard,
               ),
               Consumer<CurrentGameProvider>(
                   builder: (context, gameProvider, child) {
-                Game game = gameProvider.getGame();
-                var currentPlayerStatus = GameFlowHelper.determinePlayerStatus(
-                    Provider.of<MeProvider>(context, listen: false)
-                        .getPlayer
-                        .id,
-                    gameProvider.getGame());
                 return RoundButtonComponent(
                   isPaused: true,
                   icon: 'assets/animations/pause_play.flr',
@@ -181,11 +183,6 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                               .textTheme
                               .button
                               .copyWith(color: color)): () {
-                        Provider.of<CurrentGameProvider>(context, listen: false)
-                            .incrementPlayerProgress(
-                                currentPlayerStatus.gamePlayer.player);
-                        Provider.of<CurrentGameProvider>(context, listen: false)
-                            .setGame(game);
                         Navigator.pushNamedAndRemoveUntil(context, gameRoute,
                             ModalRoute.withName(Navigator.defaultRouteName));
                       },
@@ -223,45 +220,14 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                       if (provider.getPlayerProgress(
                               playerStatus.gamePlayer.player) >=
                           18) {
-                        var donePlayers = 0;
-                        if (game.gameType == GameType.two_player_match) {
-                          Provider.of<CurrentGameProvider>(context,
-                                  listen: false)
-                              .setGame(game);
-                          Navigator.pushReplacementNamed(context, gameRoute);
-                        } else {
-                          Provider.of<CurrentGameProvider>(context,
-                                  listen: false)
-                              .setGame(game);
-                          Navigator.pushReplacementNamed(context, gameRoute);
-                        }
+                        Provider.of<CurrentGameProvider>(context, listen: false)
+                            .setGame(game);
+                        Navigator.pushReplacementNamed(context, gameRoute);
                       } else {
-                        if (game.gameType == GameType.two_player_match) {
-                          provider.incrementPlayerProgress(
-                              playerStatus.gamePlayer.player);
-                          Provider.of<CurrentGameProvider>(context,
-                                  listen: false)
-                              .setGame(game);
-                          Navigator.pushReplacementNamed(
-                              context, gameFlowQuestionRoute);
-                        } else if (game.gameType == GameType.group_match ||
-                            game.gameType == GameType.tournaments) {
-                          provider.incrementPlayerProgress(
-                              playerStatus.gamePlayer.player);
-                          Provider.of<CurrentGameProvider>(context,
-                                  listen: false)
-                              .setGame(game);
-                          Navigator.pushReplacementNamed(
-                              context, gameFlowQuestionRoute);
-                        } else {
-                          provider.incrementPlayerProgress(
-                              playerStatus.gamePlayer.player);
-                          Provider.of<CurrentGameProvider>(context,
-                                  listen: false)
-                              .setGame(game);
-                          Navigator.pushReplacementNamed(
-                              context, gameFlowQuestionRoute);
-                        }
+                        Provider.of<CurrentGameProvider>(context, listen: false)
+                            .setGame(game);
+                        Navigator.pushReplacementNamed(
+                            context, gameFlowQuestionRoute);
                       }
                     },
                   );

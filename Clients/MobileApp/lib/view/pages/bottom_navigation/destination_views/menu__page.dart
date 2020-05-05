@@ -49,8 +49,8 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
 
         // Friends
         Container(
-            child: settingsRow(appLocale().menu__friends_button, () {
-          enableProgressIndicator("Gathering friends...");
+            child: settingsRow(appLocale().menu__friends_button, () async {
+          await enableProgressIndicator("Gathering friends...");
 
           Player currentPlayer =
               Provider.of<MeProvider>(context, listen: false).getPlayer;
@@ -61,8 +61,9 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
 
             Navigator.popAndPushNamed(context, friendsRoute);
             return Future.value(true);
-          }).catchError((error) {
-            Navigator.pop(context);
+          }).catchError((error) async {
+            debugPrint("Fetching players error" + error.toString());
+            await disableProgressIndicator();
           });
         }, false)),
 

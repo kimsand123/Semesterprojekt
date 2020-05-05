@@ -180,16 +180,17 @@ class _CreateMultiplayerMatchPageState
         questionDuration: questionDuration,
         accepted: false);
 
-    enableProgressIndicator("Inviting player...");
+    await enableProgressIndicator("Inviting player...");
     await InviteService.createInvite(inviteToPost).then((value) async {
       await RemoteHelper().fillProviders(context, currentPlayer);
 
-      disableProgressIndicator();
+      await disableProgressIndicator();
 
       Navigator.pop(context);
       return Future.value(true);
-    }).catchError((error) {
-      Navigator.pop(context);
+    }).catchError((error) async {
+      debugPrint("Inviting players error" + error.toString());
+      await disableProgressIndicator();
     });
   }
 

@@ -59,7 +59,7 @@ class RemoteHelper {
     Provider.of<GameListProvider>(context, listen: false).addOrUpdateGame(game);
   }
 
-  Future<void> updateGameRoundsInGameListProvider(
+  Future<void> updateGameInGameListProvider(
       BuildContext context, Game game, Player player) async {
     Game newGame = await GameService.addGameRoundToGame(game, player);
 

@@ -3,8 +3,11 @@ import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/game_player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/game_list__provider.dart';
 import 'package:provider/provider.dart';
+
+import 'me__provider.dart';
 
 class CurrentGameProvider extends ChangeNotifier {
   Game _game = Game();
@@ -16,22 +19,17 @@ class CurrentGameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateCurrentGameFromRemote(BuildContext context) {
+  Future<void> updateCurrentGameFromRemote(BuildContext context) async {
     if (this._game.id != null) {
+      Player player = Provider.of<MeProvider>(context, listen: false).getPlayer;
+      await RemoteHelper()
+          .updateSingleGameInGameListProvider(context, player, this._game.id);
+
       this._game = Provider.of<GameListProvider>(context, listen: false)
           .findGameWithId(this._game.id);
-    }
-  }
 
-  void incrementPlayerProgress(Player player) {
-    List<PlayerStatus> playerStatusList = this._game.playerStatus;
-
-    for (var status in playerStatusList) {
-      if (status.gamePlayer.player.id == player.id) {
-        status.gamePlayer.gameProgress += 1;
-      }
+      return Future.value(true);
     }
-    notifyListeners();
   }
 
   int getPlayerProgress(Player player) {
