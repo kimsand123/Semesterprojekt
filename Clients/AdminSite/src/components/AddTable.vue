@@ -44,8 +44,7 @@ th {
 }
 
 td {
-  padding-top: 8px;
-  padding-bottom: 0;
+  padding: 8px;
   border: 1px solid #dddddd;
 }
 

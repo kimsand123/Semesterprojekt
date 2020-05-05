@@ -1,3 +1,7 @@
+/****************************
+***********MARKUP************
+****************************/
+
 <template>
   <div class="site-wrapper">
     <Modal></Modal>
@@ -18,6 +22,10 @@
 </template>
 
 
+/****************************
+*********JAVASCRIPT**********
+****************************/
+
 
 <script>
 import Navigation from '../../Navigation'
@@ -34,6 +42,15 @@ export default {
     'MethodList': MethodList,
     'AddTable': AddTable,
     'Modal': Modal
+  },
+  mounted() {
+    document.querySelectorAll('input').forEach(field => {
+      field.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') {
+          this.handleClick()
+        }
+      })
+    })
   },
   methods: {
     handleClick() {
@@ -84,7 +101,9 @@ export default {
 </script>
 
 
-
+/*************************
+*********STYLING**********
+*************************/
 
 
 <style scoped>

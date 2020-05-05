@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="scrollable-table"> 
+  <div class="scrollable-table">
     <table id="table">
       <tr>
         <th v-for="title in titles" :key="title">{{title}}</th>
@@ -14,10 +14,8 @@
             <li v-for="entryQ in entry.questions" :key="entryQ.id">{{entryQ.id}}</li>
           </ul>
         </td>
-        <td>
-          <ul> 
-            <li v-for="playerStat in entry.player_status" :key="playerStat.game_player.id">{{playerStat.game_player.id}}</li>
-          </ul>
+        <td v-for="playerStat in entry.player_status" :key="playerStat.game_player.id">
+          {{playerStat.game_player.player.id}}
         </td>
         <td>
           <div @click="handleEdit" class="icon">

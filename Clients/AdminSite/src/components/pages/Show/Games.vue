@@ -1,3 +1,7 @@
+/****************************
+***********MARKUP************
+****************************/
+
 <template>
   <div class="site-wrapper">
     <Modal ></Modal>
@@ -5,13 +9,18 @@
     <VGrid variant="container">
       <VRow>
         <VCol variant="['md-12','sm-12','xs-12']">
-          <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players"></MethodList>
+          <h1>Games</h1>
+          <MethodList :isGetActive="true" linkToGet="/games" linkToPost="/games/add"></MethodList>
           <TableGames :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></TableGames>
         </VCol>
       </VRow>
     </VGrid>
   </div>
 </template>
+
+/****************************
+*********JAVASCRIPT**********
+****************************/
 
 <script>
 import Navigation from '../../Navigation'
@@ -34,7 +43,7 @@ export default {
   },
   data: () => {
     return {
-      titles: ['ID', 'Match Name', 'Question Duration', 'Question IDs', 'Player IDs' ],
+      titles: ['ID', 'Match Name', 'Question Duration', 'Question IDs', 'Player One ID', 'Player Two ID'],
       entries: []
     }
   },
@@ -45,10 +54,10 @@ export default {
     .then(res => {
       if(res.status === 200) {
         res.data.games.forEach(game => {
-          this.entries.push(game)
+          if(game.player_status !== undefined) {
+            this.entries.push(game)
+          }
         })
-      } else {
-        throw new Error('Something went wrong')
       }
     })
     .catch(error => {
@@ -70,7 +79,7 @@ export default {
         if(response.status === 202) {
           table.deleteRow(rowIndex)
           showModal('Game deleted!')
-        } else if(response.status !== 404) {
+        } else {
           showModal('Something went wrong...')
         }
       })
@@ -85,30 +94,11 @@ export default {
       const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex
       const rows = e.target.parentElement.parentElement.parentElement.parentElement.children
       const editIcon = document.querySelector('#edit-icon')
-      let questionArray = []
-      let playerArray = []
 
       if(isEditMode) {
         originalTdData = [rowGamesId]
         for(let i = 1; i < rowCells.length; i++) {
-          if(i === 3) {
-            console.log('UL ELEM', rowCells[i].children[0])
-            questionArray = []
-            const questionListItems = rowCells[i].children[0].children
-            for(const li of questionListItems) {
-              questionArray.push(li.innerHTML)
-            }
-            originalTdData.push(questionArray)
-          } else if(i === 4) {
-            playerArray = []
-            const playerListItems = rowCells[i].children[0].children
-            for(const li of playerListItems) {
-              playerArray.push(li.innerHTML)
-            }
-            originalTdData.push(playerArray)
-          } else {
-            originalTdData.push(rowCells[i].innerHTML)
-          }
+          originalTdData.push(rowCells[i].innerHTML)
         }
 
         for(let i = 0; i < rows.length; i++) {
@@ -128,25 +118,13 @@ export default {
 
 
       for(let i = 0; i < rowCells.length; i++) {
-        if(i < rowCells.length - 2 && i > 0 && isEditMode) {
+        if(i >= 1 && i <= 2 && isEditMode) {
           rowCells[i].addEventListener('keypress', this.edit.bind(e, rowCells, originalTdData, rows, rowIndex))
-          if(i < rowCells.length - 2 && i > 0) {
+          if(i >= 1 && i <= 2) {
             rowCells[i].innerHTML = "<input value='" + originalTdData[i] + "'>"
           }
         } else if(i < rowCells.length - 2) {
-          if(i === 3 || i === 4) {
-            const list = document.createElement('ul')
-            for (let j = 0; j < originalTdData[i].length; j++) {
-              const item = document.createElement('li')
-              item.setAttribute('style', 'display: inline;')
-              item.appendChild(document.createTextNode(originalTdData[i][j]))
-              list.appendChild(item)
-            }
-
-            rowCells[i].innerHTML = "<ul style='list-style-type:none;'>" + list.innerHTML + "</ul>"
-          } else {
-            rowCells[i].innerHTML = originalTdData[i]
-          }
+          rowCells[i].innerHTML = originalTdData[i]
         }
       }
 
@@ -154,7 +132,7 @@ export default {
 
       inputFields.forEach(field => {
         field.style.width = '80%'
-        field.style.padding = '5px 5px'
+        field.style.padding = '15px 5px'
         field.style.borderRadius = '5px'
         field.style.border = '1px solid gray'
       })
@@ -168,13 +146,9 @@ export default {
       })
 
       const payload = JSON.stringify({
-        player: {
-          username: newData[3],
-          email: newData[4],
-          first_name: newData[0],
-          last_name: newData[1],
-          study_programme: newData[2],
-          high_score: newData[5]
+        game: {
+          match_name: newData[0],
+          question_duration: newData[1]
         }
       })
 
@@ -187,11 +161,11 @@ export default {
         })
         .then(response => {
           if(response.status === 202) {
-            for(let j = 1; j < rowCells.length - 2; j++) {
+            for(let j = 1; j < rowCells.length - 5; j++) {
               rowCells[j].innerHTML = newData[newDataIndex]
               newDataIndex++
             }
-            showModal('Player changed!')
+            showModal('Game changed!')
             for(let i = 0; i < rows.length; i++) {
               if(rowIndex !== i && i !== 0) {
                 rows[i].children[rowCells.length - 2].children[0].style.pointerEvents = "all"
@@ -209,6 +183,10 @@ export default {
 }
 </script>
 
+/*************************
+*********STYLING**********
+*************************/
+
 <style scoped>
 .site-wrapper {
   user-select: none;
@@ -220,5 +198,9 @@ export default {
   width: 100%;
   height: 100vh;
   background: #FBF7FF;
+}
+
+li:not(:last-of-type)::after {
+  content: ', '
 }
 </style>

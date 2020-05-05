@@ -7,16 +7,12 @@
       <ul>
         <li v-if="isPlayersActive"><router-link to="/players"><div class="bar"/><img src="../assets/group_active.svg"></router-link></li>
         <li v-else><router-link to="/players"><img src="../assets/group.svg"></router-link></li>
-        <li><p class="slash">/</p></li>
         <li v-if="isGamesActive"><router-link to="/games"><div class="bar"/><img src="../assets/joystick_active.svg"></router-link></li>
         <li v-else><router-link to="/games"><img src="../assets/joystick.svg"></router-link></li>
-        <li><p class="slash">/</p></li>
         <li v-if="isQuestionsActive"><router-link to="/questions"><div class="bar"/><img src="../assets/question_active.svg"></router-link></li>
         <li v-else><router-link to="/questions"><img src="../assets/question.svg"></router-link></li>
-        <li><p class="slash">/</p></li>
         <li v-if="isInviActive"><router-link to="/invitations"><div class="bar"/><img src="../assets/invitation_active.svg"></router-link></li>
         <li v-else><router-link to="/invitations"><img src="../assets/invitation.svg"></router-link></li>
-        <li><p class="slash">/</p></li>
       </ul>
       <router-link class="logout" to="/"><img src="../assets/logout.svg"></router-link>
     </nav>
@@ -47,6 +43,11 @@ ul {
 li {
   display: inline-block;
   padding-right: 1rem;
+  margin-bottom: 4rem;
+}
+
+li:last-of-type {
+  margin-left: -8px
 }
 
 img {
@@ -78,10 +79,6 @@ img {
 
 .title {
   color: #00BD81;
-}
-
-.slash {
-  color: white;
 }
 
 .logout {

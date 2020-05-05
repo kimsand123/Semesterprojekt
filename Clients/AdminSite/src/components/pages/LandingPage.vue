@@ -1,3 +1,7 @@
+/****************************
+***********MARKUP************
+****************************/
+
 <template>
   <div class="site-wrapper">
     <VGrid variant="container">
@@ -16,6 +20,10 @@
     </VGrid>
   </div>
 </template>
+
+/****************************
+*********JAVASCRIPT**********
+****************************/
 
 <script>
 import FormField from './../FormField'
@@ -49,6 +57,10 @@ export default {
   }
 }
 </script>
+
+/*************************
+*********STYLING**********
+*************************/
 
 <style scoped>
 .site-wrapper {

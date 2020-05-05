@@ -1,3 +1,7 @@
+/****************************
+***********MARKUP************
+****************************/
+
 <template>
   <div class="site-wrapper">
     <Modal ></Modal>
@@ -5,6 +9,7 @@
     <VGrid variant="container">
       <VRow>
         <VCol variant="['md-12','sm-12','xs-12']">
+          <h1>Invitations</h1>
           <MethodList :isGetActive="true" linkToGet="/invitations" linkToPost="/invitations/add"></MethodList>
           <TableInvites :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></TableInvites>
         </VCol>
@@ -12,6 +17,10 @@
     </VGrid>
   </div>
 </template>
+
+/****************************
+*********JAVASCRIPT**********
+****************************/
 
 <script>
 import Navigation from '../../Navigation'
@@ -173,6 +182,10 @@ export default {
   }
 }
 </script>
+
+/*************************
+*********STYLING**********
+*************************/
 
 <style scoped>
 .site-wrapper {
