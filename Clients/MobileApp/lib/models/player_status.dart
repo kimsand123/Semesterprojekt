@@ -10,6 +10,26 @@ class PlayerStatus {
     this.gameRound,
   });
 
+  int get totalPoints {
+    int points = 0;
+    if (gameRound != null) {
+      for (GameRound round in gameRound) {
+        points += round.score;
+      }
+    }
+    return points;
+  }
+
+  int get roundsCompleted {
+    int rounds = 0;
+    if (gameRound != null) {
+      for (var round in gameRound) {
+        rounds += 1;
+      }
+    }
+    return rounds;
+  }
+
   factory PlayerStatus.fromJson(Map<String, dynamic> json) => PlayerStatus(
         gamePlayer: GamePlayer.fromJson(json["game_player"]),
         gameRound: List<GameRound>.from(

@@ -6,7 +6,7 @@ import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/game_round.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/popup__component.dart';
@@ -30,9 +30,9 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
     return Consumer<CurrentGameProvider>(
       builder: (context, provider, child) {
         Game game = provider.getGame();
-        var currentUserInfo = GameFlowHelper.determineUser(
-            Provider.of<PlayerProvider>(context),
-            Provider.of<CurrentGameProvider>(context));
+        var currentUserInfo = GameFlowHelper.determinePlayerStatus(
+            Provider.of<MeProvider>(context, listen: false).getPlayer.id,
+            provider.getGame());
 
         return SliverAppBarComponent(
           currentPlayerStatus: currentUserInfo,
@@ -54,9 +54,9 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
     return Consumer<CurrentGameProvider>(
       builder: (context, provider, child) {
         Game game = provider.getGame();
-        var player = GameFlowHelper.determineUser(
-            Provider.of<PlayerProvider>(context),
-            Provider.of<CurrentGameProvider>(context));
+        var player = GameFlowHelper.determinePlayerStatus(
+            Provider.of<MeProvider>(context, listen: false).getPlayer.id,
+            provider.getGame());
         return Padding(
           padding: EdgeInsets.only(bottom: screenHeight() * 0.15),
           child: Column(
@@ -93,9 +93,11 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
             Consumer<CurrentGameProvider>(
               builder: (context, provider, child) {
                 Game game = provider.getGame();
-                var playerStatus = GameFlowHelper.determineUser(
-                    Provider.of<PlayerProvider>(context),
-                    Provider.of<CurrentGameProvider>(context));
+                var playerStatus = GameFlowHelper.determinePlayerStatus(
+                    Provider.of<MeProvider>(context, listen: false)
+                        .getPlayer
+                        .id,
+                    provider.getGame());
 
                 return StandardButtonComponent(
                   text: appLocale().game_flow__scoreboard__end_game,
@@ -134,9 +136,11 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
             Consumer<CurrentGameProvider>(
               builder: (context, provider, child) {
                 Game game = provider.getGame();
-                var player = GameFlowHelper.determineUser(
-                    Provider.of<PlayerProvider>(context),
-                    Provider.of<CurrentGameProvider>(context));
+                var player = GameFlowHelper.determinePlayerStatus(
+                    Provider.of<MeProvider>(context, listen: false)
+                        .getPlayer
+                        .id,
+                    provider.getGame());
 
                 return StandardButtonComponent(
                   text: appLocale().game_flow__scoreboard__resume,
@@ -243,8 +247,7 @@ List<Widget> multiPlayerGameHistory(
             Container(
               width: ((screenWidth / 3)) - (10 * 2),
               alignment: Alignment.center,
-              child: textTitle(context,
-                  AppLocalization.of(context).game_flow__scoreboard__handicap),
+              child: textTitle(context, "Rounds done"),
             ),
             Container(
               width: ((screenWidth / 3)) - (10 * 2),
@@ -270,7 +273,7 @@ List<Widget> multiPlayerHistory(
   for (var i = 0; i < status.length; i++) {
     Color color;
     String playerName;
-    if (Provider.of<PlayerProvider>(context, listen: false).getPlayer.id ==
+    if (Provider.of<MeProvider>(context, listen: false).getPlayer.id ==
         status[i].gamePlayer.player.id) {
       color = Color(0xFFBEFCD3);
       playerName = AppLocalization.of(context).you;
@@ -304,13 +307,13 @@ List<Widget> multiPlayerHistory(
               Container(
                 width: ((screenWidth / 3)) - (10 * 2),
                 alignment: Alignment.center,
-                child: numberText(context, '${status[i].gamePlayer.score}'),
+                child: numberText(context, '${status[i].roundsCompleted}'),
               ),
               Container(
                 width: ((screenWidth / 3)) - (10 * 2),
                 alignment: Alignment.centerRight,
-                child: numberText(
-                    context, '${game.playerStatus[i].gamePlayer.score}'),
+                child:
+                    numberText(context, '${game.playerStatus[i].totalPoints}'),
               )
             ],
           ),

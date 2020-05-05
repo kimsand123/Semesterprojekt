@@ -5,8 +5,8 @@ import 'package:golfquiz_dtu/network/invite_service.dart';
 import 'package:golfquiz_dtu/network/player_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/friend__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/notification_bubble__component.dart';
@@ -30,8 +30,7 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
             height: 30,
             alignment: Alignment.bottomLeft,
             padding: const EdgeInsets.only(left: 8, bottom: 8),
-            child:
-                Consumer<PlayerProvider>(builder: (context, provider, child) {
+            child: Consumer<MeProvider>(builder: (context, provider, child) {
               String email;
               if (provider.getPlayer == null ||
                   provider.getPlayer.email == null ||
@@ -54,7 +53,7 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
           enableProgressIndicator("Gathering friends...");
 
           Player currentPlayer =
-              Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+              Provider.of<MeProvider>(context, listen: false).getPlayer;
 
           PlayerService.fetchPlayers(currentPlayer).then((value) async {
             Provider.of<FriendProvider>(context, listen: false)

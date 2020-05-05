@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/game_player.dart';
-import 'package:golfquiz_dtu/models/game_round.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/providers/game_list__provider.dart';
+import 'package:provider/provider.dart';
 
 class CurrentGameProvider extends ChangeNotifier {
   Game _game = Game();
@@ -15,16 +16,11 @@ class CurrentGameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addGameRound(
-      PlayerStatus playerStatus, int progress, double timeSpent, int score) {
-    List<PlayerStatus> playerStatusList = this._game.playerStatus;
-
-    for (var status in playerStatusList) {
-      if (status.gamePlayer.player.id == playerStatus.gamePlayer.player.id) {
-        status.gameRound.add(GameRound(score: score, timeSpent: timeSpent));
-      }
+  void updateCurrentGameFromRemote(BuildContext context) {
+    if (this._game.id != null) {
+      this._game = Provider.of<GameListProvider>(context, listen: false)
+          .findGameWithId(this._game.id);
     }
-    notifyListeners();
   }
 
   void incrementPlayerProgress(Player player) {

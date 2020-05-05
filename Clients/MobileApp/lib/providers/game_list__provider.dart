@@ -24,10 +24,10 @@ class GameListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// **addGame():**
+  /// **addOrUpdateGame():**
   /// Add game to game-list
   ///
-  void addGame(Game gameToAdd) {
+  void addOrUpdateGame(Game gameToAdd) {
     // Find if game already exists
     bool gameAlreadyExists = isGameAlreadyInGameList(gameToAdd);
 

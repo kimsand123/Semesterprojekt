@@ -9,7 +9,7 @@ import 'package:golfquiz_dtu/network/invite_service.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/game_list__provider.dart';
 import 'package:golfquiz_dtu/providers/invite_list__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/animations/fade_in_rtl__animation.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
@@ -74,7 +74,7 @@ class _GamesPageState extends BasePageState<GamesPage>
               enableProgressIndicator("Gathering your games...");
 
               Player currentPlayer =
-                  Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+                  Provider.of<MeProvider>(context, listen: false).getPlayer;
 
               GameService.fetchGames(currentPlayer).then((value) async {
                 Provider.of<GameListProvider>(context, listen: false)
@@ -112,14 +112,13 @@ class _GamesPageState extends BasePageState<GamesPage>
               enableProgressIndicator("Gathering invites...");
 
               Player currentPlayer =
-                  Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+                  Provider.of<MeProvider>(context, listen: false).getPlayer;
 
               InviteService.fetchInvites(currentPlayer).then((value) async {
                 Provider.of<InviteListProvider>(context, listen: false)
                     .setInviteList(value);
 
-                Navigator.popAndPushNamed(context, inviteListRoute,
-                    arguments: GameType.two_player_match);
+                Navigator.popAndPushNamed(context, inviteListRoute);
                 return Future.value(true);
               }).catchError((error) {
                 Navigator.pop(context);
@@ -134,7 +133,7 @@ class _GamesPageState extends BasePageState<GamesPage>
 
   void setCurrentGameProvider() {
     Player currentUser =
-        Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+        Provider.of<MeProvider>(context, listen: false).getPlayer;
 
     Game game = Game.init();
 

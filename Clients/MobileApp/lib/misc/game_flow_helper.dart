@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
-import 'package:golfquiz_dtu/models/player.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
 
 class GameFlowHelper {
-  static PlayerStatus determineUser(PlayerProvider userProvider, gameProvider) {
-    Game game = gameProvider.getGame();
+  static PlayerStatus determinePlayerStatus(int playerId, Game game) {
     List<PlayerStatus> playerStatus = game.playerStatus ?? [];
 
     PlayerStatus targetPlayerStatus;
 
     playerStatus.forEach((pstatus) {
-      if (pstatus.gamePlayer.player.id == userProvider.getPlayer.id) {
+      if (pstatus.gamePlayer.player.id == playerId) {
         targetPlayerStatus = pstatus;
       }
     });
 
     return targetPlayerStatus;
   }
-
+  /*
   static PlayerStatus determineCurrentPlayerStatus(
       Player currentPlayer, Game game) {
     PlayerStatus currentPlayerStatus;
@@ -34,6 +31,7 @@ class GameFlowHelper {
 
     return currentPlayerStatus;
   }
+  */
 
   static Color setPopupTextColor(BuildContext context) {
     final ThemeData theme = Theme.of(context);

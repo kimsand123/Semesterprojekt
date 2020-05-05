@@ -7,7 +7,7 @@ import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/network/invite_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/auth__components/auth_button__component.dart';
@@ -163,7 +163,7 @@ class _CreateMultiplayerMatchPageState
         Provider.of<CurrentGameProvider>(context, listen: false).getGame();
 
     Player currentPlayer =
-        Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+        Provider.of<MeProvider>(context, listen: false).getPlayer;
 
     Player receiver;
 

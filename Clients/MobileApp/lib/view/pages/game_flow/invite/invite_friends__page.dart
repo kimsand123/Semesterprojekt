@@ -6,7 +6,7 @@ import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/providers/friend__provider.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/card_list__component.dart';
 import 'package:golfquiz_dtu/view/components/card_list_row__component.dart';
@@ -54,7 +54,7 @@ class _InviteFriendsPageState extends BasePageState<InviteFriendsPage>
           ),
           Consumer<FriendProvider>(builder: (context, provider, child) {
             Player currentPlayer =
-                Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+                Provider.of<MeProvider>(context, listen: false).getPlayer;
             List<Player> friendlist = provider.getFriends();
 
             return Container(

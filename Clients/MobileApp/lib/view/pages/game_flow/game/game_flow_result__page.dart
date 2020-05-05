@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/misc/constants.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/question.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/popup__component.dart';
@@ -39,25 +40,47 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
     return Consumer<CurrentGameProvider>(
       builder: (context, provider, child) {
         Game game = provider.getGame();
-        var currentUserInfo = GameFlowHelper.determineUser(
-            Provider.of<PlayerProvider>(context),
-            Provider.of<CurrentGameProvider>(context));
+        var currentUserInfo = GameFlowHelper.determinePlayerStatus(
+            Provider.of<MeProvider>(context, listen: false).getPlayer.id,
+            provider.getGame());
+
+        int gameProgress = currentUserInfo.gamePlayer.gameProgress;
+        Question currentQuestion = game.questions[gameProgress];
+        String answerText = "";
+
+        if (currentQuestion.correctAnswer == 1) {
+          answerText = currentQuestion.answer1;
+        } else if (currentQuestion.correctAnswer == 2) {
+          answerText = currentQuestion.answer2;
+        } else {
+          answerText = currentQuestion.answer3;
+        }
 
         return Column(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+              padding: EdgeInsets.only(
+                  left: 20.0, right: 20.0, top: 20.0, bottom: 10),
               alignment: Alignment.bottomLeft,
               child: Text(
-                  appLocale().game_flow__result__hole(
-                      currentUserInfo.gamePlayer.gameProgress),
+                  appLocale().game_flow__result__hole(gameProgress) +
+                      " out of 18",
+                  style: appTheme()
+                      .textTheme
+                      .subhead
+                      .copyWith(fontSize: 25, color: Color(0xFF2D2D2D))),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+              alignment: Alignment.bottomLeft,
+              child: Text("Question",
                   style: appTheme()
                       .textTheme
                       .subhead
                       .copyWith(color: Color(0xFF2D2D2D))),
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
               margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               width: screenWidth(),
               decoration: BoxDecoration(
@@ -70,8 +93,33 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                         .textTheme
                         .display1
                         .copyWith(color: Color(0xFF2D2D2D)),
-                    text:
-                        '${game.questions[currentUserInfo.gamePlayer.gameProgress - 1].questionText}'),
+                    text: '${currentQuestion.questionText}'),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
+              alignment: Alignment.bottomLeft,
+              child: Text("Answer",
+                  style: appTheme()
+                      .textTheme
+                      .subhead
+                      .copyWith(color: Color(0xFF2D2D2D))),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+              margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              width: screenWidth(),
+              decoration: BoxDecoration(
+                  border:
+                      Border.all(color: appTheme().highlightColor, width: 1),
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: RichText(
+                text: TextSpan(
+                    style: appTheme()
+                        .textTheme
+                        .display1
+                        .copyWith(color: Color(0xFF2D2D2D)),
+                    text: '$answerText'),
               ),
             ),
           ],
@@ -115,11 +163,11 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
               Consumer<CurrentGameProvider>(
                   builder: (context, gameProvider, child) {
                 Game game = gameProvider.getGame();
-                var currentPlayerStatus =
-                    GameFlowHelper.determineCurrentPlayerStatus(
-                        Provider.of<PlayerProvider>(context, listen: false)
-                            .getPlayer,
-                        game);
+                var currentPlayerStatus = GameFlowHelper.determinePlayerStatus(
+                    Provider.of<MeProvider>(context, listen: false)
+                        .getPlayer
+                        .id,
+                    gameProvider.getGame());
                 return RoundButtonComponent(
                   isPaused: true,
                   icon: 'assets/animations/pause_play.flr',
@@ -155,9 +203,11 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
               Consumer<CurrentGameProvider>(
                 builder: (context, provider, child) {
                   Game game = provider.getGame();
-                  var playerStatus = GameFlowHelper.determineUser(
-                      Provider.of<PlayerProvider>(context),
-                      Provider.of<CurrentGameProvider>(context));
+                  var playerStatus = GameFlowHelper.determinePlayerStatus(
+                      Provider.of<MeProvider>(context, listen: false)
+                          .getPlayer
+                          .id,
+                      provider.getGame());
 
                   return RoundButtonComponent(
                     isPaused: _isContinuePressed,
@@ -234,9 +284,9 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
 
     return Consumer<CurrentGameProvider>(builder: (context, provider, child) {
       Game game = provider.getGame();
-      var currentUserInfo = GameFlowHelper.determineUser(
-          Provider.of<PlayerProvider>(context),
-          Provider.of<CurrentGameProvider>(context));
+      var currentUserInfo = GameFlowHelper.determinePlayerStatus(
+          Provider.of<MeProvider>(context, listen: false).getPlayer.id,
+          provider.getGame());
 
       return SliverAppBarComponent(
         fontSize: 30.0,
@@ -321,11 +371,6 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
             },
             child: Consumer<CurrentGameProvider>(
                 builder: (context, provider, child) {
-              Game game = provider.getGame();
-              var currentUserInfo = GameFlowHelper.determineUser(
-                  Provider.of<PlayerProvider>(context),
-                  Provider.of<CurrentGameProvider>(context));
-
               return Container(
                 margin: EdgeInsets.only(top: 10),
                 height: screenHeight(),

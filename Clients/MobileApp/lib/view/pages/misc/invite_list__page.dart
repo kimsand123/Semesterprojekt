@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/models/invite.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/providers/invite_list__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/invite_card__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
@@ -28,7 +28,7 @@ class _InviteListPageState extends BasePageState<InviteListPage>
       child: Consumer<InviteListProvider>(
         builder: (context, provider, child) {
           Player currentPlayer =
-              Provider.of<PlayerProvider>(context, listen: false).getPlayer;
+              Provider.of<MeProvider>(context, listen: false).getPlayer;
 
           // Gather the list of invites
           List<Invite> listOfInvites = provider.getInviteList();

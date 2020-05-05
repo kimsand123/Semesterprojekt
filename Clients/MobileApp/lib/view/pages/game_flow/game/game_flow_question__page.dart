@@ -4,8 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/game_round.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
-import 'package:golfquiz_dtu/providers/player__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/animations/fade_in_btt__animation.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
@@ -59,9 +63,9 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
     return Consumer<CurrentGameProvider>(
       builder: (context, provider, child) {
         Game game = provider.getGame();
-        var currentUserInfo = GameFlowHelper.determineUser(
-            Provider.of<PlayerProvider>(context),
-            Provider.of<CurrentGameProvider>(context));
+        var currentUserInfo = GameFlowHelper.determinePlayerStatus(
+            Provider.of<MeProvider>(context, listen: false).getPlayer.id,
+            provider.getGame());
 
         return Column(
           children: <Widget>[
@@ -90,7 +94,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                         .display1
                         .copyWith(color: Color(0xFF2D2D2D)),
                     text:
-                        '${game.questions[currentUserInfo.gamePlayer.gameProgress - 1].questionText}'),
+                        '${game.questions[currentUserInfo.gamePlayer.gameProgress].questionText}'),
               ),
             ),
             buildAnswerButtons(currentUserInfo.gamePlayer.gameProgress)
@@ -104,24 +108,26 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
   Widget appBarContainer() {
     return Consumer<CurrentGameProvider>(builder: (context, provider, child) {
       Game game = provider.getGame();
-      var currentUserInfo = GameFlowHelper.determineUser(
-          Provider.of<PlayerProvider>(context),
-          Provider.of<CurrentGameProvider>(context));
+      var currentUserInfo = GameFlowHelper.determinePlayerStatus(
+          Provider.of<MeProvider>(context, listen: false).getPlayer.id,
+          provider.getGame());
 
       _totalTime = game.questionDuration;
 
       _timer = _timer ??
-          Timer.periodic(Duration(seconds: 1), (timer) {
+          Timer.periodic(Duration(seconds: 1), (timer) async {
             if (timer.tick == _totalTime.round()) {
               timer.cancel();
+
+              updateWithNewGameRound(0, _totalTime + 0.0).then((v) {
+                Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
+                    arguments: false);
+              }).catchError((error) {
+                print("Update gameround" + error.toString());
+              });
+
               Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                   arguments: false);
-              Provider.of<CurrentGameProvider>(context, listen: false)
-                  .addGameRound(
-                      currentUserInfo,
-                      currentUserInfo.gamePlayer.gameProgress,
-                      _totalTime + 0.0,
-                      currentUserInfo.gamePlayer.score);
             }
             setState(() {
               timer = timer;
@@ -155,35 +161,35 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
     availableAnswers.add(question.answer2);
     availableAnswers.add(question.answer3);
 
-    var status = GameFlowHelper.determineUser(
-        Provider.of<PlayerProvider>(context),
-        Provider.of<CurrentGameProvider>(context));
-
     List<Widget> answerButtons = [];
 
     for (var i = 0; i < availableAnswers.length; i++) {
       answerButtons.add(FadeInBTTAnimation(
         child: AnswerButton(
           text: availableAnswers[i],
-          onPressed: () {
+          onPressed: () async {
             if (i == (question.correctAnswer - 1)) {
               debugPrint('Pressed correct answer');
               _timer.cancel();
               final timeSpent = _timer.tick;
-              Provider.of<CurrentGameProvider>(context, listen: false)
-                  .addGameRound(status, status.gamePlayer.gameProgress,
-                      timeSpent + 0.0, status.gamePlayer.score);
-              Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
-                  arguments: true);
+
+              updateWithNewGameRound(2, timeSpent + 0.0).then((v) {
+                Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
+                    arguments: true);
+              }).catchError((error) {
+                print("Update gameround" + error.toString());
+              });
             } else {
               debugPrint('Pressed wrong answer');
               _timer.cancel();
               final timeSpent = _timer.tick;
-              Provider.of<CurrentGameProvider>(context, listen: false)
-                  .addGameRound(status, status.gamePlayer.gameProgress,
-                      timeSpent + 0.0, status.gamePlayer.score);
-              Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
-                  arguments: false);
+
+              updateWithNewGameRound(0, timeSpent + 0.0).then((v) {
+                Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
+                    arguments: false);
+              }).catchError((error) {
+                print("Update gameround" + error.toString());
+              });
             }
           },
         ),
@@ -196,5 +202,27 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
       children: answerButtons,
     );
     return answers;
+  }
+
+  Future updateWithNewGameRound(int score, double timeSpent) async {
+    MeProvider meProvider = Provider.of<MeProvider>(context, listen: false);
+    CurrentGameProvider currentGameProvider =
+        Provider.of<CurrentGameProvider>(context, listen: false);
+
+    Player currentPlayer = meProvider.getPlayer;
+
+    PlayerStatus currentPlayerStatus = GameFlowHelper.determinePlayerStatus(
+        currentPlayer.id, currentGameProvider.getGame());
+
+    currentPlayerStatus.gameRound
+        .add(GameRound(score: score, timeSpent: timeSpent));
+
+    Game currentGame = currentGameProvider.getGame();
+
+    await RemoteHelper().updateGameRoundsInGameListProvider(
+        context, currentGame, currentPlayer);
+
+    Provider.of<CurrentGameProvider>(context, listen: false)
+        .updateCurrentGameFromRemote(context);
   }
 }

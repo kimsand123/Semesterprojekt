@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/misc/constants.dart';
+import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/player.dart';
+import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/game_list__provider.dart';
+import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/game_card__component.dart';
@@ -95,8 +100,10 @@ class _GameListPageState extends BasePageState<GameListPage> with BasicPage {
       child: GameCardComponent(
         title: gameItem.matchName,
         subTitle: generateSubtitle(gameItem),
-        highscorePlace: 1,
+        highscorePlace: null,
         onPressed: () {
+          Provider.of<CurrentGameProvider>(context, listen: false)
+              .setGame(gameItem);
           Navigator.pushNamed(context, singleGameRoute, arguments: gameItem);
         },
       ),
@@ -104,33 +111,17 @@ class _GameListPageState extends BasePageState<GameListPage> with BasicPage {
   }
 
   String generateSubtitle(Game game) {
+    MeProvider meProvider = Provider.of<MeProvider>(context, listen: false);
+
+    PlayerStatus currentPlayerStatus =
+        GameFlowHelper.determinePlayerStatus(meProvider.getPlayer.id, game);
+
+    int progress = currentPlayerStatus.gamePlayer.gameProgress;
+
     if (game.isActive) {
-      return appLocale().game_list__your_turn;
+      return "[" + progress.toString() + "/18]" + " - Continue the game now";
     } else {
-      //var enddate = DateFormat.yMMMd().format(game.endDateTime);
-      return appLocale().game_list__date_ended_at("enddate");
-    }
-  }
-
-  String _timeLeftSubTitle(DateTime startDateTime, DateTime endDateTime) {
-    // Calculate days, hours, minutes and seconds left
-    int daysLeft = startDateTime.difference(endDateTime).inDays;
-    int hoursLeft = startDateTime.difference(endDateTime).inHours;
-    int minutesLeft = startDateTime.difference(endDateTime).inMinutes;
-    int secondsLeft = startDateTime.difference(endDateTime).inSeconds;
-
-    // Expression to determine if it is the same day
-    bool sameDay = (daysLeft == 0 && startDateTime.day == endDateTime.day);
-
-    // Return correct string according to how much time left
-    if (sameDay && (hoursLeft == 0) && (minutesLeft == 0)) {
-      return appLocale().game_list__seconds_left(secondsLeft);
-    } else if (sameDay && (hoursLeft == 0)) {
-      return appLocale().game_list__minutes_left(minutesLeft);
-    } else if (sameDay) {
-      return appLocale().game_list__hours_left(hoursLeft);
-    } else {
-      return appLocale().game_list__days_left(daysLeft);
+      return "Ended";
     }
   }
 }

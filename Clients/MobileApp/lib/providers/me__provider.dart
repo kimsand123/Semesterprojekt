@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 
-class PlayerProvider extends ChangeNotifier {
+class MeProvider extends ChangeNotifier {
   Player _user = Player();
 
   Player get getPlayer => _user;
