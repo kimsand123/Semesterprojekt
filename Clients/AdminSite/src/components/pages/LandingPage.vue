@@ -84,6 +84,10 @@ export default {
   border: none;
 }
 
+#login-button:hover {
+  cursor: pointer;
+}
+
 .form-field-wrapper {
   position: absolute;
   top: 50%;

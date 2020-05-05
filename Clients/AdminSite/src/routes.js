@@ -9,7 +9,7 @@ import Invitations from '@/components/pages/Show/Invitations'
 import InvitationsAdd from '@/components/pages/Add/Invitations'
 
 const routes = [
-    { path: '/', component: LandingPage },
+    { name: '/', path: '/', component: LandingPage },
     { path: '/players', component: Players },
     { path: '/players/add', component: PlayersAdd },
     { path: '/games', component: Games },

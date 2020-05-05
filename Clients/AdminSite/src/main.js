@@ -20,14 +20,15 @@ Vue.config.productionTip = false
 const router = new VueRouter({ routes })
 
 Vue.$cookies.config('7d')
-console.log(Vue.$cookies.get('user_session'))
+console.log(window.$cookies.get('user_session'))
 
-router.beforeEach((to, from, next) => {
-    const session_id = Vue.$cookies.get('user_session')
-
-    if (session_id === null) next({ path: '/' })
-    else next()
-})
+/*router.beforeEach((to, from, next) => {
+    if (Vue.$cookies.isKey('user_session')) {
+        console.log('Cookie there')
+    } else {
+        console.log('No cookie')
+    }
+})*/
 
 new Vue({
     render: h => h(App),
