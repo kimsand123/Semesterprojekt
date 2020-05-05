@@ -7,6 +7,7 @@ import 'package:golfquiz_dtu/network/invite_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/invite_list__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
+import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/auth__components/auth_button__component.dart';
 import 'package:golfquiz_dtu/view/components/delete_button__component.dart';
@@ -99,10 +100,11 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
 
                 await disableProgressIndicator();
 
-                Navigator.pop(context);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, gameListRoute, ModalRoute.withName(gameRoute));
                 return Future.value(true);
               }).catchError((error) async {
-                debugPrint("Accepting invite error" + error.toString());
+                debugPrint("Accepting invite error " + error.toString());
                 await disableProgressIndicator();
               });
             },
@@ -121,9 +123,10 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
                 await disableProgressIndicator();
 
                 Navigator.pop(context);
+
                 return Future.value(true);
               }).catchError((error) async {
-                debugPrint("Deleting invite error" + error.toString());
+                debugPrint("Deleting invite error " + error.toString());
                 await disableProgressIndicator();
               });
             },

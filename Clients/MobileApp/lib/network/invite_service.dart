@@ -40,11 +40,16 @@ class InviteService {
                   response.statusCode == 200) {
                 List<Invite> invitesSender = List();
                 for (var invite in responseMap['invites_as_sender']) {
-                  invitesSender.add(Invite.fromJson(invite));
+                  if (invite["accepted"] != true) {
+                    invitesSender.add(Invite.fromJson(invite));
+                  }
                 }
+
                 List<Invite> invitesReceiver = List();
                 for (var invite in responseMap['invites_as_receiver']) {
-                  invitesReceiver.add(Invite.fromJson(invite));
+                  if (invite["accepted"] != true) {
+                    invitesSender.add(Invite.fromJson(invite));
+                  }
                 }
                 return {
                   "invites_as_sender": invitesSender,
@@ -68,14 +73,14 @@ class InviteService {
         onRetry: (e) => print(e.toString()));
   }
 
-  static Future<Invite> acceptInvite(Invite invite) async {
+  static Future<void> acceptInvite(Invite invite) async {
     String apiPath = "/invites/${invite.id.toString()}/";
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
 
     Map<String, String> headers = {
       HttpHeaders.acceptEncodingHeader: "application/json",
-      "Authorization": token
+      "Authorization": token,
     };
 
     Uri uri = Uri.http(
@@ -85,7 +90,9 @@ class InviteService {
 
     debugPrint("InviteService - Accept invite: " + uri.toString());
 
-    var jsonMap = {"accepted": true};
+    invite.accepted = true;
+
+    var jsonMap = {"invite": invite.toJson()};
 
     String json = jsonEncode(jsonMap);
 
@@ -97,8 +104,9 @@ class InviteService {
               var body = utf8.decode(response.bodyBytes);
               Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("invite")) {
-                return Invite.fromJson(responseMap['invite']);
+              if (responseMap.containsKey("game")) {
+                debugPrint("Invite accepted, new game:" +
+                    responseMap['game'].toString());
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");
               } else {

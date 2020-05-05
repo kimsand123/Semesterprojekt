@@ -38,6 +38,20 @@ class AuthService {
 
                 debugPrint("Auth token $token");
 
+                String game_service_ip = responseMap["game_service_ip"];
+
+                String game_service_port = responseMap["game_service_port"];
+
+                prefs.setString("token", token);
+                prefs.setString("game_service_ip", game_service_ip);
+                prefs.setString("game_service_port", game_service_port);
+
+                if (responseMap.containsKey("game_service_ip") &&
+                    responseMap.containsKey("game_service_port")) {
+                  ServiceConstants.baseGameUrl =
+                      game_service_ip + ":" + game_service_port;
+                }
+
                 return Player.fromJson(responseMap['player']);
               } else if (response.statusCode == 403) {
                 return Future.error("Unauthorized");

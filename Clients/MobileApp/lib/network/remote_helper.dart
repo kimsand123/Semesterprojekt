@@ -14,19 +14,22 @@ import 'package:provider/provider.dart';
 
 class RemoteHelper {
   Future<void> fillProviders(BuildContext context, Player player) async {
-    updateMyMeProvider(context, player.id);
+    await updateMyMeProvider(context, player.id);
 
-    updateFriendProvider(context, player);
+    await updateFriendProvider(context, player);
 
-    updateInviteProvider(context, player);
+    await updateInviteProvider(context, player);
 
-    updateGameListProvider(context, player);
+    await updateGameListProvider(context, player);
+
+    return Future.value(true);
   }
 
   Future<void> updateMyMeProvider(BuildContext context, int playerId) async {
     // Set MeProvider
     Player newCurrentPlayer = await PlayerService.fetchSinglePlayer(playerId);
     Provider.of<MeProvider>(context, listen: false).setUser(newCurrentPlayer);
+    return Future.value(true);
   }
 
   Future<void> updateFriendProvider(BuildContext context, Player player) async {
@@ -34,6 +37,7 @@ class RemoteHelper {
     List<Player> playerlist = await PlayerService.fetchPlayers(player);
     Provider.of<FriendProvider>(context, listen: false)
         .setFriendList(playerlist);
+    return Future.value(true);
   }
 
   Future<void> updateInviteProvider(BuildContext context, Player player) async {
@@ -43,6 +47,7 @@ class RemoteHelper {
 
     Provider.of<InviteListProvider>(context, listen: false)
         .setInviteList(allInvitelist);
+    return Future.value(true);
   }
 
   Future<void> updateGameListProvider(
@@ -50,6 +55,7 @@ class RemoteHelper {
     // Set GamesProvider
     List<Game> games = await GameService.fetchGames(player);
     Provider.of<GameListProvider>(context, listen: false).setGameList(games);
+    return Future.value(true);
   }
 
   Future<void> updateSingleGameInGameListProvider(
@@ -57,6 +63,7 @@ class RemoteHelper {
     // Set GamesProvider
     Game game = await GameService.fetchSingleGame(player, gameId);
     Provider.of<GameListProvider>(context, listen: false).addOrUpdateGame(game);
+    return Future.value(true);
   }
 
   Future<void> updateGameInGameListProvider(
@@ -65,6 +72,7 @@ class RemoteHelper {
 
     Provider.of<GameListProvider>(context, listen: false)
         .addOrUpdateGame(newGame);
+    return Future.value(true);
   }
 
   Future<void> emptyProvider(BuildContext context) {

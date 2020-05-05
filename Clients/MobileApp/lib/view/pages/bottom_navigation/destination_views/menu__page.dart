@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/models/player.dart';
-import 'package:golfquiz_dtu/network/invite_service.dart';
 import 'package:golfquiz_dtu/network/player_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/friend__provider.dart';
-import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';

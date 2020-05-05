@@ -34,6 +34,8 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
             Provider.of<MeProvider>(context, listen: false).getPlayer.id,
             provider.getGame());
 
+        print(currentUserInfo.totalPoints.toString());
+
         return SliverAppBarComponent(
           currentPlayerStatus: currentUserInfo,
           game: game,
@@ -42,7 +44,7 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
           rowLeftTitle: appLocale().game_flow__scoreboard__q_duration,
           rowLeftContent: game.questionDuration.toStringAsFixed(0) + 's',
           rowRightTitle: appLocale().game_flow__scoreboard__your_score,
-          rowRightContent: currentUserInfo.gamePlayer.score.toString(),
+          rowRightContent: currentUserInfo.totalPoints.toString(),
           showProgress: true,
         );
       },
@@ -93,11 +95,6 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
             Consumer<CurrentGameProvider>(
               builder: (context, provider, child) {
                 Game game = provider.getGame();
-                var playerStatus = GameFlowHelper.determinePlayerStatus(
-                    Provider.of<MeProvider>(context, listen: false)
-                        .getPlayer
-                        .id,
-                    provider.getGame());
 
                 return StandardButtonComponent(
                   text: appLocale().game_flow__scoreboard__end_game,
