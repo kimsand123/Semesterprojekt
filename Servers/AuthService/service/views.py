@@ -83,18 +83,17 @@ def login(request):
 
         # If gameservice responds with proper data,
         # return the userobject, usertoken and gameservice ip and port to client.
-        if game_service_ip is not None and player is not None:
-            user_object['user_token'] = user_token
-            user_object['game_service_ip'] = game_service_ip
-            user_object['game_service_port'] = game_service_port
-            user_object['player'] = player
-            print(
-                "user returned to client with token: " + user_token +
-                ", ip: " + game_service_ip +
-                ", port: " + game_service_port +
-                " and player: " + str(player) +
-                ", " + str(time), file=logfile)
-            return JsonResponse(user_object, status=status.HTTP_200_OK)
+        user_object['user_token'] = user_token
+        user_object['game_service_ip'] = game_service_ip
+        user_object['game_service_port'] = game_service_port
+        user_object['player'] = player
+        print(
+            "user returned to client with token: " + user_token +
+            ", ip: " + game_service_ip +
+            ", port: " + game_service_port +
+            " and player: " + str(player) +
+            ", " + str(time), file=logfile)
+        return JsonResponse(user_object, status=status.HTTP_200_OK)
 
 
     # if the communication with javabog.dk did not go through as expected

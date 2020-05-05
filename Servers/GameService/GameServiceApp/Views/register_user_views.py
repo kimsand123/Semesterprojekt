@@ -12,7 +12,6 @@ from GameServiceApp.tests import run_token_test
 # Login if player already present in db, return playerobject, otherwise create player in db and return playerobject
 @api_view(['POST'])
 def register_user(request):
-    logfile = open('GameServerLog.txt', 'a')
 
     # Check if request body is properly json formatted
     req_json = get_json_data_object(request,

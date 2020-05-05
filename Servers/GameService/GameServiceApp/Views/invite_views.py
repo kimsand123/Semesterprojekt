@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -49,7 +50,8 @@ def single_invite(request, invite_id):
     if request.method == 'GET':
         return single_invite_get(request, invite_id)
     elif request.method == 'PUT':
-        return single_invite_put(request, invite_id)
+        response = single_invite_put(request, invite_id)
+        return response
     elif request.method == 'DELETE':
         return single_invite_delete(request, invite_id)
     else:
@@ -89,7 +91,13 @@ def invites_post(request):
     if type(json_request) is Response:
         return json_request
 
+
+
+
     invite = json_request['invite']
+
+    #if invite['accepted']==
+
     json_body = {
         "invite": {
             "sender_player_id": invite['sender_player_id'],
@@ -138,8 +146,12 @@ def single_invite_put(request, invite_id):
         }
     }
     response = connection_service(f"/invites/{invite_id}/", json_body, None, "PUT")
-
-    create_game(json_body);
+    if type(response)!=JsonResponse:
+        response = create_game(json_body);
+        if type(response)==JsonResponse:
+            return response
+    else:
+        return response
 
     return Response(data=response, status=status.HTTP_200_OK)
 
@@ -170,16 +182,23 @@ def create_game(invite_data):
     #question_duration: double
 
     player_status=[]
+    questions_list=[]
     player_status.append(player1)
     player_status.append(player2)
 
-    game_object = {"game":{"match_name":invite['match_name'],
-                   "question_duration":invite['question_duration'],
-                   "questions":get_questions_list(),
-                    "player_status":player_status
-                   }}
-
-    connection_service("/games/", game_object, None, "POST")
+    try:
+        questions_list=get_questions_list()
+        game_object = {"game":{"match_name":invite['match_name'],
+                       "question_duration":invite['question_duration'],
+                       "questions":questions_list,
+                        "player_status":player_status
+                        }}
+        response = connection_service("/games/", game_object, None, "POST")
+    except ConnectionError as e:
+        error_message = generate_error_json(status.HTTP_404_NOT_FOUND, "No database connection found",
+                                            None, None)
+        response = JsonResponse(data=error_message, status=status.HTTP_404_NOT_FOUND)
+        return response
     return game_object
 
 def get_questions_list():
@@ -191,7 +210,7 @@ def get_questions_list():
 
     seed(3)
 
-    #If there are not more than 18 questions
+    #If there are not more than 18 questions in the db
     if number_of_questions > 18:
         question_range = 18
     else:
