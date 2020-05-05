@@ -14,7 +14,7 @@ from zeep.exceptions import Fault
 AUTH_SERVICE_ACCESS_KEY = "HBdjm4VDLxn8mU2Eh7EzwNdhAEYp7bm9HvgwEJVGeM6NaBFvFFS48qbSHUYKLkuZPRWKxvGJsu4RewuuR6SVEEbH5aUqjD7H8wMeEPBd5d4G8UfB7QxhuTPPF8KKZg53zvUdv63ravcBAzdgPRbxcVu7pb6NPRfVLf3fFznvCX5ey2by6kGe3HrZX6kBTsJxTS6cL4KwkQDaN5YTq5jzQrQ4wLaXBYzx9y4w5sXdfkhLWuCL5wdFMtgbd8cNTemR"
 
 # Open up a logfile
-logfile = open('AuthServerLog.txt', 'a')
+
 
 def nothing(request):
     return HttpResponse("Hello, world. You're at the root index")
@@ -23,7 +23,7 @@ def nothing(request):
 # Create your views here.
 @api_view(['POST'])
 def login(request):
-
+    logfile = open('AuthServerLog.txt', 'a')
     time = datetime.now()
     # print login post to the logfile
     print("login post " + str(time), file=logfile)
@@ -76,7 +76,7 @@ def login(request):
         # Register user at gameservice and get gameservice ip and port
         game_service_ip, game_service_port, player = register_user_with_game_service(AUTH_SERVICE_ACCESS_KEY,
                                                                                         user_token,
-                                                                                        user_object)
+                                                                                        user_object, logfile)
         if game_service_ip == None:
             return JsonResponse(data={"reason": "Could not login with GameService",
                                       "helper": "Contact group 20"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -121,7 +121,7 @@ def login(request):
 
 
 
-def register_user_with_game_service(service_key, user_token, user_object):
+def register_user_with_game_service(service_key, user_token, user_object, logfile):
     compose_env_url = os.getenv('DC_GS')
     #Check if the environment variable is none. If so run in debug environ
     if compose_env_url is None:
