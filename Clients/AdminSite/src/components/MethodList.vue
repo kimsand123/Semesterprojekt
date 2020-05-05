@@ -71,7 +71,7 @@ li {
   flex-direction: row;
   align-items: center;
   z-index: 1;
-  left: 10%;
+  left: 150px;
   top: 0;
 }
 

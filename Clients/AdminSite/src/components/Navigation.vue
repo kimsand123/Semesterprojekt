@@ -74,7 +74,8 @@ img {
   z-index: 1;
   left: 0;
   top: 0;
-  background: white;
+  background: #FAF8FF;
+  box-shadow: 5px 0 25px -5px rgba(0,0,0,0.15);
 }
 
 .title {

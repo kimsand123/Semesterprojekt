@@ -3,19 +3,23 @@
 ****************************/
 
 <template>
-  <div class="site-wrapper">
-    <Modal ></Modal>
-    <Navigation :isPlayersActive="true"></Navigation>
-    <VGrid variant="container">
-      <VRow>
-        <VCol :variants="['md-12','sm-12','xs-12']">
-          <h1>Users</h1>
+    <VGrid :variants="['container', 'no-gutters']">
+      <VRow variant='md-center'>
+        <VCol :variants="['md-offset-1','sm-offset-1','xs-offset-1']">
           <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players/add"></MethodList>
+        </VCol>
+      </VRow>
+      <VRow variant='md-center'>
+        <VCol :variants="['md-1', 'sm-1', 'xs-1']">
+          <Navigation :isPlayersActive="true"></Navigation>
+        </VCol>
+        <VCol :variants="['md-10','sm-10','xs-10']">
+          <Modal ></Modal>
+          <h1>Users</h1>
           <TablePlayers :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></TablePlayers>
         </VCol>
       </VRow>
     </VGrid>
-  </div>
 </template>
 
 /****************************
@@ -185,21 +189,3 @@ export default {
   }
 }
 </script>
-
-/*************************
-*********STYLING**********
-*************************/
-
-<style scoped>
-.site-wrapper {
-  user-select: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 100vh;
-  background: #FBF7FF;
-}
-</style>
