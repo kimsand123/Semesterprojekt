@@ -14,7 +14,7 @@
         <li v-if="isInviActive"><router-link to="/invitations"><div class="bar"/><img src="../assets/invitation_active.svg"></router-link></li>
         <li v-else><router-link to="/invitations"><img src="../assets/invitation.svg"></router-link></li>
       </ul>
-      <router-link class="logout" to="/"><img src="../assets/logout.svg"></router-link>
+      <div class="logout" v-on:click="logout"><img src="../assets/logout.svg"></div>
     </nav>
   </div>
 </template>
@@ -27,6 +27,12 @@ export default {
     isGamesActive: Boolean,
     isInviActive: Boolean,
     isQuestionsActive: Boolean
+  },
+  methods: {
+    logout() {
+      this.$cookies.remove('user_session')
+      this.$router.push({path: '/'})
+    }
   }
 }
 </script>
@@ -84,6 +90,10 @@ img {
 
 .logout {
   padding-bottom: 2rem;
+}
+
+.logout:hover {
+  cursor: pointer;
 }
 
 a:hover {

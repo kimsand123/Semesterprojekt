@@ -50,6 +50,7 @@ export default {
 
       if(usernameField.value === "admin" && passwordField.value === "admin") {
         this.$router.push({path: "/players", query: {name: usernameField.value}})
+        this.$cookies.set("user_session", "25j_7Sl6xDq2Kc3ym0fmrSSk2xV2XkUkX")
       } else {
         alert('Username or password was incorrect')
       }
