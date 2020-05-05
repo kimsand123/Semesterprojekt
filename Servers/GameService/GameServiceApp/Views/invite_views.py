@@ -145,7 +145,7 @@ def single_invite_put(request, invite_id):
             "accepted": invite['accepted']
         }
     }
-    response = connection_service(f"/invites/{invite_id}/", json_body, None, "PUT")
+    response = connection_service(f"/invites/{invite_id}/", invite, None, "PUT")
     if type(response)!=JsonResponse:
         response = create_game(json_body);
         if type(response)==JsonResponse:
@@ -174,8 +174,8 @@ def create_game(invite_data):
     player1['game_player']={"player_id":sender_player_id, "game_progress":0, "score": 0}
     player2['game_player']={"player_id":receiver_player_id, "game_progress":0, "score": 0}
 
-    player1['game_round']= create_game_round_object()
-    player2['game_round']= create_game_round_object()
+    player1['game_round']= []
+    player2['game_round']= []
 
     #Get the invite to get a hold of
     #match_name: string
@@ -208,8 +208,6 @@ def get_questions_list():
     questions = connection_service("/questions/", None, None, "GET")['questions']
     number_of_questions = len(questions)
 
-    seed(3)
-
     #If there are not more than 18 questions in the db
     if number_of_questions > 18:
         question_range = 18
@@ -218,91 +216,13 @@ def get_questions_list():
 
     for counter in range (question_range):
         while True:
-            rnd = randint(0,number_of_questions - 1)
+            rnd = randint(0,number_of_questions-1)
             if rnd not in used_question_idx:
                 used_question_idx.append(rnd)
                 break
         question_list.append(questions[rnd]['id'])
     return question_list
 
-
-def create_game_round_object():
-    game_round_object = [
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-        {
-            "time_spent": 0.0,
-            "score": 0
-        },
-    ]
-    return game_round_object
 
 
 
