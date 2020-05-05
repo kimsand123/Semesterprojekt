@@ -1,17 +1,21 @@
 <template>
-  <table>
-    <tr>
-      <th v-for="title in titles" :key="title">{{title}}</th>
-    </tr>
-    <tr>
-      <td v-for="n in numOfEntries" :key="n">
-        <FormField class="form" :label_id="n"></FormField>
-      </td>
-      <div @click="handleClick" class="image">
-        <img src="./../assets/add.svg"/>
-      </div>
-    </tr>
-  </table>
+<div>
+  <div class="scrollable-table">
+    <table id="table">
+      <tr>
+        <th v-for="title in titles" :key="title">{{title}}</th>
+      </tr>
+      <tr>
+        <td v-for="n in numOfEntries" :key="n">
+          <FormField class="form" :label_id="n"></FormField>
+        </td>
+        <div @click="handleClick" class="image">
+          <img src="./../assets/add.svg"/>
+        </div>
+      </tr>
+    </table>
+  </div>
+</div>
 </template>
 
 <script>
@@ -49,6 +53,9 @@ td {
 }
 
 img {
+  position: relative;
+  top: 15px;
+  left: 25px;
   width: 20px;
 }
 
@@ -56,12 +63,20 @@ img {
   cursor: pointer;
 }
 
+.scrollable-table {
+  margin-top: 50px;
+  height: 8rem;
+  width: 100%;
+	padding-right:50em;
+	overflow: auto;
+}´
+
 .image {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 0px;
+  top: 10px;
   left: 1rem;
   width: 40px;
   height: 40px;

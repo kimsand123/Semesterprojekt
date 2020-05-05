@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="scrollable-table"> 
+  <div class="scrollable-table">
     <table id="table">
       <tr>
         <th v-for="title in titles" :key="title">{{title}}</th>
@@ -85,7 +85,7 @@ img {
 
 .scrollable-table {
   margin-top: 50px;
-  height: 50rem;
+  height: 35rem;
   width: 100%;
 	padding: 0 15px;
 	overflow: auto;

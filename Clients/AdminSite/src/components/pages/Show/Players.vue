@@ -3,17 +3,17 @@
 ****************************/
 
 <template>
-    <VGrid :variants="['container', 'no-gutters']">
-      <VRow variant='md-center'>
-        <VCol :variants="['md-offset-1','sm-offset-1','xs-offset-1']">
+    <VGrid :variants="['container']">
+      <VRow>
+        <VCol>
           <MethodList :isGetActive="true" linkToGet="/players" linkToPost="/players/add"></MethodList>
         </VCol>
       </VRow>
-      <VRow variant='md-center'>
-        <VCol :variants="['md-1', 'sm-1', 'xs-1']">
+      <VRow>
+        <VCol :variants="['md-1', 'sm-1']">
           <Navigation :isPlayersActive="true"></Navigation>
         </VCol>
-        <VCol :variants="['md-10','sm-10','xs-10']">
+        <VCol :variants="['md-10','sm-10']">
           <Modal ></Modal>
           <h1>Users</h1>
           <TablePlayers :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></TablePlayers>

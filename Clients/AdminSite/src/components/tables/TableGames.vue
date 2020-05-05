@@ -90,7 +90,7 @@ img {
 
 .scrollable-table {
   margin-top: 50px;
-  height: 50rem;
+  height: 35rem;
   width: 100%;
 	padding: 0 15px;
 	overflow: auto;

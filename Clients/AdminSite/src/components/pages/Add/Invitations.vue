@@ -3,13 +3,19 @@
 ****************************/
 
 <template>
-  <div class="site-wrapper">
-    <Modal></Modal>
-    <Navigation :isInviActive="true"></Navigation>
     <VGrid variant="container">
       <VRow>
-        <VCol :variants="['md-12','sm-12','xs-12']">
+        <VCol>
           <MethodList :isPostActive="true" linkToGet="/invitations" linkToPost="/invitations/add"></MethodList>
+        </VCol>
+      </VRow>
+      <VRow>
+         <VCol :variants="['md-1', 'sm-1']">
+          <Navigation :isInviActive="true"></Navigation>
+        </VCol>
+        <VCol :variants="['md-10','sm-10']">
+          <Modal></Modal>
+          <h1>Add Invitation</h1>
           <AddTable
             :titles="titles"
             :numOfEntries="numOfEntries"
@@ -18,7 +24,6 @@
         </VCol>
       </VRow>
     </VGrid>
-  </div>
 </template>
 
 
@@ -99,23 +104,3 @@ export default {
   }
 }
 </script>
-
-
-/*************************
-*********STYLING**********
-*************************/
-
-
-<style scoped>
-.site-wrapper {
-  user-select: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 100vh;
-  background: #FBF7FF;
-}
-</style>

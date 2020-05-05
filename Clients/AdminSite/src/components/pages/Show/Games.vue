@@ -4,16 +4,16 @@
 
 <template>
     <VGrid variant="container">
-      <VRow variant='md-center'>
-        <VCol :variants="['md-offset-1','sm-offset-1','xs-offset-1']">
+      <VRow>
+        <VCol>
           <MethodList :isGetActive="true" linkToGet="/games" linkToPost="/games/add"></MethodList>
         </VCol>
       </VRow>
-      <VRow variant='md-center'>
-        <VCol :variants="['md-1', 'sm-1', 'xs-1']">
+      <VRow>
+        <VCol :variants="['md-1', 'sm-1']">
           <Navigation :isGamesActive="true"></Navigation>
         </VCol>
-        <VCol :variants="['md-10','sm-10','xs-10']">
+        <VCol :variants="['md-10','sm-10']">
           <Modal ></Modal>
           <h1>Games</h1>
           <TableGames :titles="titles" :entries='entries' :handleDelete='handleDelete' :handleEdit="handleEdit"></TableGames>
