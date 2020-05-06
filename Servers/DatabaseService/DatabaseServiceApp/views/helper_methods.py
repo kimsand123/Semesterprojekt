@@ -7,15 +7,15 @@ def is_access_key_valid(request):
         if 'Authorization' not in request.headers:
             return False
 
-        access_key_to_check = request.headers['Authorization']
-        access_key_to_check = str(access_key_to_check).split(" ")[1]
+        auth_header = request.headers['Authorization']
+        access_key_to_check = str(auth_header).split(" ")[1]
 
         key_file = open("access_key.txt", "r")
         contents = key_file.read()
 
         return contents == access_key_to_check
 
-    except JSONDecodeError:
+    except:
         return False
 
 

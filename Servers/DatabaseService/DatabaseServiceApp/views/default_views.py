@@ -3,15 +3,15 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 
-from DatabaseServiceApp.helper_methods import *
+from DatabaseServiceApp.views.helper_methods import *
 
 all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
                'UNLOCK', 'PROPFIND', 'VIEW']
 
 
-# -----------------------------
-# Welcome
-# -----------------------------
+# -------------
+# [GET / POST] /
+# -------------
 @api_view(all_methods)
 def welcome(request):
     print_origin(request, 'Welcome')
@@ -28,9 +28,9 @@ def welcome(request):
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Bad path
-# -----------------------------
+# -------------
+# [ALL] Bad path
+# -------------
 @api_view(all_methods)
 def bad_path(request):
     print_origin(request, 'Default bad path')
@@ -46,9 +46,9 @@ def bad_path(request):
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
+# -------------
 # Bad or missing access_key
-# -----------------------------
+# -------------
 def bad_or_missing_access_key(request):
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
@@ -59,8 +59,22 @@ def bad_or_missing_access_key(request):
 
 
 # -----------------------------
-# Bad json
+# Bad method
 # -----------------------------
+def bad_method(request, allowed_methods):
+    print_origin(request, request.get_full_path() + ' - Bad method')
+    json_data = {
+        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+        'error': 'This method is not allowed here',
+        'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
+    }
+    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, safe=False,
+                        encoder=DjangoJSONEncoder)
+
+
+# -------------
+# Bad json
+# -------------
 def bad_json(request, proper_way_dict):
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
@@ -71,9 +85,9 @@ def bad_json(request, proper_way_dict):
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
+# -------------
 # Missing property in json
-# -----------------------------
+# -------------
 def missing_property_in_json(request, name_missing, proper_way_dict):
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),
@@ -84,9 +98,9 @@ def missing_property_in_json(request, name_missing, proper_way_dict):
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
+# -------------
 # Wrong property type in json
-# -----------------------------
+# -------------
 def wrong_property_type(request, proper_way_dict):
     json_data = {
         'requested-url': '[' + request.method + '] ' + request.get_full_path(),

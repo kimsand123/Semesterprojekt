@@ -1,97 +1,21 @@
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import IntegrityError
+from django.db import IntegrityError, OperationalError
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.utils import json
 
+from DatabaseServiceApp.views.correct_jsons import CORRECT_GAME_JSON, CORRECT_PLAYER_STATUS_JSON
 from DatabaseServiceApp.database_helpers.game_database_helper import GameDatabase
-from DatabaseServiceApp.helper_methods import *
+from DatabaseServiceApp.views.helper_methods import *
 from DatabaseServiceApp.models import Game
 from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type, \
-    bad_or_missing_access_key
-
-all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
-               'UNLOCK', 'PROPFIND', 'VIEW']
-
-__correct_game_json = {
-
-    'game':
-        {
-            "match_name": "Example name",
-            "question_duration": 20.0,
-            "questions":
-                [
-                    1,
-                    2,
-                    3
-                ],
-            "player_status":
-                [
-                    {
-                        "game_player":
-                            {
-                                "player_id": 1,
-                                "game_progress": 20,
-                                "score": 10
-                            },
-                        "game_round":
-                            [
-                                {
-                                    "time_spent": 20.0,
-                                    "score": 10
-                                },
-                                {
-                                    "time_spent": 34.0,
-                                    "score": 345
-                                }
-                            ]
-                    },
-                    {
-                        "game_player":
-                            {
-                                "player_id": 2,
-                                "game_progress": 20,
-                                "score": 10
-                            },
-                        "game_round":
-                            [
-                                {
-                                    "time_spent": 20.0,
-                                    "score": 10
-                                },
-                                {
-                                    "time_spent": 34.0,
-                                    "score": 345
-                                }
-                            ]
-                    }
-                ]
-
-        }
-}
-
-__correct_player_status_json = {
-    "game_player":
-        {
-            "game_progress": 20,
-            "score": 10
-        },
-    "game_round":
-        [
-            {
-                "time_spent": 20.0,
-                "score": 10
-            },
-            {
-                "time_spent": 34.0,
-                "score": 345
-            }
-        ]
-}
+    bad_or_missing_access_key, all_methods, bad_method
 
 
-# path: /games/
+# -------------
+# [GET / POST] /games/
+# -------------
 @api_view(all_methods)
 def games(request):
     try:
@@ -104,11 +28,10 @@ def games(request):
         elif request.method == 'POST':
             return __games_post(request)
         else:
-            return __bad_method(request, 'GET, POST')
+            return bad_method(request, 'GET, POST')
 
     except IntegrityError as e:
         print('IntegrityError occurred: ' + e.__str__())
-
         json_data = {
             'requested-url': '[' + request.method + '] ' + request.get_full_path(),
             'error': e.__str__(),
@@ -117,18 +40,30 @@ def games(request):
 
     except JSONDecodeError as e:
         print('JSONDecodeError occurred: ' + e.__str__())
-        return bad_json(request, __correct_game_json)
+        return bad_json(request, CORRECT_GAME_JSON)
 
     except (AttributeError, KeyError) as e:
         print('AttributeError or KeyError occurred: ' + e.__str__())
-        return bad_json(request, __correct_game_json)
+        return bad_json(request, CORRECT_GAME_JSON)
 
     except (ValueError, TypeError) as e:
         print('ValueError or TypeError occurred: ' + e.__str__())
-        return wrong_property_type(request, __correct_game_json)
+        return wrong_property_type(request, CORRECT_GAME_JSON)
+
+    except OperationalError as e:
+        print('OperationalError: (SQLite file error)' + e.__str__())
+        print(
+            '*** It seems like the database is not migrated, please follow the "database_migration_help.txt" file ***')
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'error': 'The database is corrupt, please contact group 20',
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR, safe=False, encoder=DjangoJSONEncoder)
 
 
-# path: /games/<int:game_id>/
+# -------------
+# [GET / PUT / DELETE] /games/game_id
+# -------------
 @api_view(all_methods)
 def single_game(request, game_id):
     try:
@@ -145,7 +80,7 @@ def single_game(request, game_id):
             return __single_game_delete(request, game_id)
 
         else:
-            return __bad_method(request, 'GET, PUT, DELETE')
+            return bad_method(request, 'GET, PUT, DELETE')
 
     except IntegrityError as e:
         print('IntegrityError occurred: ' + e.__str__())
@@ -165,18 +100,30 @@ def single_game(request, game_id):
 
     except JSONDecodeError as e:
         print('JSONDecodeError occurred: ' + e.__str__())
-        return bad_json(request, __correct_game_json)
+        return bad_json(request, CORRECT_GAME_JSON)
 
     except (AttributeError, KeyError) as e:
         print('AttributeError or KeyError occurred: ' + e.__str__())
-        return bad_json(request, __correct_game_json)
+        return bad_json(request, CORRECT_GAME_JSON)
 
     except (ValueError, TypeError) as e:
         print('ValueError or TypeError occurred: ' + e.__str__())
-        return wrong_property_type(request, __correct_game_json)
+        return wrong_property_type(request, CORRECT_GAME_JSON)
+
+    except OperationalError as e:
+        print('OperationalError: (SQLite file error)' + e.__str__())
+        print(
+            '*** It seems like the database is not migrated, please follow the "database_migration_help.txt" file ***')
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'error': 'The database is corrupt, please contact group 20',
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR, safe=False, encoder=DjangoJSONEncoder)
 
 
-# path: /games/<int:game_id>/player-status/
+# -------------
+# [PUT] /games/game_id/player-status/
+# -------------
 @api_view(all_methods)
 def single_game_player_status(request, game_id):
     try:
@@ -187,7 +134,7 @@ def single_game_player_status(request, game_id):
             return __single_game_player_status_put(request, game_id)
 
         else:
-            return __bad_method(request, 'PUT')
+            return bad_method(request, 'PUT')
 
     except IntegrityError as e:
         print('IntegrityError occurred: ' + e.__str__())
@@ -207,18 +154,30 @@ def single_game_player_status(request, game_id):
 
     except JSONDecodeError as e:
         print('JSONDecodeError occurred: ' + e.__str__())
-        return bad_json(request, __correct_player_status_json)
+        return bad_json(request, CORRECT_PLAYER_STATUS_JSON)
 
     except (AttributeError, KeyError) as e:
         print('AttributeError or KeyError occurred: ' + e.__str__())
-        return bad_json(request, __correct_player_status_json)
+        return bad_json(request, CORRECT_PLAYER_STATUS_JSON)
 
     except (ValueError, TypeError) as e:
         print('ValueError or TypeError occurred: ' + e.__str__())
-        return wrong_property_type(request, __correct_player_status_json)
+        return wrong_property_type(request, CORRECT_PLAYER_STATUS_JSON)
+
+    except OperationalError as e:
+        print('OperationalError: (SQLite file error)' + e.__str__())
+        print(
+            '*** It seems like the database is not migrated, please follow the "database_migration_help.txt" file ***')
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'error': 'The database is corrupt, please contact group 20',
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR, safe=False, encoder=DjangoJSONEncoder)
 
 
-# Bad games path
+# -------------
+# [ALL] Bad games path
+# -------------
 @api_view(all_methods)
 def games_bad_path(request):
     print_origin(request, 'Games - Bad request')
@@ -234,30 +193,16 @@ def games_bad_path(request):
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
 
 
-"""
------------------------------
-METHOD IMPLEMENTATIONS
------------------------------
-"""
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# INDIVIDUAL METHODS BENEATH
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-# -----------------------------
-# Bad method
-# -----------------------------
-def __bad_method(request, allowed_methods):
-    print_origin(request, 'Games - Bad method')
-    json_data = {
-        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
-        'error': 'This method is not allowed here',
-        'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
-    }
-    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, safe=False,
-                        encoder=DjangoJSONEncoder)
-
-
-# -----------------------------
-# Games GET
-# -----------------------------
+# -------------
+# [GET] /games/
+# -------------
 def __games_get(request):
     print_origin(request, 'Games')
 
@@ -270,9 +215,9 @@ def __games_get(request):
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Games POST
-# -----------------------------
+# -------------
+# [POST] /games/
+# -------------
 def __games_post(request):
     print_origin(request, 'Games')
 
@@ -283,7 +228,7 @@ def __games_post(request):
 
     # if it returns a string, send a missing property json back
     if isinstance(return_data, str):
-        return missing_property_in_json(request, return_data, __correct_game_json)
+        return missing_property_in_json(request, return_data, CORRECT_GAME_JSON)
 
     # Prepare jsonResponse data
     json_data = {
@@ -294,9 +239,9 @@ def __games_post(request):
     return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single game GET
-# -----------------------------
+# -------------
+# [GET] /games/game_id/
+# -------------
 def __single_game_get(request, game_id):
     print_origin(request, 'Single game')
 
@@ -309,9 +254,9 @@ def __single_game_get(request, game_id):
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single game PUT
-# -----------------------------
+# -------------
+# [PUT] /games/game_id/
+# -------------
 def __single_game_put(request, game_id):
     print_origin(request, 'Single game')
 
@@ -322,7 +267,7 @@ def __single_game_put(request, game_id):
 
     # if it returns a string, send a missing property json back
     if isinstance(return_data, str):
-        return missing_property_in_json(request, return_data, __correct_game_json)
+        return missing_property_in_json(request, return_data, CORRECT_GAME_JSON)
 
     # Prepare jsonResponse data
     json_data = {
@@ -333,9 +278,9 @@ def __single_game_put(request, game_id):
     return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single game DELETE
-# -----------------------------
+# -------------
+# [DELETE] /games/game_id/
+# -------------
 def __single_game_delete(request, game_id):
     print_origin(request, 'Single game')
 
@@ -348,9 +293,9 @@ def __single_game_delete(request, game_id):
     return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single game player status game rounds PUT
-# -----------------------------
+# -------------
+# [PUT] /games/game_id/player_status/game_round/
+# -------------
 def __single_game_player_status_put(request, game_id):
     print_origin(request, 'Single game update game rounds')
 
@@ -361,7 +306,7 @@ def __single_game_player_status_put(request, game_id):
 
     # if it returns a string, send a missing property json back
     if isinstance(return_data, str):
-        return missing_property_in_json(request, return_data, __correct_player_status_json)
+        return missing_property_in_json(request, return_data, CORRECT_PLAYER_STATUS_JSON)
 
     # Prepare jsonResponse data
     json_data = {

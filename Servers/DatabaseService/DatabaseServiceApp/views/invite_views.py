@@ -1,31 +1,21 @@
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import IntegrityError
+from django.db import IntegrityError, OperationalError
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.utils import json
+
+from DatabaseServiceApp.views.correct_jsons import CORRECT_INVITE_JSON
 from DatabaseServiceApp.database_helpers.invite_database_helper import InviteDatabase
-from DatabaseServiceApp.helper_methods import *
+from DatabaseServiceApp.views.helper_methods import *
 from DatabaseServiceApp.models import Invite
 from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type, \
-    bad_or_missing_access_key
-
-all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
-               'UNLOCK', 'PROPFIND', 'VIEW']
-
-__correct_invite_json = {
-    "invite":
-        {
-            "sender_player_id": 1,
-            "receiver_player_id": 1,
-            "match_name": "Example match",
-            "question_duration": 15,
-            "accepted": False
-        }
-}
+    bad_or_missing_access_key, all_methods, bad_method
 
 
-# path: /invites/
+# -------------
+# [GET / POST] /invites/
+# -------------
 @api_view(all_methods)
 def invites(request):
     try:
@@ -39,7 +29,7 @@ def invites(request):
             return __invites_post(request)
 
         else:
-            return __bad_method(request, 'GET, POST')
+            return bad_method(request, 'GET, POST')
 
     except IntegrityError as e:
         print('IntegrityError occurred: ' + e.__str__())
@@ -51,18 +41,31 @@ def invites(request):
 
     except JSONDecodeError as e:
         print('JSONDecodeError occurred: ' + e.__str__())
-        return bad_json(request, __correct_invite_json)
+        return bad_json(request, CORRECT_INVITE_JSON)
 
     except (AttributeError, KeyError) as e:
         print('AttributeError or KeyError occurred: ' + e.__str__())
-        return bad_json(request, __correct_invite_json)
+        return bad_json(request, CORRECT_INVITE_JSON)
 
     except (ValueError, TypeError) as e:
         print('ValueError or TypeError occurred: ' + e.__str__())
-        return wrong_property_type(request, __correct_invite_json)
+        return wrong_property_type(request, CORRECT_INVITE_JSON)
+
+    except OperationalError as e:
+        print('OperationalError: (SQLite file error)' + e.__str__())
+        print(
+            '*** It seems like the database is not migrated, please follow the "database_migration_help.txt" file ***')
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'error': 'The database is corrupt, please contact group 20',
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR, safe=False,
+                            encoder=DjangoJSONEncoder)
 
 
-# path: /invites/<int:invite_id>/
+# -------------
+# [GET / PUT / DELETE] /invites/invite_id
+# -------------
 @api_view(all_methods)
 def single_invite(request, invite_id):
     try:
@@ -79,7 +82,7 @@ def single_invite(request, invite_id):
             return __single_invite_delete(request, invite_id)
 
         else:
-            return __bad_method(request, 'GET, PUT, DELETE')
+            return bad_method(request, 'GET, PUT, DELETE')
 
     except IntegrityError as e:
         print('IntegrityError occurred: ' + e.__str__())
@@ -99,18 +102,31 @@ def single_invite(request, invite_id):
 
     except JSONDecodeError as e:
         print('JSONDecodeError occurred: ' + e.__str__())
-        return bad_json(request, __correct_invite_json)
+        return bad_json(request, CORRECT_INVITE_JSON)
 
     except (AttributeError, KeyError) as e:
         print('AttributeError or KeyError occurred: ' + e.__str__())
-        return bad_json(request, __correct_invite_json)
+        return bad_json(request, CORRECT_INVITE_JSON)
 
     except (ValueError, TypeError) as e:
         print('ValueError or TypeError occurred: ' + e.__str__())
-        return wrong_property_type(request, __correct_invite_json)
+        return wrong_property_type(request, CORRECT_INVITE_JSON)
+
+    except OperationalError as e:
+        print('OperationalError: (SQLite file error)' + e.__str__())
+        print(
+            '*** It seems like the database is not migrated, please follow the "database_migration_help.txt" file ***')
+        json_data = {
+            'requested-url': '[' + request.method + '] ' + request.get_full_path(),
+            'error': 'The database is corrupt, please contact group 20',
+        }
+        return JsonResponse(data=json_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR, safe=False,
+                            encoder=DjangoJSONEncoder)
 
 
-# Bad invite path
+# -------------
+# [ALL] Bad invites path
+# -------------
 @api_view(all_methods)
 def invites_bad_path(request):
     print_origin(request, 'Invites - Bad path')
@@ -127,30 +143,16 @@ def invites_bad_path(request):
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
 
 
-"""
------------------------------
-METHOD IMPLEMENTATIONS
------------------------------
-"""
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# INDIVIDUAL METHODS BENEATH
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-# -----------------------------
-# Bad method
-# -----------------------------
-def __bad_method(request, allowed_methods):
-    print_origin(request, 'Invites - Bad method')
-    json_data = {
-        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
-        'error': 'This method is not allowed here',
-        'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
-    }
-    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, safe=False,
-                        encoder=DjangoJSONEncoder)
-
-
-# -----------------------------
-# Invites GET
-# -----------------------------
+# -------------
+# [GET] /invites/
+# -------------
 def __invites_get(request):
     print_origin(request, 'Invites')
 
@@ -171,9 +173,9 @@ def __invites_get(request):
         return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Invites POST
-# -----------------------------
+# -------------
+# [POST] /invites/
+# -------------
 def __invites_post(request):
     print_origin(request, 'Invites')
 
@@ -184,7 +186,7 @@ def __invites_post(request):
 
     # if it returns a string, send a missing property json back
     if isinstance(return_data, str):
-        return missing_property_in_json(request, return_data, __correct_invite_json)
+        return missing_property_in_json(request, return_data, CORRECT_INVITE_JSON)
 
     # Prepare jsonResponse data
     json_data = {
@@ -195,9 +197,9 @@ def __invites_post(request):
     return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single invite GET
-# -----------------------------
+# -------------
+# [GET] /invites/invite_id/
+# -------------
 def __single_invite_get(request, invite_id):
     print_origin(request, 'Single invite')
 
@@ -210,9 +212,9 @@ def __single_invite_get(request, invite_id):
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single invite PUT
-# -----------------------------
+# -------------
+# [PUT] /invites/invite_id/
+# -------------
 def __single_invite_put(request, invite_id):
     print_origin(request, 'Single invite')
 
@@ -223,7 +225,7 @@ def __single_invite_put(request, invite_id):
 
     # if it returns a string, send a missing property json back
     if isinstance(return_data, str):
-        return missing_property_in_json(request, return_data, __correct_invite_json)
+        return missing_property_in_json(request, return_data, CORRECT_INVITE_JSON)
 
     # Prepare jsonResponse data
     json_data = {
@@ -234,9 +236,9 @@ def __single_invite_put(request, invite_id):
     return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single invite DELETE
-# -----------------------------
+# -------------
+# [DELETE] /invites/invite_id/
+# -------------
 def __single_invite_delete(request, invite_id):
     print_origin(request, 'Single invite')
 

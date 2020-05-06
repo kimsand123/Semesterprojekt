@@ -156,6 +156,7 @@ class InviteDatabase:
         json_invite = json_body['invite']
 
         invite = InviteDatabase.get_one(invite_id)
+        game = Game.objects.get(id=invite.game_id)
 
         # Change only the provided attributes
         if 'sender_player_id' in json_invite:
@@ -170,7 +171,14 @@ class InviteDatabase:
         if 'accepted' in json_invite:
             invite.accepted = json_invite['accepted']
 
+        if 'match_name' in json_invite:
+            game.match_name = json_invite['match_name']
+
+        if 'question_duration' in json_invite:
+            game.question_duration = json_invite['question_duration']
+
         invite.save()
+        game.save()
 
         return invite
 

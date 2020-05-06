@@ -5,28 +5,17 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.utils import json
 
+from DatabaseServiceApp.views.correct_jsons import CORRECT_QUESTION_JSON
 from DatabaseServiceApp.database_helpers.question_database_helper import QuestionDatabase
-from DatabaseServiceApp.helper_methods import *
+from DatabaseServiceApp.views.helper_methods import *
 from DatabaseServiceApp.models import Question
 from DatabaseServiceApp.views.default_views import bad_json, missing_property_in_json, wrong_property_type, \
-    bad_or_missing_access_key
-
-all_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK',
-               'UNLOCK', 'PROPFIND', 'VIEW']
-
-__correct_question_json = {
-    'question':
-        {
-            'question_text': 'What is the best programming language?',
-            'correct_answer': 1,
-            'answer_1': 'Python',
-            'answer_2': 'Java',
-            'answer_3': 'C#',
-        }
-}
+    bad_or_missing_access_key, all_methods, bad_method
 
 
-# path: /questions/
+# -------------
+# [GET / POST] /questions/
+# -------------
 @api_view(all_methods)
 def questions(request):
     try:
@@ -39,7 +28,7 @@ def questions(request):
         elif request.method == 'POST':
             return __questions_post(request)
         else:
-            return __bad_method(request, 'GET, POST')
+            return bad_method(request, 'GET, POST')
 
     except IntegrityError as e:
         print('IntegrityError occurred: ' + e.__str__())
@@ -51,18 +40,20 @@ def questions(request):
 
     except JSONDecodeError as e:
         print('JSONDecodeError occurred: ' + e.__str__())
-        return bad_json(request, __correct_question_json)
+        return bad_json(request, CORRECT_QUESTION_JSON)
 
     except (AttributeError, KeyError) as e:
         print('AttributeError or KeyError occurred: ' + e.__str__())
-        return bad_json(request, __correct_question_json)
+        return bad_json(request, CORRECT_QUESTION_JSON)
 
     except (ValueError, TypeError) as e:
         print('ValueError or TypeError occurred: ' + e.__str__())
-        return wrong_property_type(request, __correct_question_json)
+        return wrong_property_type(request, CORRECT_QUESTION_JSON)
 
 
-# path: /questions/<int:question_id>/
+# -------------
+# [GET / PUT / DELETE] /questions/question_id
+# -------------
 @api_view(all_methods)
 def single_question(request, question_id):
     try:
@@ -78,11 +69,11 @@ def single_question(request, question_id):
         elif request.method == 'DELETE':
             return __single_question_delete(request, question_id)
         else:
-            return __bad_method(request, 'GET, PUT, DELETE')
+            return bad_method(request, 'GET, PUT, DELETE')
 
     except JSONDecodeError as e:
         print('JSONDecodeError occurred: ' + e.__str__())
-        return bad_json(request, __correct_question_json)
+        return bad_json(request, CORRECT_QUESTION_JSON)
 
     except IntegrityError as e:
         print('IntegrityError occurred: ' + e.__str__())
@@ -102,14 +93,16 @@ def single_question(request, question_id):
 
     except (AttributeError, KeyError) as e:
         print('AttributeError or KeyError occurred: ' + e.__str__())
-        return bad_json(request, __correct_question_json)
+        return bad_json(request, CORRECT_QUESTION_JSON)
 
     except (ValueError, TypeError) as e:
         print('ValueError or TypeError occurred: ' + e.__str__())
-        return wrong_property_type(request, __correct_question_json)
+        return wrong_property_type(request, CORRECT_QUESTION_JSON)
 
 
-# Bad question path
+# -------------
+# [ALL] Bad questions path
+# -------------
 @api_view(all_methods)
 def questions_bad_path(request):
     print_origin(request, 'Questions - bad path')
@@ -125,30 +118,15 @@ def questions_bad_path(request):
     return JsonResponse(data=json_data, status=status.HTTP_400_BAD_REQUEST, safe=False, encoder=DjangoJSONEncoder)
 
 
-"""
------------------------------
-METHOD IMPLEMENTATIONS
------------------------------
-"""
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# INDIVIDUAL METHODS BENEATH
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
-# -----------------------------
-# Bad method
-# -----------------------------
-def __bad_method(request, allowed_methods):
-    print_origin(request, 'Questions - bad method')
-    json_data = {
-        'requested-url': '[' + request.method + '] ' + request.get_full_path(),
-        'error': 'This method is not allowed here',
-        'helper': 'Only the following methods allowed:[' + allowed_methods + ']',
-    }
-    return JsonResponse(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED, safe=False,
-                        encoder=DjangoJSONEncoder)
-
-
-# -----------------------------
-# Questions GET
-# -----------------------------
+# -------------
+# [GET] /questions/
+# -------------
 def __questions_get(request):
     print_origin(request, 'Questions')
 
@@ -161,9 +139,9 @@ def __questions_get(request):
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Questions POST
-# -----------------------------
+# -------------
+# [POST] /questions/
+# -------------
 def __questions_post(request):
     print_origin(request, 'Questions')
 
@@ -174,7 +152,7 @@ def __questions_post(request):
 
     # if it returns a string, send a missing property json back
     if isinstance(return_data, str):
-        return missing_property_in_json(request, return_data, __correct_question_json)
+        return missing_property_in_json(request, return_data, CORRECT_QUESTION_JSON)
 
     # Prepare jsonResponse data
     json_data = {
@@ -185,9 +163,9 @@ def __questions_post(request):
     return JsonResponse(data=json_data, status=status.HTTP_201_CREATED, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single question GET
-# -----------------------------
+# -------------
+# [GET] /questions/question_id/
+# -------------
 def __single_question_get(request, question_id):
     print_origin(request, 'Single question')
 
@@ -200,9 +178,9 @@ def __single_question_get(request, question_id):
     return JsonResponse(data=json_data, status=status.HTTP_200_OK, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single question PUT
-# -----------------------------
+# -------------
+# [PUT] /questions/question_id/
+# -------------
 def __single_question_put(request, question_id):
     print_origin(request, 'Single question')
 
@@ -213,7 +191,7 @@ def __single_question_put(request, question_id):
 
     # if it returns a string, send a missing property json back
     if isinstance(return_data, str):
-        return missing_property_in_json(request, return_data, __correct_question_json)
+        return missing_property_in_json(request, return_data, CORRECT_QUESTION_JSON)
 
     # Prepare jsonResponse data
     json_data = {
@@ -224,9 +202,9 @@ def __single_question_put(request, question_id):
     return JsonResponse(data=json_data, status=status.HTTP_202_ACCEPTED, safe=False, encoder=DjangoJSONEncoder)
 
 
-# -----------------------------
-# Single question DELETE
-# -----------------------------
+# -------------
+# [DELETE] /questions/question_id/
+# -------------
 def __single_question_delete(request, question_id):
     print_origin(request, 'Single question')
 
