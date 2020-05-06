@@ -35,13 +35,30 @@ class Game {
   }
 
   factory Game.fromJson(Map<String, dynamic> json) {
+    List<Question> questions = List<Question>.from(json["questions"].map((x) {
+      return Question.fromJson(x);
+    }));
+
+    if (questions.length < 18) {
+      int numberOfQuestionsToAdd = 18 - questions.length;
+      for (int i = 0; i < numberOfQuestionsToAdd; i++) {
+        questions.add(
+          Question(
+            questionText: "Backup question, because question-list is too short",
+            correctAnswer: 3,
+            answer1: "Answer 1",
+            answer2: "Answer 2",
+            answer3: "Answer 3 (correct)",
+          ),
+        );
+      }
+    }
+
     return Game(
       id: json["id"],
       matchName: json["match_name"],
       questionDuration: double.parse(json["question_duration"]),
-      questions: List<Question>.from(json["questions"].map((x) {
-        return Question.fromJson(x);
-      })),
+      questions: questions,
       playerStatus: List<PlayerStatus>.from(json["player_status"].map((x) {
         return PlayerStatus.fromJson(x);
       })),
