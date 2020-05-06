@@ -24,43 +24,43 @@ class AuthService {
 
     debugPrint("AuthService - Login: " + uri.toString());
 
-    return retry(
+    try {
+      return retry(
         () => http
-                .post(uri, headers: headers, body: json)
-                .timeout(Duration(seconds: 5))
-                .then((response) {
-              Map<String, dynamic> responseMap = jsonDecode(response.body);
+            .post(uri, headers: headers, body: json)
+            .timeout(Duration(seconds: 5))
+            .then((response) {
+          Map<String, dynamic> responseMap = jsonDecode(response.body);
 
-              if (responseMap.containsKey("player") &&
-                  response.statusCode == 200) {
-                String token = responseMap["user_token"];
-                prefs.setString("token", token);
+          if (responseMap.containsKey("player") && response.statusCode == 200) {
+            String token = responseMap["user_token"];
+            prefs.setString("token", token);
 
-                debugPrint("Auth token $token");
+            debugPrint("Auth token $token");
 
-                String game_service_ip = responseMap["game_service_ip"];
+            String gameServiceIp = responseMap["game_service_ip"];
+            String gameServicePort = responseMap["game_service_port"];
 
-                String game_service_port = responseMap["game_service_port"];
+            prefs.setString("token", token);
+            prefs.setString("game_service_ip", gameServiceIp);
+            prefs.setString("game_service_port", gameServicePort);
 
-                prefs.setString("token", token);
-                prefs.setString("game_service_ip", game_service_ip);
-                prefs.setString("game_service_port", game_service_port);
+            if (responseMap.containsKey("game_service_ip") &&
+                responseMap.containsKey("game_service_port")) {
+              ServiceConstants.baseGameUrl =
+                  gameServiceIp + ":" + gameServicePort;
+            }
 
-                if (responseMap.containsKey("game_service_ip") &&
-                    responseMap.containsKey("game_service_port")) {
-                  ServiceConstants.baseGameUrl =
-                      game_service_ip + ":" + game_service_port;
-                }
-
-                return Player.fromJson(responseMap['player']);
-              } else if (response.statusCode == 403) {
-                return Future.error("Unauthorized");
-              } else {
-                debugPrint(
-                    "Server error - AUTHSERVICE: " + responseMap.toString());
-                return Future.error("Server_error");
-              }
-            }),
+            return Player.fromJson(responseMap['player']);
+          } else if (response.statusCode == 403) {
+            return Future.error("Unauthorized");
+          } else if (response.statusCode == 401) {
+            return Future.error("Wrong username or password");
+          } else {
+            debugPrint("Server error - AUTHSERVICE: " + responseMap.toString());
+            return Future.error("Server_error");
+          }
+        }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
             return true;
@@ -68,6 +68,13 @@ class AuthService {
             return false;
           }
         },
-        onRetry: (e) => print(e.toString()));
+        onRetry: (e) => print(
+          e.toString(),
+        ),
+      );
+    } catch (e) {
+      print("AuthService error: " + e.toString());
+      return Future.error("Error: " + e);
+    }
   }
 }

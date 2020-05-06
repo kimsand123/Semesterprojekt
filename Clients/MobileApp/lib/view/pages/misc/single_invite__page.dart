@@ -11,6 +11,7 @@ import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/auth__components/auth_button__component.dart';
 import 'package:golfquiz_dtu/view/components/delete_button__component.dart';
+import 'package:golfquiz_dtu/view/components/popup__component.dart';
 import 'package:golfquiz_dtu/view/components/status__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:provider/provider.dart';
@@ -106,6 +107,35 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
               }).catchError((error) async {
                 debugPrint("Accepting invite error " + error.toString());
                 await disableProgressIndicator();
+
+                if (error == "Token invalid") {
+                  showPopupDialog(
+                    context,
+                    'You have been logged out',
+                    'Your login has been expired, please login again',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): () {
+                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
+                      },
+                    },
+                  );
+                }
+
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {},
+                  },
+                );
               });
             },
           ),
@@ -128,6 +158,35 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
               }).catchError((error) async {
                 debugPrint("Deleting invite error " + error.toString());
                 await disableProgressIndicator();
+
+                if (error == "Token invalid") {
+                  showPopupDialog(
+                    context,
+                    'You have been logged out',
+                    'Your login has been expired, please login again',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): () {
+                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
+                      },
+                    },
+                  );
+                }
+
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {},
+                  },
+                );
               });
             },
           ),

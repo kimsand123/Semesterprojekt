@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/models/game.dart';
-import 'package:golfquiz_dtu/models/game_round.dart';
 import 'package:golfquiz_dtu/models/invite.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/network/game_service.dart';

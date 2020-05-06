@@ -27,42 +27,45 @@ class InviteService {
 
     debugPrint("InviteService - All invites: " + uri.toString());
 
-    return retry(
+    try {
+      return retry(
         () => http
-                .get(uri, headers: headers)
-                .timeout(Duration(seconds: 5))
-                .then((response) {
-              var body = utf8.decode(response.bodyBytes);
-              Map<String, dynamic> responseMap = jsonDecode(body);
+            .get(uri, headers: headers)
+            .timeout(Duration(seconds: 5))
+            .then((response) {
+          var body = utf8.decode(response.bodyBytes);
+          Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("invites_as_sender") &&
-                  responseMap.containsKey("invites_as_receiver") &&
-                  response.statusCode == 200) {
-                List<Invite> invitesSender = List();
-                for (var invite in responseMap['invites_as_sender']) {
-                  if (invite["accepted"] != true) {
-                    invitesSender.add(Invite.fromJson(invite));
-                  }
-                }
-
-                List<Invite> invitesReceiver = List();
-                for (var invite in responseMap['invites_as_receiver']) {
-                  if (invite["accepted"] != true) {
-                    invitesSender.add(Invite.fromJson(invite));
-                  }
-                }
-                return {
-                  "invites_as_sender": invitesSender,
-                  "invites_as_receiver": invitesReceiver
-                };
-              } else if (response.statusCode == 403) {
-                return Future.error("Unauthorized");
-              } else {
-                debugPrint("Server error - INVITESERVICE (get all invites): " +
-                    responseMap.toString());
-                return Future.error("Server_error");
+          if (responseMap.containsKey("invites_as_sender") &&
+              responseMap.containsKey("invites_as_receiver") &&
+              response.statusCode == 200) {
+            List<Invite> invitesSender = List();
+            for (var invite in responseMap['invites_as_sender']) {
+              if (invite["accepted"] != true) {
+                invitesSender.add(Invite.fromJson(invite));
               }
-            }),
+            }
+
+            List<Invite> invitesReceiver = List();
+            for (var invite in responseMap['invites_as_receiver']) {
+              if (invite["accepted"] != true) {
+                invitesSender.add(Invite.fromJson(invite));
+              }
+            }
+            return {
+              "invites_as_sender": invitesSender,
+              "invites_as_receiver": invitesReceiver
+            };
+          } else if (response.statusCode == 403) {
+            return Future.error("Unauthorized");
+          } else if (response.statusCode == 401) {
+            return Future.error("Token invalid");
+          } else {
+            debugPrint("Server error - INVITESERVICE (get all invites): " +
+                responseMap.toString());
+            return Future.error("Server_error");
+          }
+        }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
             return true;
@@ -70,7 +73,14 @@ class InviteService {
             return false;
           }
         },
-        onRetry: (e) => print(e.toString()));
+        onRetry: (e) => print(
+          e.toString(),
+        ),
+      );
+    } catch (e) {
+      print("InviteService error: " + e.toString());
+      return Future.error("Error: " + e);
+    }
   }
 
   static Future<void> acceptInvite(Invite invite) async {
@@ -96,25 +106,28 @@ class InviteService {
 
     String json = jsonEncode(jsonMap);
 
-    return retry(
+    try {
+      return retry(
         () => http
-                .put(uri, headers: headers, body: json)
-                .timeout(Duration(seconds: 5))
-                .then((response) {
-              var body = utf8.decode(response.bodyBytes);
-              Map<String, dynamic> responseMap = jsonDecode(body);
+            .put(uri, headers: headers, body: json)
+            .timeout(Duration(seconds: 5))
+            .then((response) {
+          var body = utf8.decode(response.bodyBytes);
+          Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("game")) {
-                debugPrint("Invite accepted, new game:" +
-                    responseMap['game'].toString());
-              } else if (response.statusCode == 403) {
-                return Future.error("Unauthorized");
-              } else {
-                debugPrint("Server error - INVITESERVICE (accept invites): " +
-                    responseMap.toString());
-                return Future.error("Server_error");
-              }
-            }),
+          if (responseMap.containsKey("game")) {
+            debugPrint(
+                "Invite accepted, new game:" + responseMap['game'].toString());
+          } else if (response.statusCode == 403) {
+            return Future.error("Unauthorized");
+          } else if (response.statusCode == 401) {
+            return Future.error("Token invalid");
+          } else {
+            debugPrint("Server error - INVITESERVICE (accept invites): " +
+                responseMap.toString());
+            return Future.error("Server_error");
+          }
+        }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
             return true;
@@ -122,7 +135,14 @@ class InviteService {
             return false;
           }
         },
-        onRetry: (e) => print(e.toString()));
+        onRetry: (e) => print(
+          e.toString(),
+        ),
+      );
+    } catch (e) {
+      print("InviteService error: " + e.toString());
+      return Future.error("Error: " + e);
+    }
   }
 
   static Future<Invite> deleteInvite(Invite invite) async {
@@ -142,24 +162,27 @@ class InviteService {
 
     debugPrint("InviteService - Delete invite: " + uri.toString());
 
-    return retry(
+    try {
+      return retry(
         () => http
-                .delete(uri, headers: headers)
-                .timeout(Duration(seconds: 5))
-                .then((response) {
-              var body = utf8.decode(response.bodyBytes);
-              Map<String, dynamic> responseMap = jsonDecode(body);
+            .delete(uri, headers: headers)
+            .timeout(Duration(seconds: 5))
+            .then((response) {
+          var body = utf8.decode(response.bodyBytes);
+          Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("deleted_invite")) {
-                return Invite.fromJson(responseMap['deleted_invite']);
-              } else if (response.statusCode == 403) {
-                return Future.error("Unauthorized");
-              } else {
-                debugPrint("Server error - INVITESERVICE (delete invite): " +
-                    responseMap.toString());
-                return Future.error("Server_error");
-              }
-            }),
+          if (responseMap.containsKey("deleted_invite")) {
+            return Invite.fromJson(responseMap['deleted_invite']);
+          } else if (response.statusCode == 401) {
+            return Future.error("Token invalid");
+          } else if (response.statusCode == 403) {
+            return Future.error("Unauthorized");
+          } else {
+            debugPrint("Server error - INVITESERVICE (delete invite): " +
+                responseMap.toString());
+            return Future.error("Server_error");
+          }
+        }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
             return true;
@@ -167,7 +190,14 @@ class InviteService {
             return false;
           }
         },
-        onRetry: (e) => print(e.toString()));
+        onRetry: (e) => print(
+          e.toString(),
+        ),
+      );
+    } catch (e) {
+      print("InviteService error: " + e.toString());
+      return Future.error("Error: " + e);
+    }
   }
 
   static Future<Invite> createInvite(Invite invite) async {
@@ -188,24 +218,27 @@ class InviteService {
 
     debugPrint("InviteService - Create invite: " + uri.toString());
 
-    return retry(
+    try {
+      return retry(
         () => http
-                .post(uri, headers: headers, body: json)
-                .timeout(Duration(seconds: 5))
-                .then((response) {
-              var body = utf8.decode(response.bodyBytes);
-              Map<String, dynamic> responseMap = jsonDecode(body);
+            .post(uri, headers: headers, body: json)
+            .timeout(Duration(seconds: 5))
+            .then((response) {
+          var body = utf8.decode(response.bodyBytes);
+          Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("invite")) {
-                return Invite.fromJson(responseMap['invite']);
-              } else if (response.statusCode == 403) {
-                return Future.error("Unauthorized");
-              } else {
-                debugPrint("Server error - INVITESERVICE (create invite): " +
-                    responseMap.toString());
-                return Future.error("Server_error");
-              }
-            }),
+          if (responseMap.containsKey("invite")) {
+            return Invite.fromJson(responseMap['invite']);
+          } else if (response.statusCode == 403) {
+            return Future.error("Unauthorized");
+          } else if (response.statusCode == 401) {
+            return Future.error("Token invalid");
+          } else {
+            debugPrint("Server error - INVITESERVICE (create invite): " +
+                responseMap.toString());
+            return Future.error("Server_error");
+          }
+        }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
             return true;
@@ -213,6 +246,13 @@ class InviteService {
             return false;
           }
         },
-        onRetry: (e) => print(e.toString()));
+        onRetry: (e) => print(
+          e.toString(),
+        ),
+      );
+    } catch (e) {
+      print("InviteService error: " + e.toString());
+      return Future.error("Error: " + e);
+    }
   }
 }

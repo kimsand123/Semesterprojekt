@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/network/auth_service.dart';
-import 'package:golfquiz_dtu/network/game_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
-import 'package:golfquiz_dtu/network/player_service.dart';
-import 'package:golfquiz_dtu/providers/friend__provider.dart';
-import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/auth__components/auth_button__component.dart';
-import 'package:golfquiz_dtu/view/components/auth__components/borderless_button__component.dart';
+import 'package:golfquiz_dtu/view/components/popup__component.dart';
 import 'package:golfquiz_dtu/view/components/text_field__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:golfquiz_dtu/view/pages/misc/validation__helper.dart';
-import 'package:provider/provider.dart';
 
 class LoginPage extends BasePage {
   @override
@@ -125,15 +119,33 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
     if (_formKey.currentState.validate()) {
       await enableProgressIndicator(appLocale().auth_login__progress_text);
 
-      Player _user = await AuthService.login(
-          _usernameController.text, _passwordController.text);
+      await AuthService.login(
+              _usernameController.text, _passwordController.text)
+          .then(
+        (user) async {
+          await disableProgressIndicator();
 
-      await disableProgressIndicator();
+          await RemoteHelper().fillProviders(context, user);
 
-      await RemoteHelper().fillProviders(context, _user);
+          Navigator.pushNamedAndRemoveUntil(context, gameRoute,
+              ModalRoute.withName(Navigator.defaultRouteName));
+        },
+      ).catchError((error) async {
+        debugPrint("Login error - " + error.toString());
+        await disableProgressIndicator();
 
-      Navigator.pushNamedAndRemoveUntil(
-          context, gameRoute, ModalRoute.withName(Navigator.defaultRouteName));
+        showPopupDialog(
+          context,
+          'An error occured',
+          'Could not connect to the backend.\n${error.toString()}',
+          {
+            Text(
+              "Ok",
+              style: TextStyle(color: Colors.black),
+            ): () {},
+          },
+        );
+      });
     } else {
       setState(() {
         _autoValidate = true;

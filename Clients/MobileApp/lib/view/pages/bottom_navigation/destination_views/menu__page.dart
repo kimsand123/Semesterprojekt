@@ -8,6 +8,7 @@ import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/notification_bubble__component.dart';
+import 'package:golfquiz_dtu/view/components/popup__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:golfquiz_dtu/view/pages/bottom_navigation/navigation__container.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +63,35 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
           }).catchError((error) async {
             debugPrint("Fetching players error" + error.toString());
             await disableProgressIndicator();
+
+            if (error == "Token invalid") {
+              showPopupDialog(
+                context,
+                'You have been logged out',
+                'Your login has been expired, please login again',
+                {
+                  Text(
+                    "Ok",
+                    style: TextStyle(color: Colors.black),
+                  ): () {
+                    Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                        ModalRoute.withName(Navigator.defaultRouteName));
+                  },
+                },
+              );
+            }
+
+            showPopupDialog(
+              context,
+              'An error occured',
+              'Could not connect to the backend.\n${error.toString()}',
+              {
+                Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.black),
+                ): () {},
+              },
+            );
           });
         }, false)),
 

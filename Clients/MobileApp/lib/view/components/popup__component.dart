@@ -38,8 +38,7 @@ void showPopupDialog(BuildContext context, String title, String content,
           CupertinoDialogAction(
               child: action,
               onPressed: () {
-                Navigator.of(context).pop();
-                callback == null ? null : callback();
+                callback == null ?? Navigator.of(context).pop();
               }),
         );
       },

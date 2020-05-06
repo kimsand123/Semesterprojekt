@@ -2,7 +2,10 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/game_player.dart';
+import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/question.dart';
+import 'package:golfquiz_dtu/network/player_service.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
@@ -164,6 +167,38 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                     Navigator.pushNamed(context, gameFlowScoreboard);
                   }).catchError((error) async {
                     debugPrint("Update current game" + error.toString());
+
+                    if (error == "Token invalid") {
+                      showPopupDialog(
+                        context,
+                        'You have been logged out',
+                        'Your login has been expired, please login again',
+                        {
+                          Text(
+                            "Ok",
+                            style: TextStyle(color: Colors.black),
+                          ): () {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                introRoute,
+                                ModalRoute.withName(
+                                    Navigator.defaultRouteName));
+                          },
+                        },
+                      );
+                    }
+
+                    showPopupDialog(
+                      context,
+                      'An error occured',
+                      'Could not connect to the backend.\n${error.toString()}',
+                      {
+                        Text(
+                          "Ok",
+                          style: TextStyle(color: Colors.black),
+                        ): () {},
+                      },
+                    );
                   });
                 },
                 text: appLocale().game_flow__result__scoreboard,
@@ -220,10 +255,19 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                       if (provider.getPlayerProgress(
                               playerStatus.gamePlayer.player) >=
                           18) {
+                        // Game is done
+                        GamePlayer gamePlayer = playerStatus.gamePlayer;
+
+                        if (gamePlayer.score > gamePlayer.player.highScore) {
+                          gamePlayer.player.highScore = gamePlayer.score;
+                        }
+
+                        PlayerService.updateSinglePlayer(gamePlayer.player);
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushReplacementNamed(context, gameRoute);
                       } else {
+                        // Game is still going
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushReplacementNamed(

@@ -14,6 +14,7 @@ import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/animations/fade_in_rtl__animation.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/active_games_card__component.dart';
+import 'package:golfquiz_dtu/view/components/popup__component.dart';
 import 'package:golfquiz_dtu/view/components/standard_button__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:provider/provider.dart';
@@ -89,6 +90,35 @@ class _GamesPageState extends BasePageState<GamesPage>
               }).catchError((error) async {
                 debugPrint("Fetching games error" + error.toString());
                 await disableProgressIndicator();
+
+                if (error == "Token invalid") {
+                  showPopupDialog(
+                    context,
+                    'You have been logged out',
+                    'Your login has been expired, please login again',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): () {
+                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
+                      },
+                    },
+                  );
+                }
+
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {},
+                  },
+                );
               });
             },
           ),
@@ -129,6 +159,35 @@ class _GamesPageState extends BasePageState<GamesPage>
               }).catchError((error) async {
                 debugPrint("Fetching invites error" + error.toString());
                 await disableProgressIndicator();
+
+                if (error == "Token invalid") {
+                  showPopupDialog(
+                    context,
+                    'You have been logged out',
+                    'Your login has been expired, please login again',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): () {
+                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
+                      },
+                    },
+                  );
+                }
+
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {},
+                  },
+                );
               });
             },
           ),

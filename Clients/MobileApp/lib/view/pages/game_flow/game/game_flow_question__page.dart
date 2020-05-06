@@ -125,6 +125,35 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               }).catchError((error) async {
                 debugPrint("Updating gameround" + error.toString());
                 await disableProgressIndicator();
+
+                if (error == "Token invalid") {
+                  showPopupDialog(
+                    context,
+                    'You have been logged out',
+                    'Your login has been expired, please login again',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): () {
+                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
+                      },
+                    },
+                  );
+                }
+
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {},
+                  },
+                );
               });
 
               Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
@@ -179,6 +208,35 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                     arguments: true);
               }).catchError((error) async {
                 debugPrint("Updating gameround" + error.toString());
+
+                if (error == "Token invalid") {
+                  showPopupDialog(
+                    context,
+                    'You have been logged out',
+                    'Your login has been expired, please login again',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): () {
+                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
+                      },
+                    },
+                  );
+                }
+
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {},
+                  },
+                );
               });
             } else {
               debugPrint('Pressed wrong answer');
@@ -190,6 +248,35 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                     arguments: false);
               }).catchError((error) async {
                 debugPrint("Updating gameround" + error.toString());
+
+                if (error == "Token invalid") {
+                  showPopupDialog(
+                    context,
+                    'You have been logged out',
+                    'Your login has been expired, please login again',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): () {
+                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
+                      },
+                    },
+                  );
+                }
+
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {},
+                  },
+                );
               });
             }
           },

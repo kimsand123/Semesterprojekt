@@ -28,28 +28,31 @@ class GameService {
 
     debugPrint("GameService - All games: " + uri.toString());
 
-    return retry(
+    try {
+      return retry(
         () => http
-                .get(uri, headers: headers)
-                .timeout(Duration(seconds: 5))
-                .then((response) {
-              var body = utf8.decode(response.bodyBytes);
-              Map<String, dynamic> responseMap = jsonDecode(body);
+            .get(uri, headers: headers)
+            .timeout(Duration(seconds: 5))
+            .then((response) {
+          var body = utf8.decode(response.bodyBytes);
+          Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("games")) {
-                List<Game> games = List();
-                for (var game in responseMap['games']) {
-                  games.add(Game.fromJson(game));
-                }
-                return games;
-              } else if (response.statusCode == 403) {
-                return Future.error("Unauthorized");
-              } else {
-                debugPrint("Server error - GAMESERVICE (all games): " +
-                    responseMap.toString());
-                return Future.error("Server_error");
-              }
-            }),
+          if (responseMap.containsKey("games")) {
+            List<Game> games = List();
+            for (var game in responseMap['games']) {
+              games.add(Game.fromJson(game));
+            }
+            return games;
+          } else if (response.statusCode == 403) {
+            return Future.error("Unauthorized");
+          } else if (response.statusCode == 401) {
+            return Future.error("Token invalid");
+          } else {
+            debugPrint("Server error - GAMESERVICE (all games): " +
+                responseMap.toString());
+            return Future.error("Server_error");
+          }
+        }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
             return true;
@@ -57,7 +60,14 @@ class GameService {
             return false;
           }
         },
-        onRetry: (e) => print(e.toString()));
+        onRetry: (e) => print(
+          e.toString(),
+        ),
+      );
+    } catch (e) {
+      print("GameService error: " + e.toString());
+      return Future.error("Error: " + e);
+    }
   }
 
   static Future<Game> fetchSingleGame(Player player, int gameId) async {
@@ -76,25 +86,28 @@ class GameService {
 
     debugPrint("GameService - Single game: " + uri.toString());
 
-    return retry(
+    try {
+      return retry(
         () => http
-                .get(uri, headers: headers)
-                .timeout(Duration(seconds: 5))
-                .then((response) {
-              var body = utf8.decode(response.bodyBytes);
-              Map<String, dynamic> responseMap = jsonDecode(body);
+            .get(uri, headers: headers)
+            .timeout(Duration(seconds: 5))
+            .then((response) {
+          var body = utf8.decode(response.bodyBytes);
+          Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("game")) {
-                Game returnGame = Game.fromJson(responseMap['game']);
-                return returnGame;
-              } else if (response.statusCode == 403) {
-                return Future.error("Unauthorized");
-              } else {
-                debugPrint("Server error - GAMESERVICE (all games): " +
-                    responseMap.toString());
-                return Future.error("Server_error");
-              }
-            }),
+          if (responseMap.containsKey("game")) {
+            Game returnGame = Game.fromJson(responseMap['game']);
+            return returnGame;
+          } else if (response.statusCode == 403) {
+            return Future.error("Unauthorized");
+          } else if (response.statusCode == 401) {
+            return Future.error("Token invalid");
+          } else {
+            debugPrint("Server error - GAMESERVICE (all games): " +
+                responseMap.toString());
+            return Future.error("Server_error");
+          }
+        }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
             return true;
@@ -102,7 +115,14 @@ class GameService {
             return false;
           }
         },
-        onRetry: (e) => print(e.toString()));
+        onRetry: (e) => print(
+          e.toString(),
+        ),
+      );
+    } catch (e) {
+      print("GameService error: " + e.toString());
+      return Future.error("Error: " + e);
+    }
   }
 
   static Future<Game> addGameRoundToGame(Game game, Player player) async {
@@ -130,30 +150,31 @@ class GameService {
     };
     String json = jsonEncode(jsonMap);
 
-    print(json);
-
     Uri uri = Uri.http(ServiceConstants.baseGameUrl, apiPath, queryParams);
 
     debugPrint("GameService - update playerstatus: " + uri.toString());
 
-    return retry(
+    try {
+      return retry(
         () => http
-                .put(uri, headers: headers, body: json)
-                .timeout(Duration(seconds: 5))
-                .then((response) {
-              var body = utf8.decode(response.bodyBytes);
-              Map<String, dynamic> responseMap = jsonDecode(body);
+            .put(uri, headers: headers, body: json)
+            .timeout(Duration(seconds: 5))
+            .then((response) {
+          var body = utf8.decode(response.bodyBytes);
+          Map<String, dynamic> responseMap = jsonDecode(body);
 
-              if (responseMap.containsKey("game")) {
-                return Game.fromJson(responseMap["game"]);
-              } else if (response.statusCode == 403) {
-                return Future.error("Unauthorized");
-              } else {
-                debugPrint("Server error - GAMESERVICE (add gamerounds): " +
-                    responseMap.toString());
-                return Future.error("Server_error");
-              }
-            }),
+          if (responseMap.containsKey("game")) {
+            return Game.fromJson(responseMap["game"]);
+          } else if (response.statusCode == 403) {
+            return Future.error("Unauthorized");
+          } else if (response.statusCode == 401) {
+            return Future.error("Token invalid");
+          } else {
+            debugPrint("Server error - GAMESERVICE (add gamerounds): " +
+                responseMap.toString());
+            return Future.error("Server_error");
+          }
+        }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
             return true;
@@ -161,6 +182,13 @@ class GameService {
             return false;
           }
         },
-        onRetry: (e) => print(e.toString()));
+        onRetry: (e) => print(
+          e.toString(),
+        ),
+      );
+    } catch (e) {
+      print("GameService error: " + e.toString());
+      return Future.error("Error: " + e);
+    }
   }
 }
