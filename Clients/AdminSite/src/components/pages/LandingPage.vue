@@ -50,7 +50,7 @@ export default {
       const usernameField = document.querySelector('#username')
       const passwordField = document.querySelector('#password')
 
-      if(usernameField.value === "admin" && passwordField.value === "admin") {
+      if(usernameField.value === "admin" && passwordField.value === "password") {
         this.$router.push({path: "/players", query: {name: usernameField.value}})
         this.$cookies.set("user_session", "25j_7Sl6xDq2Kc3ym0fmrSSk2xV2XkUkX", '1d')
       } else {
