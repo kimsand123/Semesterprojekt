@@ -37,6 +37,8 @@ export default {
     const passwordField = document.querySelector('#password')
     const loginButton = document.querySelector('#login-button')
 
+    this.$cookies.remove('user_session')
+
     passwordField.addEventListener('keyup', (event) => {
       if(event.keyCode === 13) {
         loginButton.click()
@@ -50,7 +52,7 @@ export default {
 
       if(usernameField.value === "admin" && passwordField.value === "admin") {
         this.$router.push({path: "/players", query: {name: usernameField.value}})
-        this.$cookies.set("user_session", "25j_7Sl6xDq2Kc3ym0fmrSSk2xV2XkUkX")
+        this.$cookies.set("user_session", "25j_7Sl6xDq2Kc3ym0fmrSSk2xV2XkUkX", '1d')
       } else {
         alert('Username or password was incorrect')
       }
