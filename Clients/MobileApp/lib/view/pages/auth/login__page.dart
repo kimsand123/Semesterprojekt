@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/network/auth_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
@@ -29,8 +28,6 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
     super.initState();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
-    _usernameController.text = 's160198';
-    _passwordController.text = 'densikkrestekode';
     _usernameFocus = FocusNode();
     _passwordFocus = FocusNode();
     _autoValidate = false;
