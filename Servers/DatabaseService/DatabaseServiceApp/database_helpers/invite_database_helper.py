@@ -53,7 +53,6 @@ class InviteDatabase:
             invites_as_sender = invite_query['invites_as_sender']
             invites_as_receiver = invite_query['invites_as_receiver']
 
-            print('wat' + invites_as_receiver.__str__())
             serializer = InviteSerializer()
             return_data = {
                 "invites_as_sender": json.loads(serializer.serialize(invites_as_sender).__str__()),

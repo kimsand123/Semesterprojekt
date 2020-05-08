@@ -19,7 +19,8 @@ from GameServiceApp.helper_methods import get_json_data_object, connection_servi
 def invites(request):
     # Early exit on missing authorization / invalid token
     if 'Authorization' not in request.headers:
-        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers",
+                                            None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
     else:
         if not token_status(request.headers['Authorization']):
@@ -42,7 +43,8 @@ def invites(request):
 def single_invite(request, invite_id):
     # Early exit on missing authorization / invalid token
     if 'Authorization' not in request.headers:
-        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers", None, None)
+        error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers",
+                                            None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
     else:
         if not token_status(request.headers['Authorization']):
@@ -93,10 +95,8 @@ def invites_post(request):
     if type(json_request) is Response:
         return json_request
 
-
-
     invite = json_request['invite']
-    #if invite['accepted']==
+    # if invite['accepted']==
 
     json_body = {
         "invite": {
@@ -130,17 +130,17 @@ def single_invite_put(request, invite_id):
                                                CORRECT_INVITE_OBJ)
 
     json_request = get_json_data_object(request, decode_error_message)
-    #If the type of the return from get_json_data_object is a Response,
-    #and not a json, there was an error
+    # If the type of the return from get_json_data_object is a Response,
+    # and not a json, there was an error
     if type(json_request) is Response:
         return json_request
 
     response = connection_service(f"/invites/{invite_id}/", json_request, None, "PUT")
-    if type(response)!=JsonResponse:
-        response = create_game(json_request);
-        if type(response)==JsonResponse:
-            return response
-    return Response(data=json.loads(response.content), status=response.status_code)
+    if type(response) != JsonResponse:
+        response = create_game(json_request)
+        return Response(data=response, status=status.HTTP_202_ACCEPTED)
+    elif type(response) == JsonResponse:
+        return response
 
 
 # -------------
@@ -152,66 +152,65 @@ def single_invite_delete(request, invite_id):
 
 
 def create_game(invite_data):
-
     invite = invite_data['invite']
     sender_player_id = invite['sender_player_id']
     receiver_player_id = invite['receiver_player_id']
     player1 = {}
     player2 = {}
-    player1['game_player']={"player_id":sender_player_id, "game_progress":0, "score": 0}
-    player2['game_player']={"player_id":receiver_player_id, "game_progress":0, "score": 0}
+    player1['game_player'] = {"player_id": sender_player_id, "game_progress": 0, "score": 0}
+    player2['game_player'] = {"player_id": receiver_player_id, "game_progress": 0, "score": 0}
 
-    player1['game_round']= []
-    player2['game_round']= []
+    player1['game_round'] = []
+    player2['game_round'] = []
 
-    #Get the invite to get a hold of
-    #match_name: string
-    #question_duration: double
+    # Get the invite to get a hold of
+    # match_name: string
+    # question_duration: double
 
-    player_status=[]
-    questions_list=[]
+    player_status = []
+    questions_list = []
     player_status.append(player1)
     player_status.append(player2)
 
     try:
-        questions_list=get_questions_list()
-        game_object = {"game":{"match_name":invite['match_name'],
-                       "question_duration":invite['question_duration'],
-                       "questions":questions_list,
-                        "player_status":player_status
-                        }}
-        response = connection_service("/games/", game_object, None, "POST")
+        questions_list = get_questions_list()
+        game_object = {"game": {"match_name": invite['match_name'],
+                                "question_duration": invite['question_duration'],
+                                "questions": questions_list,
+                                "player_status": player_status
+                                }}
+        connection_service("/games/", game_object, None, "POST")
+        return game_object
     except ConnectionError as e:
         error_message = generate_error_json(status.HTTP_404_NOT_FOUND, "No database connection found",
                                             None, None)
         response = JsonResponse(data=error_message, status=status.HTTP_404_NOT_FOUND)
         return response
-    return game_object
+
 
 def get_questions_list():
     question_list = []
     used_question_idx = []
 
-    response_data = connection_service("/questions/", None, None, "GET")['questions']
-    questions = json.loads(response_data.content)
+    response = connection_service("/questions/", None, None, "GET")
+
+    response_content = json.loads(response.content.decode("utf-8"))
+
+    questions = response_content['questions']
 
     number_of_questions = len(questions)
 
-    #If there are not more than 18 questions in the db
+    # If there are not more than 18 questions in the db
     if number_of_questions > 18:
         question_range = 18
     else:
         question_range = number_of_questions
 
-    for counter in range (question_range):
+    for counter in range(question_range):
         while True:
-            rnd = randint(0,number_of_questions-1)
+            rnd = randint(0, number_of_questions - 1)
             if rnd not in used_question_idx:
                 used_question_idx.append(rnd)
                 break
         question_list.append(questions[rnd]['id'])
     return question_list
-
-
-
-

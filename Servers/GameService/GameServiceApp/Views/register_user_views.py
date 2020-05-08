@@ -34,7 +34,10 @@ def register_user(request):
                 token = req_json['user_token']
                 add_token(token, player_id)
                 #run_token_test()
-                game_service_ip = "94.130.183.32"
+                game_service_ip = os.getenv('DC_GS_SELF')
+
+                if (game_service_ip is None):
+                    game_service_ip = "127.0.0.1"
                 game_service_port = "9700"
                 response = {"game_service_ip": game_service_ip, "game_service_port": game_service_port,
                             "player": player}
