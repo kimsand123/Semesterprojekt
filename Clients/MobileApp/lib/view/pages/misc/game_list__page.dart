@@ -3,13 +3,17 @@ import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/misc/constants.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/network/game_service.dart';
+import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/game_list__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
 import 'package:golfquiz_dtu/view/components/game_card__component.dart';
+import 'package:golfquiz_dtu/view/components/popup__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:provider/provider.dart';
 
@@ -54,38 +58,42 @@ class _GameListPageState extends BasePageState<GameListPage> with BasicPage {
 
           return Container(
             height: contentHeight,
-            child: ListView.separated(
-              separatorBuilder: (BuildContext context, int index) => Divider(),
-              itemCount: listOfGames.length,
-              itemBuilder: (BuildContext context, int index) {
-                var gameItem = listOfGames[index];
+            child: RefreshIndicator(
+              onRefresh: _getData,
+              child: ListView.separated(
+                separatorBuilder: (BuildContext context, int index) =>
+                    Divider(),
+                itemCount: listOfGames.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var gameItem = listOfGames[index];
 
-                if (index == 0) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Text(appLocale().game_list__active_matches),
-                      ),
-                      itemGenerator(gameItem),
-                    ],
-                  );
-                } else if (index == numberOfActiveGames) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Text(appLocale().game_list__inactive_matches),
-                      ),
-                      itemGenerator(gameItem),
-                    ],
-                  );
-                } else {
-                  return itemGenerator(gameItem);
-                }
-              },
+                  if (index == 0) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(left: 20),
+                          child: Text(appLocale().game_list__active_matches),
+                        ),
+                        itemGenerator(gameItem),
+                      ],
+                    );
+                  } else if (index == numberOfActiveGames) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(left: 20),
+                          child: Text(appLocale().game_list__inactive_matches),
+                        ),
+                        itemGenerator(gameItem),
+                      ],
+                    );
+                  } else {
+                    return itemGenerator(gameItem);
+                  }
+                },
+              ),
             ),
           );
         },
@@ -122,5 +130,54 @@ class _GameListPageState extends BasePageState<GameListPage> with BasicPage {
     } else {
       return "Ended";
     }
+  }
+
+  Future<void> _getData() async {
+    Player currentPlayer =
+        Provider.of<MeProvider>(context, listen: false).getPlayer;
+
+    return GameService.fetchGames(currentPlayer).then((value) async {
+      Provider.of<GameListProvider>(context, listen: false).setGameList(value);
+
+      setState(() {});
+
+      return Future.value(true);
+    }).catchError((error) async {
+      debugPrint("Fetching games error" + error.toString());
+      await disableProgressIndicator();
+
+      if (error == "Token invalid") {
+        showPopupDialog(
+          context,
+          'Your session has expired',
+          'The app will log out. \nPlease login again.',
+          {
+            Text(
+              "Ok",
+              style: TextStyle(color: Colors.black),
+            ): () {
+              RemoteHelper().emptyProvider(context).then(
+                (v) {
+                  Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                      ModalRoute.withName(Navigator.defaultRouteName));
+                },
+              );
+            },
+          },
+        );
+      } else {
+        showPopupDialog(
+          context,
+          'An error occured',
+          'Could not connect to the backend.\n${error.toString()}',
+          {
+            Text(
+              "Ok",
+              style: TextStyle(color: Colors.black),
+            ): null,
+          },
+        );
+      }
+    });
   }
 }

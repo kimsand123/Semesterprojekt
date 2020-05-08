@@ -36,12 +36,13 @@ class AuthService {
             String token = responseMap["user_token"];
             prefs.setString("token", token);
 
-            debugPrint("Auth token $token");
+            debugPrint("Auth token ${prefs.getString("token")}");
 
             String gameServiceIp = responseMap["game_service_ip"];
             String gameServicePort = responseMap["game_service_port"];
 
             prefs.setString("token", token);
+            prefs.setInt("my_id", responseMap['player']['id']);
             prefs.setString("game_service_ip", gameServiceIp);
             prefs.setString("game_service_port", gameServicePort);
 

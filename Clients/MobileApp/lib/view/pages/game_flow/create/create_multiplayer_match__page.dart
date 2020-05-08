@@ -149,8 +149,8 @@ class _CreateMultiplayerMatchPageState
                       if (error == "Token invalid") {
                         showPopupDialog(
                           context,
-                          'You have been logged out',
-                          'Your login has been expired, please login again',
+                          'Your session has expired',
+                          'The app will log out. \nPlease login again.',
                           {
                             Text(
                               "Ok",
@@ -165,19 +165,19 @@ class _CreateMultiplayerMatchPageState
                             },
                           },
                         );
+                      } else {
+                        showPopupDialog(
+                          context,
+                          'An error occured',
+                          'Could not connect to the backend.\n${error.toString()}',
+                          {
+                            Text(
+                              "Ok",
+                              style: TextStyle(color: Colors.black),
+                            ): null,
+                          },
+                        );
                       }
-
-                      showPopupDialog(
-                        context,
-                        'An error occured',
-                        'Could not connect to the backend.\n${error.toString()}',
-                        {
-                          Text(
-                            "Ok",
-                            style: TextStyle(color: Colors.black),
-                          ): null,
-                        },
-                      );
                     });
                   },
                 ),
@@ -250,8 +250,8 @@ class _CreateMultiplayerMatchPageState
       if (error == "Token invalid") {
         showPopupDialog(
           context,
-          'You have been logged out',
-          'Your login has been expired, please login again',
+          'Your session has expired',
+          'The app will log out. \nPlease login again.',
           {
             Text(
               "Ok",
@@ -266,19 +266,19 @@ class _CreateMultiplayerMatchPageState
             },
           },
         );
+      } else {
+        showPopupDialog(
+          context,
+          'An error occured',
+          'Could not connect to the backend.\n${error.toString()}',
+          {
+            Text(
+              "Ok",
+              style: TextStyle(color: Colors.black),
+            ): null,
+          },
+        );
       }
-
-      showPopupDialog(
-        context,
-        'An error occured',
-        'Could not connect to the backend.\n${error.toString()}',
-        {
-          Text(
-            "Ok",
-            style: TextStyle(color: Colors.black),
-          ): null,
-        },
-      );
     });
   }
 

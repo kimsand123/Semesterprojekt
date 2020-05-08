@@ -189,12 +189,12 @@ class _SingleGamePageState extends BasePageState<SingleGamePage>
               Container(
                 width: ((screenWidth / 3)) - (10 * 2),
                 alignment: Alignment.center,
-                child: textTitle(context, appLocale().handicap),
+                child: textTitle(context, appLocale().points),
               ),
               Container(
                 width: ((screenWidth / 3)) - (10 * 2),
                 alignment: Alignment.centerRight,
-                child: textTitle(context, appLocale().points),
+                child: textTitle(context, "Highscore"),
               ),
             ],
           ),
@@ -248,14 +248,13 @@ class _SingleGamePageState extends BasePageState<SingleGamePage>
                 Container(
                   width: ((screenWidth / 3)) - (10 * 2),
                   alignment: Alignment.center,
-                  child: numberText(
-                      context, '${status[i].gamePlayer.player.highScore}'),
+                  child: numberText(context, '${status[i].gamePlayer.score}'),
                 ),
                 Container(
                   width: ((screenWidth / 3)) - (10 * 2),
                   alignment: Alignment.centerRight,
-                  child: numberText(
-                      context, '${game.playerStatus[i].gamePlayer.score}'),
+                  child: numberText(context,
+                      '${game.playerStatus[i].gamePlayer.player.highScore}'),
                 )
               ],
             ),

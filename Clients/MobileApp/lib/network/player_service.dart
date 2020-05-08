@@ -133,7 +133,9 @@ class PlayerService {
       "Authorization": token
     };
 
-    Map<String, dynamic> playerJson = player.toJson();
+    Map<String, dynamic> playerMap = {"player": player.toJson()};
+
+    String json = jsonEncode(playerMap);
 
     Uri uri = Uri.http(ServiceConstants.baseGameUrl, apiPath);
 
@@ -142,13 +144,13 @@ class PlayerService {
     try {
       return retry(
         () => http
-            .put(uri, headers: headers, body: playerJson)
+            .put(uri, headers: headers, body: json)
             .timeout(Duration(seconds: 5))
             .then((response) {
           var body = utf8.decode(response.bodyBytes);
           Map<String, dynamic> responseMap = jsonDecode(body);
 
-          if (responseMap.containsKey("player") && response.statusCode == 200) {
+          if (responseMap.containsKey("player") && response.statusCode == 202) {
             Player returnPlayer = Player.fromJson(responseMap["player"]);
 
             return returnPlayer;
@@ -170,7 +172,7 @@ class PlayerService {
           }
         },
         onRetry: (e) => print(
-          e.toString(),
+          "Retrying.. " + e.toString(),
         ),
       );
     } catch (e) {

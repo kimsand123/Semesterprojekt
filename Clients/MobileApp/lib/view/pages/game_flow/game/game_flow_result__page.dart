@@ -171,8 +171,8 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                     if (error == "Token invalid") {
                       showPopupDialog(
                         context,
-                        'You have been logged out',
-                        'Your login has been expired, please login again',
+                        'Your session has expired',
+                        'The app will log out. \nPlease login again.',
                         {
                           Text(
                             "Ok",
@@ -190,19 +190,19 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                           },
                         },
                       );
+                    } else {
+                      showPopupDialog(
+                        context,
+                        'An error occured',
+                        'Could not connect to the backend.\n${error.toString()}',
+                        {
+                          Text(
+                            "Ok",
+                            style: TextStyle(color: Colors.black),
+                          ): null,
+                        },
+                      );
                     }
-
-                    showPopupDialog(
-                      context,
-                      'An error occured',
-                      'Could not connect to the backend.\n${error.toString()}',
-                      {
-                        Text(
-                          "Ok",
-                          style: TextStyle(color: Colors.black),
-                        ): null,
-                      },
-                    );
                   });
                 },
                 text: appLocale().game_flow__result__scoreboard,
@@ -251,7 +251,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                     animationState: animationStateContinue,
                     icon: 'assets/animations/continue.flr',
                     text: appLocale().game_flow__result__continue,
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() {
                         _isContinuePressed = false;
                         animationStateContinue = 'continue';
@@ -260,13 +260,6 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                               playerStatus.gamePlayer.player) >=
                           18) {
                         // Game is done
-                        GamePlayer gamePlayer = playerStatus.gamePlayer;
-
-                        if (gamePlayer.score > gamePlayer.player.highScore) {
-                          gamePlayer.player.highScore = gamePlayer.score;
-                        }
-
-                        PlayerService.updateSinglePlayer(gamePlayer.player);
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
                         Navigator.pushReplacementNamed(context, gameRoute);

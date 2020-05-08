@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
+import 'package:golfquiz_dtu/models/game_player.dart';
 import 'package:golfquiz_dtu/models/game_round.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
+import 'package:golfquiz_dtu/network/player_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
@@ -119,7 +121,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
             if (timer.tick == _totalTime.round()) {
               timer.cancel();
 
-              updateWithNewGameRound(0, _totalTime + 0.0).then((v) {
+              updateWithNewGameRound(0, _totalTime + 0.0).then((v) async {
+                await updatePlayerHighScore(currentUserInfo);
                 Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                     arguments: false);
               }).catchError((error) async {
@@ -129,8 +132,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                 if (error == "Token invalid") {
                   showPopupDialog(
                     context,
-                    'You have been logged out',
-                    'Your login has been expired, please login again',
+                    'Your session has expired',
+                    'The app will log out. \nPlease login again.',
                     {
                       Text(
                         "Ok",
@@ -148,19 +151,19 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                       },
                     },
                   );
+                } else {
+                  showPopupDialog(
+                    context,
+                    'An error occured',
+                    'Could not connect to the backend.\n${error.toString()}',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): null,
+                    },
+                  );
                 }
-
-                showPopupDialog(
-                  context,
-                  'An error occured',
-                  'Could not connect to the backend.\n${error.toString()}',
-                  {
-                    Text(
-                      "Ok",
-                      style: TextStyle(color: Colors.black),
-                    ): null,
-                  },
-                );
               });
 
               Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
@@ -193,6 +196,11 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
         Provider.of<CurrentGameProvider>(context, listen: false).getGame();
     var question = game.questions[questionNumber];
 
+    MeProvider meProvider = Provider.of<MeProvider>(context, listen: false);
+
+    PlayerStatus currentPlayerStatus =
+        GameFlowHelper.determinePlayerStatus(meProvider.getPlayer.id, game);
+
     List<String> availableAnswers = [];
     availableAnswers.add(question.answer1);
     availableAnswers.add(question.answer2);
@@ -210,7 +218,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
               _timer.cancel();
               final timeSpent = _timer.tick;
 
-              updateWithNewGameRound(2, timeSpent + 0.0).then((v) {
+              updateWithNewGameRound(2, timeSpent + 0.0).then((v) async {
+                await updatePlayerHighScore(currentPlayerStatus);
                 Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                     arguments: true);
               }).catchError((error) async {
@@ -219,8 +228,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                 if (error == "Token invalid") {
                   showPopupDialog(
                     context,
-                    'You have been logged out',
-                    'Your login has been expired, please login again',
+                    'Your session has expired',
+                    'The app will log out. \nPlease login again.',
                     {
                       Text(
                         "Ok",
@@ -238,26 +247,28 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                       },
                     },
                   );
+                } else {
+                  showPopupDialog(
+                    context,
+                    'An error occured',
+                    'Could not connect to the backend.\n${error.toString()}',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): null,
+                    },
+                  );
                 }
-
-                showPopupDialog(
-                  context,
-                  'An error occured',
-                  'Could not connect to the backend.\n${error.toString()}',
-                  {
-                    Text(
-                      "Ok",
-                      style: TextStyle(color: Colors.black),
-                    ): null,
-                  },
-                );
               });
             } else {
               debugPrint('Pressed wrong answer');
               _timer.cancel();
               final timeSpent = _timer.tick;
 
-              updateWithNewGameRound(0, timeSpent + 0.0).then((v) {
+              updateWithNewGameRound(0, timeSpent + 0.0).then((v) async {
+                await updatePlayerHighScore(currentPlayerStatus);
+
                 Navigator.pushReplacementNamed(context, gameFlowAnswerRoute,
                     arguments: false);
               }).catchError((error) async {
@@ -266,8 +277,8 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                 if (error == "Token invalid") {
                   showPopupDialog(
                     context,
-                    'You have been logged out',
-                    'Your login has been expired, please login again',
+                    'Your session has expired',
+                    'The app will log out. \nPlease login again.',
                     {
                       Text(
                         "Ok",
@@ -285,19 +296,19 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                       },
                     },
                   );
+                } else {
+                  showPopupDialog(
+                    context,
+                    'An error occured',
+                    'Could not connect to the backend.\n${error.toString()}',
+                    {
+                      Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.black),
+                      ): null,
+                    },
+                  );
                 }
-
-                showPopupDialog(
-                  context,
-                  'An error occured',
-                  'Could not connect to the backend.\n${error.toString()}',
-                  {
-                    Text(
-                      "Ok",
-                      style: TextStyle(color: Colors.black),
-                    ): null,
-                  },
-                );
               });
             }
           },
@@ -338,5 +349,16 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
 
     await Provider.of<CurrentGameProvider>(context, listen: false)
         .updateCurrentGameFromRemote(context);
+  }
+
+  Future<void> updatePlayerHighScore(PlayerStatus playerStatus) async {
+    GamePlayer gamePlayer = playerStatus.gamePlayer;
+
+    if (gamePlayer.player.highScore < gamePlayer.score) {
+      gamePlayer.player.highScore = gamePlayer.score;
+      return PlayerService.updateSinglePlayer(gamePlayer.player);
+    } else {
+      return Future.value(true);
+    }
   }
 }

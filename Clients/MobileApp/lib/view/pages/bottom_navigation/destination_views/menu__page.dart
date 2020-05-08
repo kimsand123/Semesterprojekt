@@ -41,8 +41,59 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
             })),
 
         // Profile
-        settingsRow(appLocale().menu__profile_button, () {
-          Navigator.pushNamed(context, profileRoute);
+        settingsRow(appLocale().menu__profile_button, () async {
+          await enableProgressIndicator("Gathering your profile...");
+
+          MeProvider meProvider =
+              Provider.of<MeProvider>(context, listen: false);
+
+          RemoteHelper()
+              .updateMyMeProvider(context, meProvider.getPlayer.id)
+              .then((value) async {
+            disableProgressIndicator();
+
+            Navigator.pushNamed(context, profileRoute);
+
+            return Future.value(true);
+          }).catchError(
+            (error) async {
+              debugPrint("Fetching me error" + error.toString());
+              await disableProgressIndicator();
+
+              if (error == "Token invalid") {
+                showPopupDialog(
+                  context,
+                  'Your session has expired',
+                  'The app will log out. \nPlease login again.',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {
+                      RemoteHelper().emptyProvider(context).then(
+                        (v) {
+                          Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                              ModalRoute.withName(Navigator.defaultRouteName));
+                        },
+                      );
+                    },
+                  },
+                );
+              } else {
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): null,
+                  },
+                );
+              }
+            },
+          );
         }, false),
 
         // Friends
@@ -59,43 +110,45 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
 
             Navigator.popAndPushNamed(context, friendsRoute);
             return Future.value(true);
-          }).catchError((error) async {
-            debugPrint("Fetching players error" + error.toString());
-            await disableProgressIndicator();
+          }).catchError(
+            (error) async {
+              debugPrint("Fetching players error" + error.toString());
+              await disableProgressIndicator();
 
-            if (error == "Token invalid") {
-              showPopupDialog(
-                context,
-                'You have been logged out',
-                'Your login has been expired, please login again',
-                {
-                  Text(
-                    "Ok",
-                    style: TextStyle(color: Colors.black),
-                  ): () {
-                    RemoteHelper().emptyProvider(context).then(
-                      (v) {
-                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
-                      },
-                    );
+              if (error == "Token invalid") {
+                showPopupDialog(
+                  context,
+                  'Your session has expired',
+                  'The app will log out. \nPlease login again.',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): () {
+                      RemoteHelper().emptyProvider(context).then(
+                        (v) {
+                          Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                              ModalRoute.withName(Navigator.defaultRouteName));
+                        },
+                      );
+                    },
                   },
-                },
-              );
-            }
-
-            showPopupDialog(
-              context,
-              'An error occured',
-              'Could not connect to the backend.\n${error.toString()}',
-              {
-                Text(
-                  "Ok",
-                  style: TextStyle(color: Colors.black),
-                ): null,
-              },
-            );
-          });
+                );
+              } else {
+                showPopupDialog(
+                  context,
+                  'An error occured',
+                  'Could not connect to the backend.\n${error.toString()}',
+                  {
+                    Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.black),
+                    ): null,
+                  },
+                );
+              }
+            },
+          );
         }, false)),
 
         SizedBox(height: 40),
