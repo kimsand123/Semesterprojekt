@@ -192,7 +192,9 @@ def get_questions_list():
     question_list = []
     used_question_idx = []
 
-    questions = connection_service("/questions/", None, None, "GET")['questions']
+    response_data = connection_service("/questions/", None, None, "GET")['questions']
+    questions = json.loads(response_data.content)
+
     number_of_questions = len(questions)
 
     #If there are not more than 18 questions in the db
