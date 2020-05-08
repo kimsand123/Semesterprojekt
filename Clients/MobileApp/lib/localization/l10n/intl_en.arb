@@ -1,10 +1,5 @@
 {
-  "@@last_modified": "2020-05-08T11:30:24.001886",
-  "appbar__edit_button": "Edit",
-  "@appbar__edit_button": {
-    "type": "text",
-    "placeholders": {}
-  },
+  "@@last_modified": "2020-05-08T12:05:57.349880",
   "save": "Save",
   "@save": {
     "type": "text",
@@ -30,11 +25,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "resume": "Resume",
-  "@resume": {
-    "type": "text",
-    "placeholders": {}
-  },
   "secs": "Sec",
   "@secs": {
     "type": "text",
@@ -55,13 +45,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "player": "Player",
-  "@player": {
+  "resume": "Resume",
+  "@resume": {
     "type": "text",
     "placeholders": {}
   },
-  "rank": "Rank",
-  "@rank": {
+  "player": "Player",
+  "@player": {
     "type": "text",
     "placeholders": {}
   },
@@ -80,18 +70,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "time": "Time",
-  "@time": {
-    "type": "text",
-    "placeholders": {}
-  },
   "you": "You",
   "@you": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "admin": "Admin",
-  "@admin": {
     "type": "text",
     "placeholders": {}
   },
@@ -105,85 +85,18 @@
     "type": "text",
     "placeholders": {}
   },
-  "country": "Country",
-  "@country": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "club_number": "Club Number",
-  "@club_number": {
-    "type": "text",
-    "placeholders": {}
-  },
   "status": "Status",
   "@status": {
     "type": "text",
     "placeholders": {}
   },
-  "bufferzone": "Bufferzone",
-  "@bufferzone": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "world_rank": "World rank",
-  "@world_rank": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "danish": "Danish",
-  "@danish": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "english": "English",
-  "@english": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "dialog__are_you_sure": "Are you sure?",
-  "@dialog__are_you_sure": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "dialog__delete_from": "Do you want to remove {username} from {deleteFrom}?",
-  "@dialog__delete_from": {
-    "type": "text",
-    "placeholders": {
-      "username": {},
-      "deleteFrom": {}
-    }
-  },
-  "dialog__delete": "Do you want to remove {username} from your friends?",
-  "@dialog__delete": {
-    "type": "text",
-    "placeholders": {
-      "username": {}
-    }
-  },
-  "dialog__delete_group": "Do you want to delete the group {group}?",
-  "@dialog__delete_group": {
-    "type": "text",
-    "placeholders": {
-      "group": {}
-    }
-  },
-  "add__group_members": "+ Add group members",
-  "@add__group_members": {
+  "auth__username_caption": "Username",
+  "@auth__username_caption": {
     "type": "text",
     "placeholders": {}
   },
   "auth__password_caption": "Password",
   "@auth__password_caption": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth__signup_button": "Signup",
-  "@auth__signup_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth__terms_button": "Terms and conditions",
-  "@auth__terms_button": {
     "type": "text",
     "placeholders": {}
   },
@@ -207,83 +120,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "auth_login__join_button": "Don't you have an account? Join us here",
-  "@auth_login__join_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__title": "Getting Started",
-  "@auth_signup__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__username_caption": "Username",
-  "@auth_signup__username_caption": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__username_hint": "Name",
-  "@auth_signup__username_hint": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__country_caption": "Country",
-  "@auth_signup__country_caption": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__country_hint": "Denmark",
-  "@auth_signup__country_hint": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_forgot_password__title": "Forgot password",
-  "@auth_forgot_password__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_forgot_password__email_caption": "Enter your email adress",
-  "@auth_forgot_password__email_caption": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_forgot_password__reset_password_button": "Reset password",
-  "@auth_forgot_password__reset_password_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__confirm_password_caption": "Confirm password",
-  "@auth_signup__confirm_password_caption": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__dgu_number_caption": "Club number",
-  "@auth_signup__dgu_number_caption": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__dgu_number_hint": "00-000",
-  "@auth_signup__dgu_number_hint": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_forgot_password__progress_text": "Sending a password your way...",
-  "@auth_forgot_password__progress_text": {
-    "type": "text",
-    "placeholders": {}
-  },
   "auth_login__progress_text": "Signing you in...",
   "@auth_login__progress_text": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "auth_signup__progress_text": "Signing you up...",
-  "@auth_signup__progress_text": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "menu__status_button": "Status",
-  "@menu__status_button": {
     "type": "text",
     "placeholders": {}
   },
@@ -297,36 +135,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "menu__group_button": "Groups",
-  "@menu__group_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "menu__club_button": "Club",
-  "@menu__club_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "menu__settings_section": "Settings",
-  "@menu__settings_section": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "menu__app_settings_button": "App settings",
-  "@menu__app_settings_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "menu__help_and_feedback_button": "Help and feedback",
-  "@menu__help_and_feedback_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "menu__about_button": "About",
-  "@menu__about_button": {
-    "type": "text",
-    "placeholders": {}
-  },
   "menu__log_out_button": "Log out",
   "@menu__log_out_button": {
     "type": "text",
@@ -337,53 +145,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "friends__notification": "New friend request",
-  "@friends__notification": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "friends__add_friends_button": "+ Add new friends",
-  "@friends__add_friends_button": {
-    "type": "text",
-    "placeholders": {}
-  },
   "friends__list_first_title": "Player",
   "@friends__list_first_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "friends__list_second_title": "Handicap",
-  "@friends__list_second_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "groups__title": "Groups",
-  "@groups__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "groups__notification": "New group invite",
-  "@groups__notification": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "groups__create_new_group": "+ Create new group",
-  "@groups__create_new_group": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "groups__create_group_title": "Create group",
-  "@groups__create_group_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "groups__single_group_list__first_title": "Player",
-  "@groups__single_group_list__first_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "groups__single_group_list__second_title": "Handicap",
-  "@groups__single_group_list__second_title": {
     "type": "text",
     "placeholders": {}
   },
@@ -394,41 +157,6 @@
   },
   "groups__group_list__second_title": "Avg. handicap",
   "@groups__group_list__second_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "groups__delete_group": "Delete the group",
-  "@groups__delete_group": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "groups__saving_group_popup": "Saving the group...",
-  "@groups__saving_group_popup": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "club__title": "Club",
-  "@club__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "club__add_club_members_button": "+ Add new club member",
-  "@club__add_club_members_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "club__group_list__first_title": "Club member",
-  "@club__group_list__first_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "club__group_list__second_title": "Handicap",
-  "@club__group_list__second_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_flow__elaborate_rule__title": "Elaborate rule",
-  "@game_flow__elaborate_rule__title": {
     "type": "text",
     "placeholders": {}
   },
@@ -462,51 +190,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "game_appbar__players": "Players",
-  "@game_appbar__players": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "privacy_policy__title": "Privacy policy",
-  "@privacy_policy__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "terms_conditions__title": "Terms & Conditions",
-  "@terms_conditions__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_tournaments__start": "Starts",
-  "@game_tournaments__start": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_tournaments__are_you_sure": "Are you sure you want to join this tournament?",
-  "@game_tournaments__are_you_sure": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_tournaments__ongoing_tournaments": "Ongoing Tournaments",
-  "@game_tournaments__ongoing_tournaments": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_tournaments__upcoming_tournaments": "Upcoming Tournaments",
-  "@game_tournaments__upcoming_tournaments": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_tournaments__join_tournaments": "Join tournament",
-  "@game_tournaments__join_tournaments": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_tournaments__no_tournaments": "There are no upcoming or ongoing tournaments..",
-  "@game_tournaments__no_tournaments": {
-    "type": "text",
-    "placeholders": {}
-  },
   "validation__enter_valid_username": "Enter valid username - ex. 's123456'",
   "@validation__enter_valid_username": {
     "type": "text",
@@ -514,26 +197,6 @@
   },
   "validation__too_short_password": "Password must be more than 6 characters",
   "@validation__too_short_password": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "validation__reenter_password": "Please re-enter the password",
-  "@validation__reenter_password": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "validation__password_not_the_same": "Password must be the same",
-  "@validation__password_not_the_same": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "validation__enter_name": "Enter a name to search",
-  "@validation__enter_name": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "validation__dgu_number": "DGU number should be 5 numbers",
-  "@validation__dgu_number": {
     "type": "text",
     "placeholders": {}
   },
@@ -553,203 +216,8 @@
       "length": {}
     }
   },
-  "about__title": "About",
-  "@about__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "about__copyrights_title": "Copyrights",
-  "@about__copyrights_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "about__copyrights": "Excerpts from The Rules of Golf and interpretations are reprinted with permission. \n\nCopyright © (2019) R&A Rules Limited. All rights reserved. All rules questions Copyright © (2019) GolfQuiz / Appicorn ApS. All rights reserved",
-  "@about__copyrights": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "about__policies_title": "Policies",
-  "@about__policies_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "about__policies_privacy_button": "Privacy policy",
-  "@about__policies_privacy_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "about__policies_terms_button": "Terms & Conditions",
-  "@about__policies_terms_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "about__about_app_title": "About this app",
-  "@about__about_app_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "about__about_app": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  "@about__about_app": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__title": "App settings",
-  "@app_settings__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__audio_title": "Audio settings",
-  "@app_settings__audio_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__audio": "Audio",
-  "@app_settings__audio": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__notifications_title": "Notifications settings",
-  "@app_settings__notifications_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__notifications": "Notifications",
-  "@app_settings__notifications": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__privacy_title": "Privacy settings",
-  "@app_settings__privacy_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__privacy_club": "Connect profile to club",
-  "@app_settings__privacy_club": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__privacy_ranking": "Visible on ranking boards",
-  "@app_settings__privacy_ranking": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__language_title": "Select language",
-  "@app_settings__language_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "app_settings__language_hint": "Language",
-  "@app_settings__language_hint": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "help_and_feedback__title": "Help & Feedback",
-  "@help_and_feedback__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "help_and_feedback__how_to_play_title": "How to play",
-  "@help_and_feedback__how_to_play_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "help_and_feedback__how_to_play": "Guide",
-  "@help_and_feedback__how_to_play": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "help_and_feedback__handicap_rules_title": "Golf Rule Handicap",
-  "@help_and_feedback__handicap_rules_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "help_and_feedback__handicap_rules": "Handicap rule description",
-  "@help_and_feedback__handicap_rules": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "help_and_feedback__contact_title": "Contact us",
-  "@help_and_feedback__contact_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "help_and_feedback__contact": "greenkeeper@golfquis.com",
-  "@help_and_feedback__contact": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__title": "Status",
-  "@status__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__ranking_title": "Ranking",
-  "@status__ranking_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__ranking_world_overlay": "World ranking",
-  "@status__ranking_world_overlay": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__ranking_friends_button": "Friends rank",
-  "@status__ranking_friends_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__ranking_friends_overlay": "Friends ranking",
-  "@status__ranking_friends_overlay": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__ranking_club_button": "Club rank",
-  "@status__ranking_club_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__ranking_club_overlay": "Club ranking",
-  "@status__ranking_club_overlay": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__game_overview_title": "Game overview",
-  "@status__game_overview_title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__games_played": "Games played",
-  "@status__games_played": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__games_won": "Games won",
-  "@status__games_won": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "status__games_lost": "Games lost",
-  "@status__games_lost": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_list__solo_matches": "Solo matches",
-  "@game_list__solo_matches": {
-    "type": "text",
-    "placeholders": {}
-  },
   "game_list__two_player_matches": "Two player matches",
   "@game_list__two_player_matches": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_list__group_matches": "Group matches",
-  "@game_list__group_matches": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_list__tournaments_matches": "Tournament matches",
-  "@game_list__tournaments_matches": {
     "type": "text",
     "placeholders": {}
   },
@@ -763,108 +231,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "game_list__hole_out_of": "Hole {currentHole} out of {maxHoles}",
-  "@game_list__hole_out_of": {
-    "type": "text",
-    "placeholders": {
-      "currentHole": {},
-      "maxHoles": {}
-    }
-  },
-  "game_list__total_score": "Total score of {score}",
-  "@game_list__total_score": {
-    "type": "text",
-    "placeholders": {
-      "score": {}
-    }
-  },
-  "game_list__date_ended_at": "Ended {end}",
-  "@game_list__date_ended_at": {
-    "type": "text",
-    "placeholders": {
-      "end": {}
-    }
-  },
-  "Your turn": "Your turn",
-  "@Your turn": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "Their turn": "Their turn",
-  "@Their turn": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_list__num_of_players": "{amountOfPlayers} players",
-  "@game_list__num_of_players": {
-    "type": "text",
-    "placeholders": {
-      "amountOfPlayers": {}
-    }
-  },
-  "game_list__seconds_left": "{seconds} seconds left",
-  "@game_list__seconds_left": {
-    "type": "text",
-    "placeholders": {
-      "seconds": {}
-    }
-  },
-  "game_list__minutes_left": "{minutes} minutes left",
-  "@game_list__minutes_left": {
-    "type": "text",
-    "placeholders": {
-      "minutes": {}
-    }
-  },
-  "game_list__hours_left": "{hours} hours left",
-  "@game_list__hours_left": {
-    "type": "text",
-    "placeholders": {
-      "hours": {}
-    }
-  },
-  "game_list__days_left": "{days} days left",
-  "@game_list__days_left": {
-    "type": "text",
-    "placeholders": {
-      "days": {}
-    }
-  },
-  "game_list__seconds_until": "Starts in {seconds} seconds",
-  "@game_list__seconds_until": {
-    "type": "text",
-    "placeholders": {
-      "seconds": {}
-    }
-  },
-  "game_list__minutes_until": "Starts in {minutes} minutes",
-  "@game_list__minutes_until": {
-    "type": "text",
-    "placeholders": {
-      "minutes": {}
-    }
-  },
-  "game_list__hours_until": "Starts in {hours} hours",
-  "@game_list__hours_until": {
-    "type": "text",
-    "placeholders": {
-      "hours": {}
-    }
-  },
-  "game_list__days_until": "Starts in {days} days",
-  "@game_list__days_until": {
-    "type": "text",
-    "placeholders": {
-      "days": {}
-    }
-  },
   "active_games_card__show_all_matches": "Show all matches",
   "@active_games_card__show_all_matches": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "add_all_button_text": "+ Add all players ",
-  "@add_all_button_text": {
     "type": "text",
     "placeholders": {}
   },
@@ -883,18 +251,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "games__start_new_match__solo_match": "Solo match",
-  "@games__start_new_match__solo_match": {
-    "type": "text",
-    "placeholders": {}
-  },
   "games__start_new_match__two_player_match": "Two player match",
   "@games__start_new_match__two_player_match": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "games__start_new_match__group_match": "Group match",
-  "@games__start_new_match__group_match": {
     "type": "text",
     "placeholders": {}
   },
@@ -903,63 +261,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "games__your_matches__solo_matches": "Solo matches",
-  "@games__your_matches__solo_matches": {
-    "type": "text",
-    "placeholders": {}
-  },
   "games__your_matches__two_player_matches": "Two player matches",
   "@games__your_matches__two_player_matches": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "games__your_matches__group_matches": "Group matches",
-  "@games__your_matches__group_matches": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "games__your_matches__tournament_matches": "Tournaments",
-  "@games__your_matches__tournament_matches": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "home__title": "Home",
-  "@home__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "home__tournaments": "Tournaments",
-  "@home__tournaments": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "home__tournaments__upcomming": "Upcoming tournaments",
-  "@home__tournaments__upcomming": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "home__your_status": "Your status",
-  "@home__your_status": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "home__your_status__handicap": "Handicap",
-  "@home__your_status__handicap": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "home__your_status__bufferzone": "Bufferzone",
-  "@home__your_status__bufferzone": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "home__your_status__world_rank": "World rank",
-  "@home__your_status__world_rank": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "home__tip_of_the_day": "Tip of the day",
-  "@home__tip_of_the_day": {
     "type": "text",
     "placeholders": {}
   },
@@ -973,11 +276,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "bottom_navigation__home": "Home",
-  "@bottom_navigation__home": {
-    "type": "text",
-    "placeholders": {}
-  },
   "bottom_navigation__games": "Games",
   "@bottom_navigation__games": {
     "type": "text",
@@ -988,18 +286,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "create_match__title__group_match": "Group match",
-  "@create_match__title__group_match": {
-    "type": "text",
-    "placeholders": {}
-  },
   "create_match__title__two_player_match": "Two player",
   "@create_match__title__two_player_match": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "create_match__title__solo_match": "Solo",
-  "@create_match__title__solo_match": {
     "type": "text",
     "placeholders": {}
   },
@@ -1008,7 +296,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "create_match__match_name__hint_text": "Match name",
+  "create_match__match_name__hint_text": "ex. Super match",
   "@create_match__match_name__hint_text": {
     "type": "text",
     "placeholders": {}
@@ -1030,18 +318,6 @@
       "seconds": {}
     }
   },
-  "create_match__player_response_time": "Player response time",
-  "@create_match__player_response_time": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "create_match__player_response_time__days": "{days} days",
-  "@create_match__player_response_time__days": {
-    "type": "text",
-    "placeholders": {
-      "days": {}
-    }
-  },
   "create_match__player_invite": "Invite players",
   "@create_match__player_invite": {
     "type": "text",
@@ -1049,31 +325,6 @@
   },
   "create_match__player_invite__friends": "Friend",
   "@create_match__player_invite__friends": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "create_match__player_invite__group": "Group",
-  "@create_match__player_invite__group": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "create_match__player_invite__club": "Club",
-  "@create_match__player_invite__club": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "create_match__start_button": "Start",
-  "@create_match__start_button": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "create_match__handicap": "Handicap",
-  "@create_match__handicap": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "create_match__handicap__switch_text": "Play with handicap",
-  "@create_match__handicap__switch_text": {
     "type": "text",
     "placeholders": {}
   },
@@ -1105,26 +356,6 @@
     "placeholders": {
       "ruleString": {}
     }
-  },
-  "game_flow__result__your_score": "Your score",
-  "@game_flow__result__your_score": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_flow__result__friends_ranking": "Friends Ranking",
-  "@game_flow__result__friends_ranking": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_flow__result__elaborate_rule": "Elaborate rule",
-  "@game_flow__result__elaborate_rule": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_flow__result__rule_overlay__title": "Rule elaboration",
-  "@game_flow__result__rule_overlay__title": {
-    "type": "text",
-    "placeholders": {}
   },
   "game_flow__result__scoreboard": "Scoreboard",
   "@game_flow__result__scoreboard": {
@@ -1176,23 +407,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "game_flow__scoreboard__hole": "Hole",
-  "@game_flow__scoreboard__hole": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_flow__scoreboard__time": "Time",
-  "@game_flow__scoreboard__time": {
-    "type": "text",
-    "placeholders": {}
-  },
   "game_flow__scoreboard__points": "Points",
   "@game_flow__scoreboard__points": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "game_flow__scoreboard__handicap": "Handicap",
-  "@game_flow__scoreboard__handicap": {
     "type": "text",
     "placeholders": {}
   },
@@ -1215,110 +431,8 @@
       "name": {}
     }
   },
-  "invite_helper__group__dialog_text": "This match already contains: \n{players} \n\nPlease remove a player to add another.",
-  "@invite_helper__group__dialog_text": {
-    "type": "text",
-    "placeholders": {
-      "players": {}
-    }
-  },
-  "find_player__title": "Find player",
-  "@find_player__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "find_player__search_player": "Search for a player",
-  "@find_player__search_player": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "find_player__search_player_hint": "Search for a player",
-  "@find_player__search_player_hint": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "find_player__add_popup__title": "Add {name}?",
-  "@find_player__add_popup__title": {
-    "type": "text",
-    "placeholders": {
-      "name": {}
-    }
-  },
-  "find_player__add_popup__description": "Do you want to add {name} {description}",
-  "@find_player__add_popup__description": {
-    "type": "text",
-    "placeholders": {
-      "name": {},
-      "description": {}
-    }
-  },
-  "find_player__add_popup__to_friends": "to your friends?",
-  "@find_player__add_popup__to_friends": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "find_player__add_popup__to_group": "to the group?",
-  "@find_player__add_popup__to_group": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "find_player__add_popup__to_club": "to the club?",
-  "@find_player__add_popup__to_club": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "find_player__load_players": "Gathering players...",
-  "@find_player__load_players": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "edit_profile__title": "Edit profile",
-  "@edit_profile__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "edit_profile__old_password": "Old password",
-  "@edit_profile__old_password": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "edit_profile__new_password": "New password",
-  "@edit_profile__new_password": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "edit_profile__confirm_new_password": "Confirm new password",
-  "@edit_profile__confirm_new_password": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "edit_profile__save_loading": "Saving your profile...",
-  "@edit_profile__save_loading": {
-    "type": "text",
-    "placeholders": {}
-  },
   "profile__title": "My profile",
   "@profile__title": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "profile__game_overview": "Game overview",
-  "@profile__game_overview": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "profile__game_overview__played": "Games played",
-  "@profile__game_overview__played": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "profile__game_overview__won": "Games won",
-  "@profile__game_overview__won": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "profile__game_overview__lost": "Games lost",
-  "@profile__game_overview__lost": {
     "type": "text",
     "placeholders": {}
   },
