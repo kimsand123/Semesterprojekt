@@ -13,7 +13,7 @@ def games(request):
     # Early exit on missing authorization / invalid token
     if 'Authorization' not in request.headers:
         error_message = generate_error_json(status.HTTP_401_UNAUTHORIZED, "Authorization was not included in headers",
-                                            None, None)
+                                                None, None)
         return Response(data=error_message, status=status.HTTP_401_UNAUTHORIZED)
     else:
         if not token_status(request.headers['Authorization']):
@@ -90,10 +90,10 @@ def games_get(request):
         param_player_id = request.GET['player_id']
         connection_params = "?player_id=" + param_player_id
         response = connection_service("/games/", None, connection_params, "GET")
-        return Response(data=response, status=status.HTTP_200_OK)
+        return Response(data=json.loads(response.content), status=response.status_code)
     else:
         response = connection_service("/games/", None, None, "GET")
-        return Response(data=response, status=status.HTTP_200_OK)
+        return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -108,17 +108,20 @@ def games_post(request):
     if type(json_request) is Response:
         return json_request
 
-    game_req = json_request['game']
-    json_body = {
-        "game": {
-            "match_name": game_req['match_name'],
-            "question_duration": game_req['question_duration'],
-            "questions": game_req['questions'],
-            "player_status": game_req['player_status']
+    try:
+        game_req = json_request['game']
+        json_body = {
+            "game": {
+                "match_name": game_req['match_name'],
+                "question_duration": game_req['question_duration'],
+                "questions": game_req['questions'],
+                "player_status": game_req['player_status']
+            }
         }
-    }
-    response = connection_service("/games/", json_body, None, "POST")
-    return Response(data=response, status=status.HTTP_201_CREATED)
+        response = connection_service("/games/", json_body, None, "POST")
+        return Response(data=json.loads(response.content), status=response.status_code)
+    except KeyError:
+        return Response(data=decode_error_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 # -------------
@@ -126,7 +129,7 @@ def games_post(request):
 # -------------
 def single_game_get(request, game_id):
     response = connection_service(f"/games/{game_id}/", None, None, "GET")
-    return Response(data=response, status=status.HTTP_200_OK)
+    return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -141,17 +144,20 @@ def single_game_put(request, game_id):
     if type(json_request) is Response:
         return json_request
 
-    game_req = json_request['game']
-    json_body = {
-        "game": {
-            "match_name": game_req['match_name'],
-            "question_duration": game_req['question_duration'],
-            "questions": game_req['questions'],
-            "player_status": game_req['player_status']
+    try:
+        game_req = json_request['game']
+        json_body = {
+            "game": {
+                "match_name": game_req['match_name'],
+                "question_duration": game_req['question_duration'],
+                "questions": game_req['questions'],
+                "player_status": game_req['player_status']
+            }
         }
-    }
-    response = connection_service(f"/games/{game_id}/", json_body, None, "PUT")
-    return Response(data=response, status=status.HTTP_200_OK)
+        response = connection_service(f"/games/{game_id}/", json_body, None, "PUT")
+        return Response(data=json.loads(response.content), status=response.status_code)
+    except KeyError:
+        return Response(data=decode_error_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 # -------------
@@ -159,7 +165,7 @@ def single_game_put(request, game_id):
 # -------------
 def single_game_delete(request, game_id):
     response = connection_service(f"/games/{game_id}/", None, None, "DELETE")
-    return Response(data=response, status=status.HTTP_200_OK)
+    return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -175,8 +181,10 @@ def single_game_game_round_put(request, game_id):
     if type(json_request) is Response:
         return json_request
 
-    player_id = request.GET["player_id"]
-
-    response = connection_service(f"/games/{game_id}/player-status/?player_id={player_id}", json_request,
-                                  None, "PUT")
-    return Response(data=response, status=status.HTTP_200_OK)
+    try:
+        player_id = request.GET["player_id"]
+        response = connection_service(f"/games/{game_id}/player-status/?player_id={player_id}", json_request,
+                                      None, "PUT")
+        return Response(data=json.loads(response.content), status=response.status_code)
+    except KeyError:
+        return Response(data=decode_error_message, status=status.HTTP_400_BAD_REQUEST)

@@ -5,6 +5,7 @@ from django.http.response import HttpResponse, JsonResponse
 from rest_framework.utils import json
 
 import requests
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -53,14 +54,12 @@ def connection_service(endpoint_url, body_data, query_params, method):
                 r = requests.put(url=build_url + str(params), json=body_data, headers=headers)
             else:
                 r = requests.put(url=build_url + str(params), headers=headers)
-        data = json.loads(r.content.decode("UTF-8").__str__())
-        return data
-
-    except requests.ConnectionError as e:
-        error_message = generate_error_json(status.HTTP_404_NOT_FOUND, "No database connection found",
-                                            None, None)
-        response = JsonResponse(data=error_message, status=status.HTTP_404_NOT_FOUND)
-        return response
+        return r
+    except Exception as e:
+        error_response = Response()
+        error_response.status_code = 500
+        error_response.content = '{"error": "' + e.__str__() + '", "help": "Contact group 20"}'
+        return error_response
 
 
 # Get the json data object from the request that is sent to an endpoint from user

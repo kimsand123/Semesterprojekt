@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -68,7 +70,7 @@ def single_player(request, player_id):
 # -------------
 def players_get(request):
     response = connection_service("/players/", None, None, "GET")
-    return Response(data=response, status=status.HTTP_200_OK)
+    return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -83,19 +85,22 @@ def players_post(request):
     if type(json_request) is Response:
         return json_request
 
-    player_req = json_request['player']
-    json_body = {
-        "player": {
-            "username": player_req['username'],
-            "email": player_req['email'],
-            "first_name": player_req['first_name'],
-            "last_name": player_req['last_name'],
-            "study_programme": player_req['study_programme'],
-            "high_score": player_req['high_score']
+    try:
+        player_req = json_request['player']
+        json_body = {
+            "player": {
+                "username": player_req['username'],
+                "email": player_req['email'],
+                "first_name": player_req['first_name'],
+                "last_name": player_req['last_name'],
+                "study_programme": player_req['study_programme'],
+                "high_score": player_req['high_score']
+            }
         }
-    }
-    response = connection_service("/players/", json_body, None, "POST")
-    return Response(data=response, status=status.HTTP_201_CREATED)
+        response = connection_service("/players/", json_body, None, "POST")
+        return Response(data=json.loads(response.content), status=response.status_code)
+    except KeyError:
+        return Response(data=decode_error_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 # -------------
@@ -103,7 +108,7 @@ def players_post(request):
 # -------------
 def single_player_get(request, player_id):
     response = connection_service(f"/players/{player_id}/", None, None, "GET")
-    return Response(data=response, status=status.HTTP_200_OK)
+    return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -118,19 +123,22 @@ def single_player_put(request, player_id):
     if type(json_request) is Response:
         return json_request
 
-    player_req = json_request['player']
-    json_body = {
-        "player": {
-            "username": player_req['username'],
-            "email": player_req['email'],
-            "first_name": player_req['first_name'],
-            "last_name": player_req['last_name'],
-            "study_programme": player_req['study_programme'],
-            "high_score": player_req['high_score']
+    try:
+        player_req = json_request['player']
+        json_body = {
+            "player": {
+                "username": player_req['username'],
+                "email": player_req['email'],
+                "first_name": player_req['first_name'],
+                "last_name": player_req['last_name'],
+                "study_programme": player_req['study_programme'],
+                "high_score": player_req['high_score']
+            }
         }
-    }
-    response = connection_service(f"/players/{player_id}/", json_body, None, "PUT")
-    return Response(data=response, status=status.HTTP_200_OK)
+        response = connection_service(f"/players/{player_id}/", json_body, None, "PUT")
+        return Response(data=json.loads(response.content), status=response.status_code)
+    except KeyError:
+        return Response(data=decode_error_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 # -------------
@@ -138,4 +146,4 @@ def single_player_put(request, player_id):
 # -------------
 def single_player_delete(request, player_id):
     response = connection_service(f"/players/{player_id}/", None, None, "DELETE")
-    return Response(data=response, status=status.HTTP_200_OK)
+    return Response(data=json.loads(response.content), status=response.status_code)

@@ -1,3 +1,5 @@
+import json
+
 from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -73,10 +75,10 @@ def invites_get(request):
         param_player_id = request.GET['player_id']
         connection_params = "?player_id=" + param_player_id
         response = connection_service("/invites/", None, connection_params, "GET")
-        return Response(data=response, status=status.HTTP_200_OK)
+        return Response(data=json.loads(response.content), status=response.status_code)
     else:
         response = connection_service("/invites/", None, None, "GET")
-        return Response(data=response, status=status.HTTP_200_OK)
+        return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -93,9 +95,7 @@ def invites_post(request):
 
 
 
-
     invite = json_request['invite']
-
     #if invite['accepted']==
 
     json_body = {
@@ -108,7 +108,7 @@ def invites_post(request):
         }
     }
     response = connection_service("/invites/", json_body, None, "POST")
-    return Response(data=response, status=status.HTTP_201_CREATED)
+    return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -116,7 +116,7 @@ def invites_post(request):
 # -------------
 def single_invite_get(request, invite_id):
     response = connection_service(f"/invites/{invite_id}/", None, None, "GET")
-    return Response(data=response, status=status.HTTP_200_OK)
+    return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -140,7 +140,7 @@ def single_invite_put(request, invite_id):
         response = create_game(json_request);
         if type(response)==JsonResponse:
             return response
-    return Response(data=response, status=status.HTTP_200_OK)
+    return Response(data=json.loads(response.content), status=response.status_code)
 
 
 # -------------
@@ -148,7 +148,7 @@ def single_invite_put(request, invite_id):
 # -------------
 def single_invite_delete(request, invite_id):
     response = connection_service(f"/invites/{invite_id}/", None, None, "DELETE")
-    return Response(data=response, status=status.HTTP_200_OK)
+    return Response(data=json.loads(response.content), status=response.status_code)
 
 
 def create_game(invite_data):
