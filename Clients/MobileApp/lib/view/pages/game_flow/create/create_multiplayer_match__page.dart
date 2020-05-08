@@ -138,7 +138,10 @@ class _CreateMultiplayerMatchPageState
                       Provider.of<FriendProvider>(context, listen: false)
                           .setFriendList(value);
 
-                      Navigator.popAndPushNamed(context, friendsRoute);
+                      Navigator.pushNamed(context, inviteFriends);
+
+                      await disableProgressIndicator();
+
                       return Future.value(true);
                     }).catchError((error) async {
                       debugPrint("Fetching players error" + error.toString());
