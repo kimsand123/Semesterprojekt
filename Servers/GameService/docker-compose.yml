@@ -9,5 +9,5 @@ services:
     ports:
       - "9700:9700"
     environment:
-      - DC_GS=94.130.183.32
+      - DC_DS=116.203.234.111
     command: python manage.py runserver 0.0.0.0:9700
