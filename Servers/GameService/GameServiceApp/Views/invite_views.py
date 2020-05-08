@@ -135,24 +135,11 @@ def single_invite_put(request, invite_id):
     if type(json_request) is Response:
         return json_request
 
-    invite = json_request['invite']
-    json_body = {
-        "invite": {
-            "sender_player_id": invite['sender_player_id'],
-            "receiver_player_id": invite['receiver_player_id'],
-            "match_name": invite['match_name'],
-            "question_duration": invite['question_duration'],
-            "accepted": invite['accepted']
-        }
-    }
-    response = connection_service(f"/invites/{invite_id}/", invite, None, "PUT")
+    response = connection_service(f"/invites/{invite_id}/", json_request, None, "PUT")
     if type(response)!=JsonResponse:
-        response = create_game(json_body);
+        response = create_game(json_request);
         if type(response)==JsonResponse:
             return response
-    else:
-        return response
-
     return Response(data=response, status=status.HTTP_200_OK)
 
 
