@@ -118,6 +118,7 @@ class InviteService {
           if (responseMap.containsKey("game")) {
             debugPrint(
                 "Invite accepted, new game:" + responseMap['game'].toString());
+            return Future.value(true);
           } else if (response.statusCode == 403) {
             return Future.error("Unauthorized");
           } else if (response.statusCode == 401) {
@@ -127,7 +128,6 @@ class InviteService {
                 responseMap.toString());
             return Future.error("Server_error");
           }
-          return Future.error("Something unexpected");
         }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {
