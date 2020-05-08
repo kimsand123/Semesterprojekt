@@ -5,8 +5,10 @@ import 'package:golfquiz_dtu/models/invite.dart';
 import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/network/invite_service.dart';
+import 'package:golfquiz_dtu/network/player_service.dart';
 import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
+import 'package:golfquiz_dtu/providers/friend__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
@@ -75,7 +77,7 @@ class _CreateMultiplayerMatchPageState
                 controller: _nameController,
                 hintText: appLocale().create_match__match_name__hint_text,
                 inputType: TextInputType.text,
-                maxLength: 10,
+                maxLength: 15,
                 isInputHidden: false,
                 focusNode: _nameFocus,
                 textInputAction: TextInputAction.done,
@@ -111,7 +113,7 @@ class _CreateMultiplayerMatchPageState
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.only(top: 20.0, left: 20.0, bottom: 8.0),
               child: Text(
-                appLocale().create_match__player_invite,
+                "Invite player",
                 style: Theme.of(context).textTheme.headline,
               ),
             ),
@@ -121,10 +123,60 @@ class _CreateMultiplayerMatchPageState
                 StandardButtonComponent(
                   text: appLocale().create_match__player_invite__friends,
                   width: screenWidth() - 40,
-                  onPressed: () {
+                  onPressed: () async {
                     Provider.of<CurrentGameProvider>(context, listen: false)
                         .setGame(game);
-                    Navigator.of(context).pushNamed(inviteFriends);
+
+                    await enableProgressIndicator("Gathering friends...");
+
+                    Player currentPlayer =
+                        Provider.of<MeProvider>(context, listen: false)
+                            .getPlayer;
+
+                    PlayerService.fetchPlayers(currentPlayer)
+                        .then((value) async {
+                      Provider.of<FriendProvider>(context, listen: false)
+                          .setFriendList(value);
+
+                      Navigator.popAndPushNamed(context, friendsRoute);
+                      return Future.value(true);
+                    }).catchError((error) async {
+                      debugPrint("Fetching players error" + error.toString());
+                      await disableProgressIndicator();
+
+                      if (error == "Token invalid") {
+                        showPopupDialog(
+                          context,
+                          'You have been logged out',
+                          'Your login has been expired, please login again',
+                          {
+                            Text(
+                              "Ok",
+                              style: TextStyle(color: Colors.black),
+                            ): () {
+                              RemoteHelper().emptyProvider(context).then(
+                                (v) {
+                                  Navigator.of(context)
+                                      .pushNamed(inviteFriends);
+                                },
+                              );
+                            },
+                          },
+                        );
+                      }
+
+                      showPopupDialog(
+                        context,
+                        'An error occured',
+                        'Could not connect to the backend.\n${error.toString()}',
+                        {
+                          Text(
+                            "Ok",
+                            style: TextStyle(color: Colors.black),
+                          ): null,
+                        },
+                      );
+                    });
                   },
                 ),
               ],
