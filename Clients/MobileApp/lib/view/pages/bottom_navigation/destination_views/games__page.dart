@@ -6,6 +6,7 @@ import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/network/game_service.dart';
 import 'package:golfquiz_dtu/network/invite_service.dart';
+import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/game_list__provider.dart';
 import 'package:golfquiz_dtu/providers/invite_list__provider.dart';
@@ -101,8 +102,15 @@ class _GamesPageState extends BasePageState<GamesPage>
                         "Ok",
                         style: TextStyle(color: Colors.black),
                       ): () {
-                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
+                        RemoteHelper().emptyProvider(context).then(
+                          (v) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                introRoute,
+                                ModalRoute.withName(
+                                    Navigator.defaultRouteName));
+                          },
+                        );
                       },
                     },
                   );
@@ -116,7 +124,7 @@ class _GamesPageState extends BasePageState<GamesPage>
                     Text(
                       "Ok",
                       style: TextStyle(color: Colors.black),
-                    ): () {},
+                    ): null,
                   },
                 );
               });
@@ -170,8 +178,15 @@ class _GamesPageState extends BasePageState<GamesPage>
                         "Ok",
                         style: TextStyle(color: Colors.black),
                       ): () {
-                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
+                        RemoteHelper().emptyProvider(context).then(
+                          (v) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                introRoute,
+                                ModalRoute.withName(
+                                    Navigator.defaultRouteName));
+                          },
+                        );
                       },
                     },
                   );
@@ -185,7 +200,7 @@ class _GamesPageState extends BasePageState<GamesPage>
                     Text(
                       "Ok",
                       style: TextStyle(color: Colors.black),
-                    ): () {},
+                    ): null,
                   },
                 );
               });

@@ -16,22 +16,6 @@ class GameFlowHelper {
 
     return targetPlayerStatus;
   }
-  /*
-  static PlayerStatus determineCurrentPlayerStatus(
-      Player currentPlayer, Game game) {
-    PlayerStatus currentPlayerStatus;
-
-    List<PlayerStatus> playerStatusList = game.playerStatus;
-
-    for (PlayerStatus status in playerStatusList) {
-      if (status.gamePlayer.player.id == currentPlayer.id) {
-        currentPlayerStatus = status;
-      }
-    }
-
-    return currentPlayerStatus;
-  }
-  */
 
   static Color setPopupTextColor(BuildContext context) {
     final ThemeData theme = Theme.of(context);

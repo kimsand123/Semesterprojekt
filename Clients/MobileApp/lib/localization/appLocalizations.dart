@@ -171,12 +171,12 @@ class AppLocalization {
   ------------------------------ AUTH ----------------------------------
   */
 
-  String get auth__email_hint {
-    return 'someone@example.com';
+  String get auth__username_hint {
+    return 'ex. s123456';
   }
 
   String get auth__password_hint {
-    return '************';
+    return '* * * * * * * * * *';
   }
 
   String get auth__username_caption {

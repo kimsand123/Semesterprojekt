@@ -203,8 +203,12 @@ class _CreateMultiplayerMatchPageState
               "Ok",
               style: TextStyle(color: Colors.black),
             ): () {
-              Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                  ModalRoute.withName(Navigator.defaultRouteName));
+              RemoteHelper().emptyProvider(context).then(
+                (v) {
+                  Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                      ModalRoute.withName(Navigator.defaultRouteName));
+                },
+              );
             },
           },
         );
@@ -218,7 +222,7 @@ class _CreateMultiplayerMatchPageState
           Text(
             "Ok",
             style: TextStyle(color: Colors.black),
-          ): () {},
+          ): null,
         },
       );
     });

@@ -127,6 +127,7 @@ class InviteService {
                 responseMap.toString());
             return Future.error("Server_error");
           }
+          return Future.error("Something unexpected");
         }),
         retryIf: (e) {
           if (e is SocketException || e is TimeoutException) {

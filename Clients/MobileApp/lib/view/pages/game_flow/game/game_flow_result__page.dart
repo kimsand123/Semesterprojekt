@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/game_player.dart';
-import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/question.dart';
 import 'package:golfquiz_dtu/network/player_service.dart';
+import 'package:golfquiz_dtu/network/remote_helper.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
@@ -178,11 +178,15 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                             "Ok",
                             style: TextStyle(color: Colors.black),
                           ): () {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                introRoute,
-                                ModalRoute.withName(
-                                    Navigator.defaultRouteName));
+                            RemoteHelper().emptyProvider(context).then(
+                              (v) {
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    introRoute,
+                                    ModalRoute.withName(
+                                        Navigator.defaultRouteName));
+                              },
+                            );
                           },
                         },
                       );
@@ -196,7 +200,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                         Text(
                           "Ok",
                           style: TextStyle(color: Colors.black),
-                        ): () {},
+                        ): null,
                       },
                     );
                   });
@@ -227,7 +231,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                             .textTheme
                             .button
                             .copyWith(color: appTheme().errorColor),
-                      ): () {}
+                      ): null
                     });
                   },
                 );

@@ -20,7 +20,6 @@ class DeleteButtonComponent extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           child: Text(
-            //TODO: Should be transfered instead of set by this class
             this.buttonText,
             style: Theme.of(context)
                 .textTheme

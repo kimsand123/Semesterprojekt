@@ -49,7 +49,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                 .textTheme
                 .button
                 .copyWith(color: appTheme().errorColor),
-          ): () {}
+          ): null
         });
       },
       child: Container(
@@ -136,8 +136,15 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                         "Ok",
                         style: TextStyle(color: Colors.black),
                       ): () {
-                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
+                        RemoteHelper().emptyProvider(context).then(
+                          (v) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                introRoute,
+                                ModalRoute.withName(
+                                    Navigator.defaultRouteName));
+                          },
+                        );
                       },
                     },
                   );
@@ -151,7 +158,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                     Text(
                       "Ok",
                       style: TextStyle(color: Colors.black),
-                    ): () {},
+                    ): null,
                   },
                 );
               });
@@ -219,8 +226,15 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                         "Ok",
                         style: TextStyle(color: Colors.black),
                       ): () {
-                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
+                        RemoteHelper().emptyProvider(context).then(
+                          (v) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                introRoute,
+                                ModalRoute.withName(
+                                    Navigator.defaultRouteName));
+                          },
+                        );
                       },
                     },
                   );
@@ -234,7 +248,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                     Text(
                       "Ok",
                       style: TextStyle(color: Colors.black),
-                    ): () {},
+                    ): null,
                   },
                 );
               });
@@ -259,8 +273,15 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                         "Ok",
                         style: TextStyle(color: Colors.black),
                       ): () {
-                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
+                        RemoteHelper().emptyProvider(context).then(
+                          (v) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                introRoute,
+                                ModalRoute.withName(
+                                    Navigator.defaultRouteName));
+                          },
+                        );
                       },
                     },
                   );
@@ -274,7 +295,7 @@ class _GameFlowQuestionPageState extends BasePageState<GameFlowQuestionPage>
                     Text(
                       "Ok",
                       style: TextStyle(color: Colors.black),
-                    ): () {},
+                    ): null,
                   },
                 );
               });

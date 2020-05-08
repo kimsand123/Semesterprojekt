@@ -50,11 +50,11 @@ class GolfQuiz extends StatefulWidget {
   Future<String> initialRoute() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
-    String game_service_ip = prefs.get("game_service_ip");
-    String game_service_port = prefs.get("game_service_port");
+    String gameServiceIp = prefs.get("game_service_ip");
+    String gameServicePort = prefs.get("game_service_port");
 
-    if (game_service_ip != null && game_service_port != null) {
-      ServiceConstants.baseGameUrl = game_service_ip + ":" + game_service_port;
+    if (gameServiceIp != null && gameServicePort != null) {
+      ServiceConstants.baseGameUrl = gameServiceIp + ":" + gameServicePort;
     }
 
     if (token != null) {
@@ -74,7 +74,7 @@ class _GolfQuizState extends State<GolfQuiz> {
   ///
   /// Testing route, made to override the introRoute
   ///
-  String testingRoute = null;
+  String testingRoute; // = introRoute;
 
   changeLanguage(Locale locale) {
     setState(() {
@@ -84,11 +84,10 @@ class _GolfQuizState extends State<GolfQuiz> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Removed when tablet-mode is introduced
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     String initialRoute;
 
-    //TODO: (GQ-91) - Toggle if user is logged in
+    // Toggle to use testRoute
     if (true) {
       initialRoute = testingRoute ?? introRoute;
     }
@@ -104,7 +103,6 @@ class _GolfQuizState extends State<GolfQuiz> {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale.fromSubtags(languageCode: 'da'),
         const Locale.fromSubtags(languageCode: 'en'),
       ],
       locale: _locale,

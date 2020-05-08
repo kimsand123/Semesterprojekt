@@ -3,7 +3,6 @@ import 'package:golfquiz_dtu/misc/constants.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
 import 'package:golfquiz_dtu/models/game_round.dart';
-import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
@@ -49,7 +48,7 @@ class _SingleGamePageState extends BasePageState<SingleGamePage>
           rowLeftContent:
               widget.gameItem.questionDuration.toStringAsFixed(0) + 's',
           rowRightTitle: appLocale().game_appbar__your_score,
-          rowRightContent: currentPlayerStatus.gamePlayer.player.toString(),
+          rowRightContent: currentPlayerStatus.gamePlayer.score.toString(),
           showProgress: true,
         );
       },

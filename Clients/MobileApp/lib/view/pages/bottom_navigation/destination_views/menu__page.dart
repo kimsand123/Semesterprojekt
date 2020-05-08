@@ -7,7 +7,6 @@ import 'package:golfquiz_dtu/providers/friend__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/view/base_pages/base_page.dart';
-import 'package:golfquiz_dtu/view/components/notification_bubble__component.dart';
 import 'package:golfquiz_dtu/view/components/popup__component.dart';
 import 'package:golfquiz_dtu/view/mixins/basic_page__mixin.dart';
 import 'package:golfquiz_dtu/view/pages/bottom_navigation/navigation__container.dart';
@@ -74,8 +73,12 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
                     "Ok",
                     style: TextStyle(color: Colors.black),
                   ): () {
-                    Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                        ModalRoute.withName(Navigator.defaultRouteName));
+                    RemoteHelper().emptyProvider(context).then(
+                      (v) {
+                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                            ModalRoute.withName(Navigator.defaultRouteName));
+                      },
+                    );
                   },
                 },
               );
@@ -89,7 +92,7 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
                 Text(
                   "Ok",
                   style: TextStyle(color: Colors.black),
-                ): () {},
+                ): null,
               },
             );
           });
@@ -99,10 +102,12 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
 
         // Log out
         settingsRow(appLocale().menu__log_out_button, () {
-          RemoteHelper().emptyProvider(context).then((v) {
-            Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                ModalRoute.withName(Navigator.defaultRouteName));
-          });
+          RemoteHelper().emptyProvider(context).then(
+            (v) {
+              Navigator.pushNamedAndRemoveUntil(context, introRoute,
+                  ModalRoute.withName(Navigator.defaultRouteName));
+            },
+          );
         }, false),
         SizedBox(height: BottomNavigationContainer.height + 20)
       ],
@@ -110,11 +115,6 @@ class _MenuPageState extends BasePageState<MenuPage> with BasicPage {
   }
 
   Widget settingsRow(String title, VoidCallback onTab, bool withTop) {
-    var notification = Container(
-        padding: EdgeInsets.fromLTRB(30, 3, 0, 0),
-        alignment: Alignment.center,
-        child: NotificationBubble());
-
     return GestureDetector(
       onTap: onTab,
       child: Container(

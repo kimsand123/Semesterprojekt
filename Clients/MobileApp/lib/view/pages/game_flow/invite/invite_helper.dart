@@ -63,16 +63,6 @@ bool isPlayerinGamePlayerStatusList(
   return isInTheList;
 }
 
-String _playersToAStringList(List<Player> players) {
-  String returnString = '';
-
-  players.forEach((player) {
-    returnString += '\n- ${player.firstName}';
-  });
-
-  return returnString;
-}
-
 void _showTwoPlayerMaxPopup(BuildContext context, Player player) {
   // Two-player max
   showPopupDialog(
@@ -81,24 +71,6 @@ void _showTwoPlayerMaxPopup(BuildContext context, Player player) {
         .invite_helper__max_players(maxPlayersTwoPlayerMatch),
     AppLocalization.of(context)
         .invite_helper__two_player__dialog_text(player.firstName),
-    {
-      Text(AppLocalization.of(context).ok,
-          style: Theme.of(context)
-              .textTheme
-              .button
-              .copyWith(color: Colors.black)): () {},
-    },
-  );
-}
-
-void _showGroupMaxPopup(BuildContext context, List<Player> gameUsers) {
-  // Group max
-  showPopupDialog(
-    context,
-    AppLocalization.of(context)
-        .invite_helper__max_players(maxPlayersGroupMatch),
-    AppLocalization.of(context)
-        .invite_helper__group__dialog_text(_playersToAStringList(gameUsers)),
     {
       Text(AppLocalization.of(context).ok,
           style: Theme.of(context)

@@ -23,9 +23,9 @@ class PlayerStatus {
   int get roundsCompleted {
     int rounds = 0;
     if (gameRound != null) {
-      for (var round in gameRound) {
+      gameRound.forEach((round) {
         rounds += 1;
-      }
+      });
     }
     return rounds;
   }

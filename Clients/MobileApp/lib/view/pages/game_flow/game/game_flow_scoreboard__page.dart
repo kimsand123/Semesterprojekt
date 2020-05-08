@@ -117,7 +117,7 @@ class _GameFlowScoreboardPageState extends BasePageState<GameFlowScoreboardPage>
                             .textTheme
                             .button
                             .copyWith(color: appTheme().errorColor),
-                      ): () {}
+                      ): null
                     });
                   },
                   width: screenWidth() * 0.3,

@@ -38,7 +38,8 @@ void showPopupDialog(BuildContext context, String title, String content,
           CupertinoDialogAction(
               child: action,
               onPressed: () {
-                callback == null ?? Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                callback();
               }),
         );
       },
@@ -81,14 +82,14 @@ void showPopupDialog(BuildContext context, String title, String content,
               child: text,
               onPressed: () {
                 Navigator.of(context).pop();
-                callback == null ? null : callback();
+                callback();
               }),
         );
       },
     );
 
     //Protect agains nulls
-    if (popupActionList.isEmpty) {
+    if (popupActionList == null || popupActionList.isEmpty) {
       popupActionList.add(
         FlatButton(
             child: Text("Ok"),

@@ -43,10 +43,8 @@ mixin BasicPage<Page extends BasePage> on BasePageState<Page> {
               child: SingleChildScrollView(
                 child: Container(
                   width: screenWidth(),
-                  constraints:
-                      //TODO: Research if the '45' can be more dynamic
-                      BoxConstraints(
-                          minHeight: screenHeight() - appBarHeight() - 45),
+                  constraints: BoxConstraints(
+                      minHeight: screenHeight() - appBarHeight() - 45),
                   child: body(),
                 ),
               ),

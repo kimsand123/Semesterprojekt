@@ -118,8 +118,15 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
                         "Ok",
                         style: TextStyle(color: Colors.black),
                       ): () {
-                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
+                        RemoteHelper().emptyProvider(context).then(
+                          (v) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                introRoute,
+                                ModalRoute.withName(
+                                    Navigator.defaultRouteName));
+                          },
+                        );
                       },
                     },
                   );
@@ -133,7 +140,7 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
                     Text(
                       "Ok",
                       style: TextStyle(color: Colors.black),
-                    ): () {},
+                    ): null,
                   },
                 );
               });
@@ -169,8 +176,15 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
                         "Ok",
                         style: TextStyle(color: Colors.black),
                       ): () {
-                        Navigator.pushNamedAndRemoveUntil(context, introRoute,
-                            ModalRoute.withName(Navigator.defaultRouteName));
+                        RemoteHelper().emptyProvider(context).then(
+                          (v) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                introRoute,
+                                ModalRoute.withName(
+                                    Navigator.defaultRouteName));
+                          },
+                        );
                       },
                     },
                   );
@@ -184,7 +198,7 @@ class _InvitePageState extends BasePageState<InvitePage> with BasicPage {
                     Text(
                       "Ok",
                       style: TextStyle(color: Colors.black),
-                    ): () {},
+                    ): null,
                   },
                 );
               });

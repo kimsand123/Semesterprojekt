@@ -67,19 +67,6 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
     var activeTextColor = Theme.of(context).primaryColorDark;
     var inactiveColor = Theme.of(context).disabledColor;
 
-    var notification = Container(
-        padding: EdgeInsets.fromLTRB(30, 3, 0, 0),
-        alignment: Alignment.topRight,
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.red,
-          ),
-          alignment: Alignment.center,
-          height: 15,
-          width: 15,
-        ));
-
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {

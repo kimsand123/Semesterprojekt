@@ -60,12 +60,14 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
           child: Column(
             children: <Widget>[
               TextFieldComponent(
+                textCapitalization: TextCapitalization.none,
                 inputType: TextInputType.text,
                 controller: _usernameController,
                 caption: appLocale().auth__username_caption,
                 isInputHidden: false,
+                maxLength: 7,
                 margin: EdgeInsets.only(bottom: 12.0, top: 8.0),
-                hintText: appLocale().auth__email_hint,
+                hintText: appLocale().auth__username_hint,
                 focusNode: this._usernameFocus,
                 fieldValidator: (arg) {
                   return ValidationHelper.validateUsername(arg, context);
@@ -76,6 +78,7 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
                 },
               ),
               TextFieldComponent(
+                textCapitalization: TextCapitalization.none,
                 controller: _passwordController,
                 caption: appLocale().auth__password_caption,
                 isInputHidden: true,
@@ -139,7 +142,7 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
             Text(
               "Ok",
               style: TextStyle(color: Colors.black),
-            ): () {},
+            ): null,
           },
         );
       });

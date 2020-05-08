@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:golfquiz_dtu/misc/constants.dart';
 import 'package:golfquiz_dtu/misc/game_flow_helper.dart';
 import 'package:golfquiz_dtu/models/game.dart';
-import 'package:golfquiz_dtu/models/player.dart';
 import 'package:golfquiz_dtu/models/player_status.dart';
 import 'package:golfquiz_dtu/providers/current_game__provider.dart';
 import 'package:golfquiz_dtu/providers/game_list__provider.dart';
