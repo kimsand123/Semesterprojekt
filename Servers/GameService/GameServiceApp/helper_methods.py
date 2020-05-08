@@ -16,7 +16,9 @@ from GameServiceApp.constants import *
 def check_or_add_user(user):
     player = user['player']
     dtu_username = player['username']
-    data = connection_service("/players/" + dtu_username + "/", None, None, "GET")
+    response_data = connection_service("/players/" + dtu_username + "/", None, None, "GET")
+
+    data = json.loads(response_data.content)
 
     # If the player doesnt exist
     if 'player' not in data:
