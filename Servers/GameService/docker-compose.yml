@@ -7,5 +7,7 @@ services:
     volumes:
       - ./:/GameService
     ports:
-        - "9700:9700"
+      - "9700:9700"
+    environment:
+      - DC_GS=94.130.183.32
     command: python manage.py runserver 0.0.0.0:9700

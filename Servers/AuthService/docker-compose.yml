@@ -8,4 +8,6 @@ services:
       - ./:/AuthService
     ports:
       - "9800:9800"
+    environment:
+      - DC_DS=116.203.234.111
     command: python manage.py runserver 0.0.0.0:9800
