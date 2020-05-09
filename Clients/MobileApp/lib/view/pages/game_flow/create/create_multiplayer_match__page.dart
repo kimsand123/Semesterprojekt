@@ -133,11 +133,9 @@ class _CreateMultiplayerMatchPageState
                         Provider.of<MeProvider>(context, listen: false)
                             .getPlayer;
 
-                    PlayerService.fetchPlayers(currentPlayer)
+                    RemoteHelper()
+                        .updateFriendProvider(context, currentPlayer)
                         .then((value) async {
-                      Provider.of<FriendProvider>(context, listen: false)
-                          .setFriendList(value);
-
                       await disableProgressIndicator();
 
                       Navigator.pushNamed(context, inviteFriends);
