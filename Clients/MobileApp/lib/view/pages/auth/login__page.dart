@@ -134,17 +134,31 @@ class _LoginPageState extends BasePageState<LoginPage> with BasicPage {
         debugPrint("Login error - " + error.toString());
         await disableProgressIndicator();
 
-        showPopupDialog(
-          context,
-          'An error occured',
-          'Could not connect to the backend.\n${error.toString()}',
-          {
-            Text(
-              "Ok",
-              style: TextStyle(color: Colors.black),
-            ): null,
-          },
-        );
+        if (error == "Wrong username or password") {
+          showPopupDialog(
+            context,
+            'Wrong credentials',
+            'Either username/password is wrong,\nor the "javabog.dk" server is unreachable',
+            {
+              Text(
+                "Ok",
+                style: TextStyle(color: Colors.black),
+              ): null,
+            },
+          );
+        } else {
+          showPopupDialog(
+            context,
+            'An error occured',
+            'Could not connect to the backend.\n${error.toString()}',
+            {
+              Text(
+                "Ok",
+                style: TextStyle(color: Colors.black),
+              ): null,
+            },
+          );
+        }
       });
     } else {
       setState(() {

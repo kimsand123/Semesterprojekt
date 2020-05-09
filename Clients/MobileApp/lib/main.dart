@@ -11,6 +11,7 @@ import 'package:golfquiz_dtu/providers/invite_list__provider.dart';
 import 'package:golfquiz_dtu/providers/me__provider.dart';
 import 'package:golfquiz_dtu/routing/route_constants.dart';
 import 'package:golfquiz_dtu/routing/router.dart';
+import 'package:golfquiz_dtu/view/components/popup__component.dart';
 import 'package:golfquiz_dtu/view/themes/light_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,7 +57,34 @@ class GolfQuiz extends StatefulWidget {
     int myId = prefs.get("my_id");
 
     if (myId != null) {
-      await RemoteHelper().updateMyMeProvider(context, myId);
+      RemoteHelper().updateMyMeProvider(context, myId).then((value) async {
+        return gameRoute;
+      }).catchError(
+        (error) async {
+          debugPrint("Fetching me error" + error.toString());
+
+          if (error == "Token invalid") {
+            showPopupDialog(
+              context,
+              'Your session has expired',
+              'The app will log out. \nPlease login again.',
+              {
+                Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.black),
+                ): () {
+                  RemoteHelper().emptyProvider(context).then(
+                    (v) {
+                      return gameRoute;
+                    },
+                  );
+                },
+              },
+            );
+          }
+          return introRoute;
+        },
+      );
     }
 
     if (gameServiceIp != null && gameServicePort != null) {
