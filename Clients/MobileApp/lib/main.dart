@@ -51,51 +51,32 @@ class GolfQuiz extends StatefulWidget {
 
   Future<String> initialRoute(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
     String gameServiceIp = prefs.get("game_service_ip");
     String gameServicePort = prefs.get("game_service_port");
     int myId = prefs.get("my_id");
+    String targetRoute = introRoute;
 
     if (myId != null) {
-      RemoteHelper().updateMyMeProvider(context, myId).then((value) async {
-        return gameRoute;
+      await RemoteHelper()
+          .updateMyMeProvider(context, myId)
+          .then((value) async {
+        if (gameServiceIp != null && gameServicePort != null) {
+          ServiceConstants.baseGameUrl = gameServiceIp + ":" + gameServicePort;
+        }
+        return targetRoute = gameRoute;
       }).catchError(
         (error) async {
-          debugPrint("Fetching me error" + error.toString());
+          debugPrint("Startup fetch : " + error.toString());
 
-          if (error == "Token invalid") {
-            showPopupDialog(
-              context,
-              'Your session has expired',
-              'The app will log out. \nPlease login again.',
-              {
-                Text(
-                  "Ok",
-                  style: TextStyle(color: Colors.black),
-                ): () {
-                  RemoteHelper().emptyProvider(context).then(
-                    (v) {
-                      return gameRoute;
-                    },
-                  );
-                },
-              },
-            );
-          }
-          return introRoute;
+          await RemoteHelper().emptyProvider(context).then(
+            (v) {
+              return targetRoute = introRoute;
+            },
+          );
         },
       );
     }
-
-    if (gameServiceIp != null && gameServicePort != null) {
-      ServiceConstants.baseGameUrl = gameServiceIp + ":" + gameServicePort;
-    }
-
-    if (token != null) {
-      return gameRoute;
-    } else {
-      return introRoute;
-    }
+    return targetRoute;
   }
 
   @override
