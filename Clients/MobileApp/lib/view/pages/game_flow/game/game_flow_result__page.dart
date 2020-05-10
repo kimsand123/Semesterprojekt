@@ -260,8 +260,7 @@ class _GameFlowResultPageState extends BasePageState<GameFlowResultPage>
                         // Game is done
                         Provider.of<CurrentGameProvider>(context, listen: false)
                             .setGame(game);
-                        Navigator.pushNamedAndRemoveUntil(context,
-                            singleGameRoute, ModalRoute.withName(gameRoute));
+                        Navigator.pushReplacementNamed(context, gameRoute);
                       } else {
                         // Game is still going
                         Provider.of<CurrentGameProvider>(context, listen: false)
