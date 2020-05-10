@@ -1,15 +1,19 @@
 ** Semesterprojekt ** 
 
-This is a distributed system of the GolfQuiz game.
+This is a distributed system of the GolfQuis game.
 
 The different folders is different projects, with each instance of the distributed system.
 
 * Clients
-	- TODO
+	- AdminSite
+	- Console
+	- MobileApp
 * Servers
-	- TODO
+	- AuthService
+	- DatabaseService
+	- GameService
 
 Made by:
-Niklaes Jacobsen (s160198)
 Kim Bossen (s163290)
+Niklaes Jacobsen (s160198)
 Sebastian Stokkebro (s170423)
