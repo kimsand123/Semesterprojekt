@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@vivid-web/flexboxgrid-vue": "^1.0.5",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "vue": "^2.5.2",
         "vue-animejs": "^2.1.1",
         "vue-axios": "^2.1.5",
